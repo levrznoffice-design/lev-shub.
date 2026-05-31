@@ -30,6 +30,7 @@
     --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  [hidden] { display: none !important; }
   html, body {
     overscroll-behavior: none;
     overflow-x: hidden;
@@ -1013,6 +1014,81 @@
     font-style: italic;
     font-size: 26px;
   }
+
+  /* ============ Confirm / Alert modal ============ */
+  .confirm-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(10,22,40,0.72);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 400;
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    transition: opacity 180ms ease;
+  }
+  .confirm-backdrop.show { display: flex; opacity: 1; }
+  .confirm-modal {
+    background: var(--surface);
+    border-radius: 16px;
+    border: 1px solid var(--border-2);
+    padding: 22px 20px 16px;
+    max-width: 320px;
+    width: 100%;
+    text-align: center;
+    transform: scale(0.9) translateY(8px);
+    opacity: 0;
+    transition: transform 260ms cubic-bezier(.34,1.56,.64,1), opacity 180ms ease;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  }
+  .confirm-backdrop.show .confirm-modal {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+  .confirm-title {
+    font-family: var(--serif); font-style: italic;
+    font-size: 20px;
+    color: var(--cream);
+    margin-bottom: 6px;
+    letter-spacing: 0.3px;
+  }
+  .confirm-message {
+    font-size: 13px;
+    color: var(--muted-2);
+    line-height: 1.55;
+    margin-bottom: 18px;
+    letter-spacing: 0.2px;
+    padding: 0 4px;
+  }
+  .confirm-actions {
+    display: flex;
+    gap: 8px;
+  }
+  .confirm-actions button {
+    flex: 1;
+    padding: 11px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    transition: transform 80ms ease, background 150ms ease;
+    border: 1px solid transparent;
+  }
+  .confirm-actions button:active { transform: scale(0.96); }
+  .confirm-cancel {
+    background: rgba(245,242,232,0.04);
+    border-color: var(--border-2);
+    color: var(--muted-2);
+  }
+  .confirm-yes {
+    background: var(--red);
+    color: var(--cream);
+    font-family: var(--serif); font-style: italic;
+    font-size: 15px;
+    box-shadow: 0 4px 14px rgba(200,48,44,0.28);
+  }
+  .confirm-modal.alert .confirm-actions { justify-content: center; }
+  .confirm-modal.alert .confirm-yes { background: rgba(245,242,232,0.06); color: var(--cream); font-family: var(--sans); font-style: normal; box-shadow: none; border-color: var(--border-2); }
 </style>
 </head>
 <body>
@@ -1281,6 +1357,18 @@
     <button class="np-key np-soft" data-k=".">.</button>
     <button class="np-key" data-k="0">0</button>
     <button class="np-key np-soft" data-k="?">?</button>
+  </div>
+</div>
+
+<!-- ============ CONFIRM / ALERT ============ -->
+<div class="confirm-backdrop" id="confirmBackdrop" aria-hidden="true">
+  <div class="confirm-modal" role="dialog" aria-modal="true">
+    <div class="confirm-title" id="confirmTitle">подтверждение</div>
+    <div class="confirm-message" id="confirmMessage"></div>
+    <div class="confirm-actions">
+      <button class="confirm-cancel" id="confirmCancel">отмена</button>
+      <button class="confirm-yes" id="confirmYes">да</button>
+    </div>
   </div>
 </div>
 
@@ -1966,13 +2054,15 @@ document.getElementById('sessionExpand').addEventListener('click', () => {
 });
 
 document.getElementById('sessionReset').addEventListener('click', () => {
-  if (!confirm('сбросить все подходы и развернуть упражнения за сегодня?')) return;
-  const view = getTrainingView();
-  const program = view === 'A' ? trainingA : trainingB;
-  program.forEach(ex => {
-    setExSession(ex.id, { setsDone: 0, collapsed: false });
+  appConfirm('сбросить все подходы и развернуть упражнения за сегодня?', { title: 'сбросить сессию', yesText: 'сбросить' }).then(ok => {
+    if (!ok) return;
+    const view = getTrainingView();
+    const program = view === 'A' ? trainingA : trainingB;
+    program.forEach(ex => {
+      setExSession(ex.id, { setsDone: 0, collapsed: false });
+    });
+    renderTraining();
   });
-  renderTraining();
 });
 
 document.querySelectorAll('#trainToggle .toggle-seg').forEach(s => {
@@ -2249,12 +2339,14 @@ function formatDateRuShort(iso) {
 }
 
 function deleteMeasurement(date) {
-  if (!confirm('удалить замер от ' + formatDateRu(date) + '?')) return;
-  let arr = LS.get('levshub_measurements', []) || [];
-  arr = arr.filter(m => m.date !== date);
-  LS.set('levshub_measurements', arr);
-  renderBody();
-  renderHome();
+  appConfirm('удалить замер от ' + formatDateRu(date) + '?', { title: 'удалить замер', yesText: 'удалить' }).then(ok => {
+    if (!ok) return;
+    let arr = LS.get('levshub_measurements', []) || [];
+    arr = arr.filter(m => m.date !== date);
+    LS.set('levshub_measurements', arr);
+    renderBody();
+    renderHome();
+  });
 }
 
 document.getElementById('weightView').querySelectorAll('button').forEach(b => {
@@ -2303,7 +2395,7 @@ function saveMeasurement() {
     const v = parseFloat(inp.value);
     if (!isNaN(v)) { obj[inp.dataset.mk] = v; any = true; }
   });
-  if (!any) { alert('заполни хотя бы один параметр'); return; }
+  if (!any) { appAlert('заполни хотя бы один параметр', { title: 'нужны данные' }); return; }
   let arr = LS.get('levshub_measurements', []) || [];
   // Replace if same date exists
   arr = arr.filter(m => m.date !== date);
@@ -2340,21 +2432,25 @@ function openHistory() {
 }
 
 function clearAllMeasurements() {
-  if (!confirm('удалить ВСЕ замеры? это действие нельзя отменить.')) return;
-  LS.set('levshub_measurements', []);
-  closeModal();
-  renderBody();
-  renderHome();
+  appConfirm('удалить ВСЕ замеры? это действие нельзя отменить.', { title: 'очистить всё', yesText: 'удалить всё' }).then(ok => {
+    if (!ok) return;
+    LS.set('levshub_measurements', []);
+    closeModal();
+    renderBody();
+    renderHome();
+  });
 }
 
 function deleteFromHistory(date) {
-  if (!confirm('удалить замер от ' + formatDateRu(date) + '?')) return;
-  let arr = LS.get('levshub_measurements', []) || [];
-  arr = arr.filter(m => m.date !== date);
-  LS.set('levshub_measurements', arr);
-  closeModal();
-  renderBody();
-  renderHome();
+  appConfirm('удалить замер от ' + formatDateRu(date) + '?', { title: 'удалить замер', yesText: 'удалить' }).then(ok => {
+    if (!ok) return;
+    let arr = LS.get('levshub_measurements', []) || [];
+    arr = arr.filter(m => m.date !== date);
+    LS.set('levshub_measurements', arr);
+    closeModal();
+    renderBody();
+    renderHome();
+  });
 }
 
 // ================= MODAL =================
@@ -2369,6 +2465,78 @@ function closeModal() {
 document.getElementById('modalBackdrop').addEventListener('click', (e) => {
   if (e.target.id === 'modalBackdrop') closeModal();
 });
+
+// ----- Styled confirm / alert (replaces native dialogs) -----
+function appConfirm(message, opts) {
+  opts = opts || {};
+  return new Promise(resolve => {
+    const bd = document.getElementById('confirmBackdrop');
+    const titleEl = document.getElementById('confirmTitle');
+    const msgEl = document.getElementById('confirmMessage');
+    const yesEl = document.getElementById('confirmYes');
+    const noEl = document.getElementById('confirmCancel');
+    const modal = bd.querySelector('.confirm-modal');
+    titleEl.textContent = opts.title || 'подтверждение';
+    msgEl.textContent = message;
+    yesEl.textContent = opts.yesText || 'да';
+    noEl.textContent = opts.noText || 'отмена';
+    noEl.style.display = '';
+    modal.classList.remove('alert');
+    bd.classList.add('show');
+    bd.setAttribute('aria-hidden', 'false');
+    const cleanup = (result) => {
+      bd.classList.remove('show');
+      bd.setAttribute('aria-hidden', 'true');
+      yesEl.removeEventListener('click', onYes);
+      noEl.removeEventListener('click', onNo);
+      bd.removeEventListener('click', onBd);
+      document.removeEventListener('keydown', onKey);
+      resolve(result);
+    };
+    const onYes = (e) => { e.stopPropagation(); cleanup(true); };
+    const onNo = (e) => { e.stopPropagation(); cleanup(false); };
+    const onBd = (e) => { if (e.target === bd) cleanup(false); };
+    const onKey = (e) => { if (e.key === 'Escape') cleanup(false); else if (e.key === 'Enter') cleanup(true); };
+    yesEl.addEventListener('click', onYes);
+    noEl.addEventListener('click', onNo);
+    bd.addEventListener('click', onBd);
+    document.addEventListener('keydown', onKey);
+  });
+}
+function appAlert(message, opts) {
+  opts = opts || {};
+  return new Promise(resolve => {
+    const bd = document.getElementById('confirmBackdrop');
+    const titleEl = document.getElementById('confirmTitle');
+    const msgEl = document.getElementById('confirmMessage');
+    const yesEl = document.getElementById('confirmYes');
+    const noEl = document.getElementById('confirmCancel');
+    const modal = bd.querySelector('.confirm-modal');
+    titleEl.textContent = opts.title || 'внимание';
+    msgEl.textContent = message;
+    yesEl.textContent = opts.okText || 'ок';
+    noEl.style.display = 'none';
+    modal.classList.add('alert');
+    bd.classList.add('show');
+    bd.setAttribute('aria-hidden', 'false');
+    const cleanup = () => {
+      bd.classList.remove('show');
+      bd.setAttribute('aria-hidden', 'true');
+      noEl.style.display = '';
+      modal.classList.remove('alert');
+      yesEl.removeEventListener('click', onOk);
+      bd.removeEventListener('click', onBd);
+      document.removeEventListener('keydown', onKey);
+      resolve();
+    };
+    const onOk = (e) => { e.stopPropagation(); cleanup(); };
+    const onBd = (e) => { if (e.target === bd) cleanup(); };
+    const onKey = (e) => { if (e.key === 'Escape' || e.key === 'Enter') cleanup(); };
+    yesEl.addEventListener('click', onOk);
+    bd.addEventListener('click', onBd);
+    document.addEventListener('keydown', onKey);
+  });
+}
 
 // ================= TIMER =================
 const TIMER_FIXED_MS = 90000;
