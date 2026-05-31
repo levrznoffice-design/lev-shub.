@@ -310,12 +310,48 @@
     padding: 14px 16px;
     margin: 0 18px 10px;
     border: 1px solid var(--border);
+    position: relative;
+    transition: transform 280ms cubic-bezier(.25,.7,.3,1),
+                opacity 280ms ease,
+                padding 280ms cubic-bezier(.25,.7,.3,1),
+                background 280ms ease,
+                border-color 280ms ease;
+    will-change: transform;
+    touch-action: pan-y;
   }
+  .ex-card.swiping { transition: none; }
+  .ex-card.done {
+    border-color: rgba(93,202,165,0.25);
+    background: linear-gradient(180deg, rgba(93,202,165,0.04), rgba(20,37,64,0));
+  }
+  .ex-card.collapsed {
+    padding: 12px 16px;
+    opacity: 0.55;
+    cursor: pointer;
+  }
+  .ex-card.collapsed > .ex-header,
+  .ex-card.collapsed > .ex-grid,
+  .ex-card.collapsed > .note-input { display: none; }
+  .ex-card .collapsed-summary { display: none; }
+  .ex-card.collapsed .collapsed-summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted-2);
+    letter-spacing: 0.2px;
+  }
+  .collapsed-summary .cs-check { color: var(--green); font-size: 14px; flex-shrink: 0; }
+  .collapsed-summary .cs-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .collapsed-summary .cs-data { color: var(--cream); font-weight: 500; }
+  .collapsed-summary .cs-hint { color: var(--muted); font-size: 10px; flex-shrink: 0; }
+
   .ex-header {
     display: flex; align-items: flex-start; justify-content: space-between;
     gap: 8px;
     margin-bottom: 4px;
   }
+  .ex-meta { flex: 1; min-width: 0; }
   .ex-title {
     font-size: 14px;
     color: var(--cream);
@@ -334,6 +370,124 @@
     padding: 4px;
     flex-shrink: 0;
   }
+
+  /* sets badge & prompt */
+  .sets-area {
+    position: relative;
+    display: flex; align-items: center;
+    flex-shrink: 0;
+    z-index: 2;
+  }
+  .sets-badge {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: rgba(245,242,232,0.04);
+    border: 1px solid var(--border-2);
+    color: var(--cream);
+    font-family: var(--serif); font-style: italic;
+    font-size: 20px;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 220ms cubic-bezier(.34,1.56,.64,1),
+                background 200ms ease, color 200ms ease, border-color 200ms ease,
+                box-shadow 200ms ease;
+    -webkit-user-select: none; user-select: none;
+  }
+  .sets-badge:active { transform: scale(0.93); }
+  .sets-badge.flash {
+    background: rgba(93,202,165,0.18);
+    color: var(--green);
+    border-color: rgba(93,202,165,0.5);
+    box-shadow: 0 0 0 6px rgba(93,202,165,0);
+    animation: setsFlash 700ms ease-out;
+  }
+  @keyframes setsFlash {
+    0% { box-shadow: 0 0 0 0 rgba(93,202,165,0.55); transform: scale(1.18); }
+    60% { box-shadow: 0 0 0 12px rgba(93,202,165,0); transform: scale(0.97); }
+    100% { box-shadow: 0 0 0 0 rgba(93,202,165,0); transform: scale(1); }
+  }
+  .sets-badge.done {
+    background: rgba(93,202,165,0.18);
+    color: var(--green);
+    border-color: rgba(93,202,165,0.45);
+  }
+  .sets-badge .badge-num {
+    display: inline-block;
+    transition: transform 220ms cubic-bezier(.34,1.56,.64,1), opacity 180ms ease;
+  }
+  .sets-badge.shrink .badge-num { transform: scale(0.5); opacity: 0; }
+
+  .sets-prompt {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    display: flex; align-items: center; gap: 6px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-2);
+    border-radius: 10px;
+    padding: 6px 8px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    z-index: 5;
+    opacity: 0;
+    transform: translateY(-6px) scale(0.92);
+    transform-origin: top right;
+    transition: opacity 180ms ease, transform 220ms cubic-bezier(.34,1.56,.64,1);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .sets-prompt.show { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+  .sets-prompt .sp-label { font-size: 12px; color: var(--muted-2); padding: 0 6px; }
+  .sets-prompt button {
+    width: 28px; height: 28px; border-radius: 7px;
+    font-size: 14px; font-weight: 600;
+    transition: transform 80ms ease;
+  }
+  .sets-prompt button:active { transform: scale(0.9); }
+  .sets-prompt .sp-yes { background: rgba(93,202,165,0.16); color: var(--green); }
+  .sets-prompt .sp-no { background: rgba(245,242,232,0.06); color: var(--muted-2); }
+
+  .sets-undo {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 4px;
+    background: rgba(245,242,232,0.06);
+    border: 1px solid var(--border-2);
+    color: var(--muted-2);
+    border-radius: 7px;
+    width: 30px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 200ms ease, transform 200ms ease;
+    pointer-events: none;
+    z-index: 4;
+  }
+  .sets-undo.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+  /* session bar */
+  .session-bar {
+    display: flex; align-items: center; gap: 10px;
+    margin: 0 18px 12px;
+    padding: 8px 14px;
+    background: rgba(245,242,232,0.03);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 12px;
+    color: var(--muted-2);
+    letter-spacing: 0.3px;
+  }
+  .session-progress { flex: 1; }
+  .session-expand, .session-reset {
+    color: var(--muted-2);
+    background: rgba(245,242,232,0.04);
+    border: 1px solid var(--border-2);
+    border-radius: 7px;
+    padding: 5px 10px;
+    font-size: 11px;
+    transition: transform 80ms ease, color 150ms ease, background 150ms ease;
+  }
+  .session-expand:active, .session-reset:active { transform: scale(0.94); }
+  .session-reset { padding: 5px 9px; font-size: 14px; }
   .ex-grid {
     display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
     margin-bottom: 8px;
@@ -566,29 +720,6 @@
     color: var(--cream);
     font-weight: 500;
   }
-  .rule-note {
-    border-left: 2px solid rgba(74,222,128,0.25);
-    background: rgba(245,242,232,0.02);
-    padding: 10px 12px;
-    border-radius: 0 8px 8px 0;
-    margin-top: 12px;
-    font-size: 12px;
-    color: var(--muted-2);
-  }
-  .water-check {
-    display: flex; align-items: center; gap: 10px;
-    margin-top: 10px;
-    padding: 10px 12px;
-    background: rgba(245,242,232,0.03);
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    cursor: pointer;
-    font-size: 13px;
-    color: var(--muted-2);
-  }
-  .water-check input { accent-color: var(--red); width: 18px; height: 18px; }
-  .water-check.checked { color: var(--cream); }
-
   /* ============ Body ============ */
   .weight-head {
     display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px;
@@ -797,15 +928,37 @@
     margin-bottom: 10px;
     padding: 2px 4px;
   }
+  .numpad-meta {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
   .numpad-label {
-    flex: 1;
-    font-size: 12px;
+    font-size: 11px;
     color: var(--muted);
     letter-spacing: 0.4px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  .numpad-value {
+    font-family: var(--serif); font-style: italic;
+    font-size: 22px;
+    color: var(--cream);
+    letter-spacing: 0.3px;
+    line-height: 1.15;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-height: 26px;
+    transition: color 150ms ease;
+  }
+  .numpad-value:empty::before {
+    content: '—';
+    color: var(--muted);
+    font-style: normal;
+  }
+  .numpad-value.flash { color: var(--red); }
   .numpad-back {
     background: rgba(245,242,232,0.05);
     border: 1px solid var(--border-2);
@@ -913,12 +1066,18 @@
 
     <div class="toggle-bar" id="trainToggle">
       <div class="toggle-seg active" data-mode="A">a · push</div>
-      <div class="toggle-seg" data-mode="B">b · pull</div>
       <div class="toggle-seg" data-mode="rest">rest</div>
+      <div class="toggle-seg" data-mode="B">b · pull</div>
     </div>
 
     <div class="prog-reminder" id="progReminder">
       rir 1-2 · дошёл до 15 повторений → ↑ вес → вернись к 12
+    </div>
+
+    <div class="session-bar" id="sessionBar" hidden>
+      <span class="session-progress" id="sessionProgress">сегодня: 0 из 0</span>
+      <button class="session-expand" id="sessionExpand">развернуть всё</button>
+      <button class="session-reset" id="sessionReset" title="сбросить подходы">↺</button>
     </div>
 
     <div id="exList"></div>
@@ -1024,11 +1183,6 @@
         <div class="toggle-seg" data-meal="rest" id="mealRest">😴 отдых · <span id="mealRestKcal">—</span> ккал</div>
       </div>
       <div id="mealRows"></div>
-      <div class="rule-note">🥦 сначала овощи (клетчатка), ждём 15 минут, потом основа.</div>
-      <label class="water-check" id="waterCheck">
-        <input type="checkbox" id="waterBox">
-        <span>💧 выпил 3л воды сегодня?</span>
-      </label>
     </div>
   </section>
 
@@ -1107,7 +1261,10 @@
 <!-- ============ NUMPAD ============ -->
 <div class="numpad" id="numpad" aria-hidden="true">
   <div class="numpad-bar">
-    <span class="numpad-label" id="numpadLabel">введи значение</span>
+    <div class="numpad-meta">
+      <span class="numpad-label" id="numpadLabel">введи значение</span>
+      <span class="numpad-value" id="numpadValue"></span>
+    </div>
     <button class="numpad-back" id="numpadBack" aria-label="стереть"><i class="ti ti-backspace"></i></button>
     <button class="numpad-done" id="numpadDone">готово</button>
   </div>
@@ -1130,27 +1287,27 @@
 <script>
 // ================= DATA =================
 const trainingA = [
-  { num: 1, name: 'жим ногами', sub: 'Leg Press', sets: '4×8-12', url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' },
-  { num: 2, name: 'разгибание ног', sub: 'Leg Extension', sets: '3×12-15', url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
-  { num: 3, name: 'жим от груди', sub: 'Chest Press', sets: '3×8-12', url: 'https://youtube.com/shorts/EC1Yf3M0im8?is=bdAV9DSniv4fxSXm' },
-  { num: 4, name: 'сведение рук', sub: 'Pectoral', sets: '3×10-12', url: 'https://youtube.com/shorts/tByJiJj9n0U?is=U_ARILKFH2tixe2S' },
-  { num: 5, name: 'жим плеч', sub: 'Shoulder Press', sets: '3×8-12', url: 'https://youtube.com/shorts/lC9uiTqYH84?is=_g4ItfNvBMRiUnXt' },
-  { num: 6, name: 'дельты в тренажёре', sub: 'Delts Machine', sets: '4×12-15', url: 'https://youtube.com/shorts/78hk4Fy_kDA?is=unzsenWO7tAKGqns' },
-  { num: 7, name: 'трицепс на блоке', sub: 'Triceps Pushdown', sets: '3×10-12', url: 'https://youtube.com/shorts/NMY70SP-OHY?si=4jPio5STfDrrKV8_' },
-  { num: 8, name: 'разгибание рук в тренажёре', sub: 'Arm Extension Machine', sets: '3×10-12', url: 'https://youtube.com/shorts/tVNSmck6hnE?is=wEnysnqCti6nnDQ3' },
-  { num: 9, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3×10-15', url: 'https://youtube.com/shorts/a-x_NR-ibos?is=jtz4OVz8qqmNaaO7' },
-  { num: 10, name: 'тотальный пресс', sub: 'Total Abdominal', sets: '3×12-15', url: 'https://youtube.com/shorts/9gU30vPx0Jg?si=_7xw6Jm8WzWZ8u5L' }
+  { id: 'leg_press', num: 1, name: 'жим ногами', sub: 'Leg Press', sets: '4×8-12', url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' },
+  { id: 'leg_extension', num: 2, name: 'разгибание ног', sub: 'Leg Extension', sets: '3×12-15', url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
+  { id: 'chest_press', num: 3, name: 'жим от груди', sub: 'Chest Press', sets: '3×8-12', url: 'https://youtube.com/shorts/EC1Yf3M0im8?is=bdAV9DSniv4fxSXm' },
+  { id: 'pec_fly', num: 4, name: 'сведение рук', sub: 'Pectoral', sets: '3×10-12', url: 'https://youtube.com/shorts/tByJiJj9n0U?is=U_ARILKFH2tixe2S' },
+  { id: 'shoulder_press', num: 5, name: 'жим плеч', sub: 'Shoulder Press', sets: '3×8-12', url: 'https://youtube.com/shorts/lC9uiTqYH84?is=_g4ItfNvBMRiUnXt' },
+  { id: 'delts_machine', num: 6, name: 'дельты в тренажёре', sub: 'Delts Machine', sets: '4×12-15', url: 'https://youtube.com/shorts/78hk4Fy_kDA?is=unzsenWO7tAKGqns' },
+  { id: 'triceps_pushdown', num: 7, name: 'трицепс на блоке', sub: 'Triceps Pushdown', sets: '3×10-12', url: 'https://youtube.com/shorts/NMY70SP-OHY?si=4jPio5STfDrrKV8_' },
+  { id: 'arm_extension', num: 8, name: 'разгибание рук в тренажёре', sub: 'Arm Extension Machine', sets: '3×10-12', url: 'https://youtube.com/shorts/tVNSmck6hnE?is=wEnysnqCti6nnDQ3' },
+  { id: 'calf_raise', num: 9, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3×10-15', url: 'https://youtube.com/shorts/icp4RMn5MAA?si=NLYSQUwFN7bSUOkM' },
+  { id: 'total_abs', num: 10, name: 'тотальный пресс', sub: 'Total Abdominal', sets: '3×12-15', url: 'https://youtube.com/shorts/9gU30vPx0Jg?si=_7xw6Jm8WzWZ8u5L' }
 ];
 const trainingB = [
-  { num: 1, name: 'ягодичный мост', sub: 'Booty Builder', sets: '4×8-12', url: 'https://youtube.com/shorts/0xfdeCBwoYw?si=4V8mCyJsni6s2YM1' },
-  { num: 2, name: 'сгибание ног лёжа', sub: 'Prone Leg Curl', sets: '3×10-12', url: 'https://youtube.com/shorts/FMCq0hT3KRU?si=cbbo1yN9xsXNqdqe' },
-  { num: 3, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×10-12', url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
-  { num: 4, name: 'горизонтальная тяга сидя', sub: 'Low Row', sets: '3×10-12', url: 'https://www.youtube.com/shorts/j3k4DsTAgx8?feature=share' },
-  { num: 5, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '4×12-15', url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
-  { num: 6, name: 'сгибание рук в тренажёре', sub: 'Arm Curl Machine', sets: '3×10-12', url: 'https://youtube.com/shorts/IWDHXA1ZcT8?is=9QgKqBX6kU9lXxLr' },
-  { num: 7, name: 'подъём на бицепс на блоке', sub: 'Cable Bicep Curl', sets: '3×10-12', url: 'https://www.youtube.com/shorts/ctfcKdoCfxM?feature=share' },
-  { num: 8, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3×10-15', url: 'https://youtube.com/shorts/a-x_NR-ibos?is=jtz4OVz8qqmNaaO7' },
-  { num: 9, name: 'тотальный пресс', sub: 'Total Abdominal', sets: '3×12-15', url: 'https://youtube.com/shorts/9gU30vPx0Jg?si=_7xw6Jm8WzWZ8u5L' }
+  { id: 'glute_kickback', num: 1, name: 'ягодичный кикбек', sub: 'Glute Kickback Machine · на ногу', sets: '4×10-12', url: 'https://youtube.com/shorts/bSbiW6xeZCw?si=hQUZwCX0u9NjezfB' },
+  { id: 'prone_leg_curl', num: 2, name: 'сгибание ног лёжа', sub: 'Prone Leg Curl', sets: '3×10-12', url: 'https://youtube.com/shorts/FMCq0hT3KRU?si=cbbo1yN9xsXNqdqe' },
+  { id: 'lat_pulldown', num: 3, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×10-12', url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
+  { id: 'low_row', num: 4, name: 'горизонтальная тяга сидя', sub: 'Low Row', sets: '3×10-12', url: 'https://www.youtube.com/shorts/j3k4DsTAgx8?feature=share' },
+  { id: 'reverse_pec_deck', num: 5, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '4×12-15', url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
+  { id: 'arm_curl', num: 6, name: 'сгибание рук в тренажёре', sub: 'Arm Curl Machine', sets: '3×10-12', url: 'https://youtube.com/shorts/IWDHXA1ZcT8?is=9QgKqBX6kU9lXxLr' },
+  { id: 'cable_bicep_curl', num: 7, name: 'подъём на бицепс на блоке', sub: 'Cable Bicep Curl', sets: '3×10-12', url: 'https://www.youtube.com/shorts/ctfcKdoCfxM?feature=share' },
+  { id: 'calf_raise', num: 8, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3×10-15', url: 'https://youtube.com/shorts/icp4RMn5MAA?si=NLYSQUwFN7bSUOkM' },
+  { id: 'total_abs', num: 9, name: 'тотальный пресс', sub: 'Total Abdominal', sets: '3×12-15', url: 'https://youtube.com/shorts/9gU30vPx0Jg?si=_7xw6Jm8WzWZ8u5L' }
 ];
 
 const DAYS_RU = ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
@@ -1346,6 +1503,69 @@ function setTrainingView(v) {
   LS.setRaw('levshub_training_view', v);
 }
 
+// ----- Workout data (id-keyed, shared across A and B) -----
+function getWorkoutData() { return LS.get('levshub_workout', {}) || {}; }
+function getExSaved(id) { return getWorkoutData()[id] || {}; }
+function saveExField(id, field, value) {
+  const data = getWorkoutData();
+  if (!data[id]) data[id] = {};
+  if (field === 'n') {
+    data[id].n = value;
+  } else if (value === '?') {
+    data[id][field] = '?';
+  } else if (value === '' || value === undefined) {
+    data[id][field] = '';
+  } else {
+    const num = parseFloat(value);
+    data[id][field] = isNaN(num) ? '' : num;
+  }
+  LS.set('levshub_workout', data);
+}
+
+// One-time migration from old index-keyed levshub_workout_A/B → levshub_workout
+function migrateWorkoutData() {
+  if (LS.get('levshub_workout', null)) return;
+  const oldA = LS.get('levshub_workout_A', null);
+  const oldB = LS.get('levshub_workout_B', null);
+  if (!oldA && !oldB) return;
+  const newData = {};
+  if (oldA) {
+    Object.keys(oldA).forEach(k => {
+      const ex = trainingA[+k];
+      if (ex) newData[ex.id] = Object.assign({}, oldA[k]);
+    });
+  }
+  if (oldB) {
+    Object.keys(oldB).forEach(k => {
+      const ex = trainingB[+k];
+      if (!ex) return;
+      if (!newData[ex.id]) newData[ex.id] = Object.assign({}, oldB[k]);
+    });
+  }
+  LS.set('levshub_workout', newData);
+}
+
+// ----- Per-day session state (sets done + collapsed) -----
+function sessionKey() { return 'levshub_session_' + todayISO(); }
+function getSession() { return LS.get(sessionKey(), {}) || {}; }
+function getExSession(id) { return getSession()[id] || {}; }
+function setExSession(id, patch) {
+  const s = getSession();
+  s[id] = Object.assign({}, s[id] || {}, patch);
+  LS.set(sessionKey(), s);
+}
+
+function parseTotalSets(setsStr) {
+  const m = String(setsStr || '').match(/^(\d+)/);
+  return m ? Math.max(1, +m[1]) : 3;
+}
+function getSetsRemaining(ex) {
+  const total = parseTotalSets(ex.sets);
+  const done = (getExSession(ex.id).setsDone) || 0;
+  return Math.max(0, total - done);
+}
+
+// ----- Render -----
 function renderTraining() {
   const view = getTrainingView();
   document.querySelectorAll('#trainToggle .toggle-seg').forEach(s => {
@@ -1360,10 +1580,12 @@ function renderTraining() {
   const exList = document.getElementById('exList');
   const restView = document.getElementById('restView');
   const reminder = document.getElementById('progReminder');
+  const sessionBar = document.getElementById('sessionBar');
 
   if (view === 'rest') {
     exList.style.display = 'none';
     reminder.style.display = 'none';
+    sessionBar.hidden = true;
     restView.style.display = 'block';
     return;
   }
@@ -1372,89 +1594,386 @@ function renderTraining() {
   restView.style.display = 'none';
 
   const program = view === 'A' ? trainingA : trainingB;
-  const data = LS.get('levshub_workout_' + view, {}) || {};
   exList.innerHTML = '';
-  program.forEach((ex, idx) => {
-    const saved = data[idx] || {};
+  program.forEach(ex => {
+    const saved = getExSaved(ex.id);
+    const sess = getExSession(ex.id);
+    const total = parseTotalSets(ex.sets);
+    const done = Math.min(total, sess.setsDone || 0);
+    const remaining = total - done;
+    const isDone = remaining === 0;
+    const isCollapsed = !!sess.collapsed || isDone;
     const w = saved.w !== undefined ? saved.w : '';
     const r = saved.r !== undefined ? saved.r : '';
     const n = saved.n || '';
+    const badgeContent = isDone
+      ? '<i class="ti ti-check"></i>'
+      : `<span class="badge-num">${remaining}</span>`;
+    const summaryData = (w !== '' || r !== '')
+      ? `<span class="cs-data">${w !== '' ? w + 'кг' : ''}${w !== '' && r !== '' ? ' × ' : ''}${r !== '' ? r : ''}</span>`
+      : '<span class="cs-hint">не записано</span>';
     const card = document.createElement('div');
-    card.className = 'ex-card';
+    card.className = 'ex-card' + (isDone ? ' done' : '') + (isCollapsed ? ' collapsed' : '');
+    card.dataset.id = ex.id;
     card.innerHTML = `
+      <div class="collapsed-summary">
+        <span class="cs-check"><i class="ti ti-check"></i></span>
+        <span class="cs-text"><span style="color:var(--cream)">${ex.num}.</span> ${ex.name} · ${summaryData}</span>
+        <span class="cs-hint">тап</span>
+      </div>
       <div class="ex-header">
-        <div>
+        <div class="ex-meta">
           <div class="ex-title">${ex.num}. ${ex.name}</div>
           <div class="ex-sub">${ex.sub} · ${ex.sets}</div>
+        </div>
+        <div class="sets-area">
+          <button class="sets-badge${isDone ? ' done' : ''}" data-action="sets-tap" aria-label="подходы">${badgeContent}</button>
+          <div class="sets-prompt" data-id="${ex.id}">
+            <span class="sp-label">−1 подход?</span>
+            <button class="sp-yes" data-action="sets-yes" aria-label="да">✓</button>
+            <button class="sp-no" data-action="sets-no" aria-label="нет">✕</button>
+          </div>
+          <button class="sets-undo" data-action="sets-undo" aria-label="вернуть">↶</button>
         </div>
         <button class="yt-btn" data-yt="${ex.url}"><i class="ti ti-brand-youtube"></i></button>
       </div>
       <div class="ex-grid">
         <div>
           <div class="stepper">
-            <button class="stepper-btn stepper-minus" data-step="w" data-dir="-1" data-idx="${idx}">−</button>
-            <input class="stepper-input" type="text" inputmode="none" readonly data-field="w" data-idx="${idx}" value="${w}" placeholder="0">
-            <button class="stepper-btn stepper-plus" data-step="w" data-dir="1" data-idx="${idx}">+</button>
+            <button class="stepper-btn stepper-minus" data-step="w" data-dir="-1">−</button>
+            <input class="stepper-input" type="text" inputmode="none" readonly data-field="w" value="${w}" placeholder="0">
+            <button class="stepper-btn stepper-plus" data-step="w" data-dir="1">+</button>
           </div>
           <div class="stepper-label">кг</div>
         </div>
         <div>
           <div class="stepper">
-            <button class="stepper-btn stepper-minus" data-step="r" data-dir="-1" data-idx="${idx}">−</button>
-            <input class="stepper-input" type="text" inputmode="none" readonly data-field="r" data-idx="${idx}" value="${r}" placeholder="0">
-            <button class="stepper-btn stepper-plus" data-step="r" data-dir="1" data-idx="${idx}">+</button>
+            <button class="stepper-btn stepper-minus" data-step="r" data-dir="-1">−</button>
+            <input class="stepper-input" type="text" inputmode="none" readonly data-field="r" value="${r}" placeholder="0">
+            <button class="stepper-btn stepper-plus" data-step="r" data-dir="1">+</button>
           </div>
           <div class="stepper-label">повт</div>
         </div>
       </div>
-      <input class="note-input" type="text" data-field="n" data-idx="${idx}" value="${n.replace(/"/g,'&quot;')}" placeholder="заметка...">
+      <input class="note-input" type="text" data-field="n" value="${n.replace(/"/g,'&quot;')}" placeholder="заметка...">
     `;
     exList.appendChild(card);
   });
 
-  // Bind handlers
-  exList.querySelectorAll('.yt-btn').forEach(b => {
-    b.addEventListener('click', () => openYouTube(b.dataset.yt));
-  });
-  exList.querySelectorAll('.stepper-btn').forEach(b => {
-    b.addEventListener('click', () => {
-      const idx = +b.dataset.idx;
-      const field = b.dataset.step;
-      const dir = +b.dataset.dir;
-      const step = field === 'w' ? 2.5 : 1;
-      const input = exList.querySelector(`input[data-field="${field}"][data-idx="${idx}"]`);
-      let cur = parseFloat(input.value) || 0;
-      cur = Math.max(0, cur + dir * step);
-      // Clean trailing zeros for whole numbers
-      input.value = (cur % 1 === 0) ? String(cur) : cur.toFixed(1);
-      saveExField(view, idx, field, input.value);
-    });
-  });
-  exList.querySelectorAll('input[data-field]').forEach(inp => {
-    inp.addEventListener('input', () => {
-      saveExField(view, +inp.dataset.idx, inp.dataset.field, inp.value);
-    });
-  });
-  // Attach custom numeric keypad to stepper inputs
-  exList.querySelectorAll('.stepper-input').forEach(makeNumeric);
+  bindTrainingHandlers(exList);
+  updateSessionBar();
 }
 
-function saveExField(view, idx, field, value) {
-  const key = 'levshub_workout_' + view;
-  const data = LS.get(key, {}) || {};
-  if (!data[idx]) data[idx] = {};
-  if (field === 'n') {
-    data[idx].n = value;
-  } else if (value === '?') {
-    data[idx][field] = '?';
-  } else if (value === '' || value === undefined) {
-    data[idx][field] = '';
-  } else {
-    const num = parseFloat(value);
-    data[idx][field] = isNaN(num) ? '' : num;
-  }
-  LS.set(key, data);
+function bindTrainingHandlers(exList) {
+  exList.querySelectorAll('.yt-btn').forEach(b => {
+    b.addEventListener('click', (e) => { e.stopPropagation(); openYouTube(b.dataset.yt); });
+  });
+  exList.querySelectorAll('.ex-card').forEach(card => {
+    const id = card.dataset.id;
+    // Stepper +/-
+    card.querySelectorAll('.stepper-btn').forEach(b => {
+      b.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const field = b.dataset.step;
+        const dir = +b.dataset.dir;
+        const step = field === 'w' ? 2.5 : 1;
+        const input = card.querySelector(`input[data-field="${field}"]`);
+        let cur = parseFloat(input.value) || 0;
+        cur = Math.max(0, cur + dir * step);
+        input.value = (cur % 1 === 0) ? String(cur) : cur.toFixed(1);
+        saveExField(id, field, input.value);
+      });
+    });
+    // Input changes
+    card.querySelectorAll('input[data-field]').forEach(inp => {
+      inp.addEventListener('input', () => saveExField(id, inp.dataset.field, inp.value));
+    });
+    // Numeric keypad
+    card.querySelectorAll('.stepper-input').forEach(makeNumeric);
+    // Sets tracker
+    bindSetsHandlers(card);
+    // Swipe + collapsed tap
+    bindSwipeHandlers(card);
+  });
 }
+
+// ----- Sets tracker logic + animations -----
+let undoTimer = null;
+function bindSetsHandlers(card) {
+  const id = card.dataset.id;
+  const badge = card.querySelector('.sets-badge');
+  const prompt = card.querySelector('.sets-prompt');
+  const undoBtn = card.querySelector('.sets-undo');
+  if (!badge) return;
+  let lpTimer = null;
+  let lpFired = false;
+
+  badge.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (lpFired) { lpFired = false; return; }
+    const ex = findExById(id);
+    if (!ex) return;
+    const remaining = getSetsRemaining(ex);
+    if (remaining === 0) return; // already done — no prompt
+    // Toggle prompt
+    if (prompt.classList.contains('show')) {
+      prompt.classList.remove('show');
+    } else {
+      // Close any other open prompts
+      document.querySelectorAll('.sets-prompt.show').forEach(p => p.classList.remove('show'));
+      hideUndo();
+      prompt.classList.add('show');
+    }
+  });
+  // Long-press for +1 (max = total)
+  const startLp = (e) => {
+    lpFired = false;
+    clearTimeout(lpTimer);
+    lpTimer = setTimeout(() => {
+      lpFired = true;
+      restoreSet(id);
+      if (navigator.vibrate) navigator.vibrate(20);
+    }, 600);
+  };
+  const cancelLp = () => clearTimeout(lpTimer);
+  badge.addEventListener('touchstart', startLp, { passive: true });
+  badge.addEventListener('touchend', cancelLp);
+  badge.addEventListener('touchcancel', cancelLp);
+  badge.addEventListener('touchmove', cancelLp);
+  badge.addEventListener('mousedown', startLp);
+  badge.addEventListener('mouseup', cancelLp);
+  badge.addEventListener('mouseleave', cancelLp);
+
+  prompt.querySelector('.sp-yes').addEventListener('click', (e) => {
+    e.stopPropagation();
+    prompt.classList.remove('show');
+    decrementSet(id);
+  });
+  prompt.querySelector('.sp-no').addEventListener('click', (e) => {
+    e.stopPropagation();
+    prompt.classList.remove('show');
+  });
+  undoBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    restoreSet(id);
+    hideUndo();
+  });
+}
+
+function findExById(id) {
+  return trainingA.find(e => e.id === id) || trainingB.find(e => e.id === id);
+}
+
+function decrementSet(id) {
+  const ex = findExById(id);
+  if (!ex) return;
+  const sess = getExSession(id);
+  const total = parseTotalSets(ex.sets);
+  const newDone = Math.min(total, (sess.setsDone || 0) + 1);
+  setExSession(id, { setsDone: newDone });
+  animateBadgeUpdate(id);
+  showUndoFor(id);
+  updateSessionBar();
+  if (newDone >= total) {
+    // Auto-collapse after a short celebration delay
+    setTimeout(() => {
+      setExSession(id, { collapsed: true });
+      collapseCard(id, true);
+      updateSessionBar();
+    }, 700);
+  }
+}
+
+function restoreSet(id) {
+  const sess = getExSession(id);
+  const cur = sess.setsDone || 0;
+  if (cur <= 0) return;
+  setExSession(id, { setsDone: cur - 1, collapsed: false });
+  // If was collapsed (auto), expand
+  collapseCard(id, false);
+  animateBadgeUpdate(id);
+  updateSessionBar();
+}
+
+function animateBadgeUpdate(id) {
+  const card = document.querySelector(`.ex-card[data-id="${id}"]`);
+  if (!card) return;
+  const badge = card.querySelector('.sets-badge');
+  const ex = findExById(id);
+  if (!badge || !ex) return;
+  const remaining = getSetsRemaining(ex);
+  const isDone = remaining === 0;
+  // Shrink current content, then swap and flash
+  badge.classList.add('shrink');
+  setTimeout(() => {
+    badge.innerHTML = isDone
+      ? '<i class="ti ti-check"></i>'
+      : `<span class="badge-num">${remaining}</span>`;
+    badge.classList.toggle('done', isDone);
+    badge.classList.remove('shrink');
+    // Trigger flash
+    badge.classList.remove('flash');
+    void badge.offsetWidth;
+    badge.classList.add('flash');
+    setTimeout(() => badge.classList.remove('flash'), 720);
+  }, 160);
+}
+
+function showUndoFor(id) {
+  const card = document.querySelector(`.ex-card[data-id="${id}"]`);
+  if (!card) return;
+  // Hide any other undo buttons first
+  document.querySelectorAll('.sets-undo.show').forEach(u => u.classList.remove('show'));
+  const undo = card.querySelector('.sets-undo');
+  if (!undo) return;
+  undo.classList.add('show');
+  clearTimeout(undoTimer);
+  undoTimer = setTimeout(() => undo.classList.remove('show'), 4000);
+}
+function hideUndo() {
+  clearTimeout(undoTimer);
+  document.querySelectorAll('.sets-undo.show').forEach(u => u.classList.remove('show'));
+}
+
+// Close prompts/undo when tapping outside
+document.addEventListener('click', (e) => {
+  if (e.target.closest && (e.target.closest('.sets-area') || e.target.closest('.sets-prompt'))) return;
+  document.querySelectorAll('.sets-prompt.show').forEach(p => p.classList.remove('show'));
+});
+
+// ----- Collapse + swipe -----
+function collapseCard(id, collapsed) {
+  const card = document.querySelector(`.ex-card[data-id="${id}"]`);
+  if (!card) return;
+  // Update summary with current data before collapsing
+  const saved = getExSaved(id);
+  const w = saved.w !== undefined ? saved.w : '';
+  const r = saved.r !== undefined ? saved.r : '';
+  const dataEl = card.querySelector('.cs-text');
+  if (dataEl) {
+    const ex = findExById(id);
+    const dataStr = (w !== '' || r !== '')
+      ? `<span class="cs-data">${w !== '' ? w + 'кг' : ''}${w !== '' && r !== '' ? ' × ' : ''}${r !== '' ? r : ''}</span>`
+      : '<span class="cs-hint">не записано</span>';
+    if (ex) dataEl.innerHTML = `<span style="color:var(--cream)">${ex.num}.</span> ${ex.name} · ${dataStr}`;
+  }
+  card.classList.toggle('collapsed', collapsed);
+  card.classList.toggle('done', collapsed); // done styling on collapsed cards
+  setExSession(id, { collapsed: collapsed });
+}
+
+function bindSwipeHandlers(card) {
+  const id = card.dataset.id;
+  let start = null;
+  let lockedDir = null;
+
+  card.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    start = { x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now() };
+    lockedDir = null;
+    card.classList.add('swiping');
+  }, { passive: true });
+
+  card.addEventListener('touchmove', (e) => {
+    if (!start) return;
+    const dx = e.touches[0].clientX - start.x;
+    const dy = e.touches[0].clientY - start.y;
+    if (lockedDir === null) {
+      if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
+      lockedDir = Math.abs(dx) > Math.abs(dy) * 1.4 ? 'h' : 'v';
+    }
+    if (lockedDir === 'h') {
+      const isCollapsed = card.classList.contains('collapsed');
+      // Collapsed: allow right swipe to expand; Full: allow left swipe to collapse
+      let allowed = isCollapsed ? Math.max(0, Math.min(120, dx)) : Math.min(0, Math.max(-120, dx));
+      card.style.transform = 'translateX(' + allowed + 'px)';
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  card.addEventListener('touchend', (e) => {
+    if (!start) return;
+    card.classList.remove('swiping');
+    card.style.transform = '';
+    if (lockedDir === 'h') {
+      const dx = (e.changedTouches[0] || {}).clientX - start.x;
+      const isCollapsed = card.classList.contains('collapsed');
+      if (!isCollapsed && dx < -80) {
+        // Mark all sets done and collapse
+        const ex = findExById(id);
+        if (ex) {
+          setExSession(id, { setsDone: parseTotalSets(ex.sets), collapsed: true });
+          animateBadgeUpdate(id);
+          setTimeout(() => collapseCard(id, true), 200);
+          updateSessionBar();
+        }
+      } else if (isCollapsed && dx > 80) {
+        // Expand and reset setsDone so the badge becomes interactive again
+        setExSession(id, { collapsed: false });
+        collapseCard(id, false);
+        updateSessionBar();
+      }
+    }
+    start = null;
+    lockedDir = null;
+  });
+
+  card.addEventListener('touchcancel', () => {
+    card.classList.remove('swiping');
+    card.style.transform = '';
+    start = null;
+    lockedDir = null;
+  });
+
+  // Tap to expand when collapsed
+  card.addEventListener('click', (e) => {
+    if (!card.classList.contains('collapsed')) return;
+    if (e.target.closest('.sets-area, .yt-btn, .stepper-btn, .stepper-input, .note-input')) return;
+    setExSession(id, { collapsed: false });
+    collapseCard(id, false);
+    updateSessionBar();
+  });
+}
+
+// ----- Session bar -----
+function updateSessionBar() {
+  const view = getTrainingView();
+  const bar = document.getElementById('sessionBar');
+  if (view === 'rest') { bar.hidden = true; return; }
+  const program = view === 'A' ? trainingA : trainingB;
+  let doneCount = 0;
+  program.forEach(ex => {
+    const total = parseTotalSets(ex.sets);
+    const sess = getExSession(ex.id);
+    if ((sess.setsDone || 0) >= total) doneCount++;
+  });
+  document.getElementById('sessionProgress').textContent = `сегодня: ${doneCount} из ${program.length}`;
+  const expandBtn = document.getElementById('sessionExpand');
+  const anyCollapsed = program.some(ex => (getExSession(ex.id).collapsed));
+  expandBtn.style.display = anyCollapsed ? '' : 'none';
+  bar.hidden = false;
+}
+
+document.getElementById('sessionExpand').addEventListener('click', () => {
+  const view = getTrainingView();
+  const program = view === 'A' ? trainingA : trainingB;
+  program.forEach(ex => {
+    if (getExSession(ex.id).collapsed) {
+      setExSession(ex.id, { collapsed: false });
+    }
+  });
+  renderTraining();
+});
+
+document.getElementById('sessionReset').addEventListener('click', () => {
+  if (!confirm('сбросить все подходы и развернуть упражнения за сегодня?')) return;
+  const view = getTrainingView();
+  const program = view === 'A' ? trainingA : trainingB;
+  program.forEach(ex => {
+    setExSession(ex.id, { setsDone: 0, collapsed: false });
+  });
+  renderTraining();
+});
 
 document.querySelectorAll('#trainToggle .toggle-seg').forEach(s => {
   s.addEventListener('click', () => {
@@ -1582,12 +2101,6 @@ function renderMealRows() {
 function renderNutrition() {
   applyDietToInputs();
   updateDiet();
-  // Water
-  const wkey = 'levshub_water_' + todayISO();
-  const checked = LS.getRaw(wkey) === 'true';
-  const box = document.getElementById('waterBox');
-  box.checked = checked;
-  document.getElementById('waterCheck').classList.toggle('checked', checked);
 }
 
 // Bind nutrition events
@@ -1606,12 +2119,6 @@ document.querySelectorAll('#page-nutrition [data-meal]').forEach(s => {
     renderMealRows();
   });
 });
-document.getElementById('waterBox').addEventListener('change', (e) => {
-  const wkey = 'levshub_water_' + todayISO();
-  LS.setRaw(wkey, e.target.checked ? 'true' : 'false');
-  document.getElementById('waterCheck').classList.toggle('checked', e.target.checked);
-});
-
 // ================= BODY =================
 let weightViewMode = 'chart';
 
@@ -2002,6 +2509,17 @@ document.addEventListener('visibilitychange', () => {
 let activeNpInput = null;
 const numpadEl = document.getElementById('numpad');
 const numpadLabelEl = document.getElementById('numpadLabel');
+const numpadValueEl = document.getElementById('numpadValue');
+
+function npRenderValue() {
+  if (!activeNpInput) { numpadValueEl.textContent = ''; return; }
+  numpadValueEl.textContent = activeNpInput.value || '';
+  // brief flash on every keypress
+  numpadValueEl.classList.remove('flash');
+  void numpadValueEl.offsetWidth;
+  numpadValueEl.classList.add('flash');
+  setTimeout(() => numpadValueEl.classList.remove('flash'), 160);
+}
 
 function makeNumeric(input) {
   if (!input || input.dataset.npReady === '1') return;
@@ -2057,20 +2575,22 @@ function openNumpad(input) {
   activeNpInput = input;
   input.classList.add('np-active');
   numpadLabelEl.textContent = getInputLabel(input);
+  numpadValueEl.textContent = input.value || '';
   numpadEl.classList.add('show');
   numpadEl.setAttribute('aria-hidden', 'false');
-  // Scroll input above keypad if hidden
+  // Aggressive scroll: put input in the top 1/4 of visible area above keypad
   setTimeout(() => {
     if (!activeNpInput) return;
     const rect = activeNpInput.getBoundingClientRect();
     const npHeight = numpadEl.offsetHeight;
-    const visibleBottom = window.innerHeight - npHeight - 16;
-    if (rect.bottom > visibleBottom) {
-      window.scrollBy({ top: rect.bottom - visibleBottom, behavior: 'smooth' });
-    } else if (rect.top < 60) {
-      window.scrollBy({ top: rect.top - 70, behavior: 'smooth' });
+    const visibleArea = window.innerHeight - npHeight; // space above keypad
+    const safeTop = (env => env)(60); // leave ~60px under status bar/notch
+    const desiredTop = safeTop + visibleArea * 0.18; // place input ~1/4 down
+    const delta = rect.top - desiredTop;
+    if (Math.abs(delta) > 8) {
+      window.scrollBy({ top: delta, behavior: 'smooth' });
     }
-  }, 80);
+  }, 120);
 }
 
 function closeNumpad() {
@@ -2091,18 +2611,17 @@ function npAppend(ch) {
   if (!activeNpInput) return;
   let v = activeNpInput.value || '';
   if (ch === '?') {
-    // "?" replaces the entire value
     v = '?';
   } else if (ch === '.') {
     if (v === '?' || v === '') v = '0.';
     else if (!v.includes('.')) v = v + '.';
   } else {
-    // digit
     if (v === '?' || v === '0') v = ch;
     else v = v + ch;
   }
   activeNpInput.value = v;
   npFireInput(activeNpInput);
+  npRenderValue();
 }
 
 function npBackspace() {
@@ -2112,6 +2631,7 @@ function npBackspace() {
   else v = v.slice(0, -1);
   activeNpInput.value = v;
   npFireInput(activeNpInput);
+  npRenderValue();
 }
 
 // Wire keypad buttons
@@ -2192,6 +2712,7 @@ document.addEventListener('click', (e) => {
 window.addEventListener('resize', updateAllToggleIndicators);
 
 // ================= INIT =================
+migrateWorkoutData(); // one-time migration from levshub_workout_A/B → levshub_workout
 runSplash();
 loadTimer();
 renderHome();
