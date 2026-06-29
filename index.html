@@ -365,6 +365,21 @@
     letter-spacing: 0.3px;
     margin-bottom: 12px;
   }
+  .ex-rest {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    margin-left: 4px;
+    padding-left: 6px;
+    border-left: 1px solid var(--border-2);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12px;
+    color: var(--cream);
+    opacity: 0.7;
+    letter-spacing: 0.3px;
+  }
+  .ex-rest i { font-size: 11px; opacity: 0.7; }
   .yt-btn {
     color: var(--red);
     font-size: 22px;
@@ -917,6 +932,46 @@
     transition: color 200ms ease;
   }
   .timer-time.finished { color: var(--red); }
+  .timer-presets {
+    display: flex;
+    gap: 8px;
+    margin: 4px 0 18px;
+    width: 100%;
+    max-width: 340px;
+    padding: 0 4px;
+  }
+  .preset-chip {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 2px;
+    padding: 10px 6px;
+    border-radius: 12px;
+    background: rgba(245,242,232,0.03);
+    border: 1px solid var(--border-2);
+    color: var(--muted-2);
+    transition: transform 100ms ease, background 200ms ease, color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+  }
+  .preset-chip:active { transform: scale(0.96); }
+  .preset-chip.active {
+    background: rgba(200,48,44,0.12);
+    border-color: rgba(200,48,44,0.4);
+    color: var(--cream);
+    box-shadow: 0 4px 14px rgba(200,48,44,0.18);
+  }
+  .preset-chip .chip-time {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 17px;
+    letter-spacing: 0.3px;
+  }
+  .preset-chip.active .chip-time { color: var(--red); }
+  .preset-chip .chip-hint {
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+  }
+  .preset-chip.active .chip-hint { color: var(--muted-2); }
   .timer-controls { display: flex; flex-direction: column; align-items: center; gap: 12px; }
   .timer-start {
     background: var(--red);
@@ -1359,6 +1414,20 @@
         </svg>
         <div class="timer-time" id="timerTime">1:30</div>
       </div>
+      <div class="timer-presets" id="timerPresets" role="tablist" aria-label="пресеты отдыха">
+        <button class="preset-chip active" data-secs="90">
+          <span class="chip-time">90 сек</span>
+          <span class="chip-hint">изоляция</span>
+        </button>
+        <button class="preset-chip" data-secs="120">
+          <span class="chip-time">2 мин</span>
+          <span class="chip-hint">базовые</span>
+        </button>
+        <button class="preset-chip" data-secs="150">
+          <span class="chip-time">2.5 мин</span>
+          <span class="chip-hint">жим ногами</span>
+        </button>
+      </div>
       <div class="timer-controls">
         <button class="timer-start" id="timerStart">start</button>
         <button class="timer-reset" id="timerReset">reset</button>
@@ -1423,26 +1492,26 @@
 <script>
 // ================= DATA =================
 const trainingA = [
-  { id: 'leg_press', num: 1, name: 'жим ногами', sub: 'Leg Press', sets: '4×8-12', url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' },
-  { id: 'leg_extension', num: 2, name: 'разгибание ног', sub: 'Leg Extension', sets: '3×12-15', url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
-  { id: 'chest_press', num: 3, name: 'жим от груди', sub: 'Chest Press', sets: '3×8-12', url: 'https://youtube.com/shorts/EC1Yf3M0im8?is=bdAV9DSniv4fxSXm' },
-  { id: 'pec_fly', num: 4, name: 'сведение рук', sub: 'Pectoral', sets: '3×10-12', url: 'https://youtube.com/shorts/tByJiJj9n0U?is=U_ARILKFH2tixe2S' },
-  { id: 'shoulder_press', num: 5, name: 'жим плеч', sub: 'Shoulder Press', sets: '3×8-12', url: 'https://youtube.com/shorts/lC9uiTqYH84?is=_g4ItfNvBMRiUnXt' },
-  { id: 'delts_machine', num: 6, name: 'дельты в тренажёре', sub: 'Delts Machine', sets: '4×12-15', url: 'https://youtube.com/shorts/78hk4Fy_kDA?is=unzsenWO7tAKGqns' },
-  { id: 'triceps_pushdown', num: 7, name: 'трицепс на блоке', sub: 'Triceps Pushdown', sets: '3×10-12', url: 'https://youtube.com/shorts/NMY70SP-OHY?si=4jPio5STfDrrKV8_' },
-  { id: 'arm_extension', num: 8, name: 'разгибание рук в тренажёре', sub: 'Arm Extension Machine', sets: '3×10-12', url: 'https://youtube.com/shorts/tVNSmck6hnE?is=wEnysnqCti6nnDQ3' },
-  { id: 'calf_raise', num: 9, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3×10-15', url: 'https://youtube.com/shorts/icp4RMn5MAA?si=NLYSQUwFN7bSUOkM' },
-  { id: 'total_abs', num: 10, name: 'скручивания', sub: 'Abdominal Crunch', sets: '3×12-15', url: 'https://youtube.com/shorts/DVCmFYlNFRg' }
+  { id: 'chest_press', num: 1, name: 'жим от груди', sub: 'Chest Press', sets: '3×8-12', rest: 120, url: 'https://youtube.com/shorts/EC1Yf3M0im8?is=bdAV9DSniv4fxSXm' },
+  { id: 'pec_fly', num: 2, name: 'сведение рук', sub: 'Pectoral', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/tByJiJj9n0U?is=U_ARILKFH2tixe2S' },
+  { id: 'shoulder_press', num: 3, name: 'жим плеч', sub: 'Shoulder Press', sets: '3×8-12', rest: 120, url: 'https://youtube.com/shorts/lC9uiTqYH84?is=_g4ItfNvBMRiUnXt' },
+  { id: 'delts_machine', num: 4, name: 'дельты в тренажёре', sub: 'Delts Machine', sets: '3×12-15', rest: 90, url: 'https://youtube.com/shorts/78hk4Fy_kDA?is=unzsenWO7tAKGqns' },
+  { id: 'triceps_pushdown', num: 5, name: 'трицепс на блоке', sub: 'Triceps Pushdown', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/NMY70SP-OHY?si=4jPio5STfDrrKV8_' },
+  { id: 'arm_extension', num: 6, name: 'разгибание рук в тренажёре', sub: 'Arm Extension Machine', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/tVNSmck6hnE?is=wEnysnqCti6nnDQ3' },
+  { id: 'leg_press', num: 7, name: 'жим ногами', sub: 'Leg Press', sets: '3×8-12', rest: 150, url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' },
+  { id: 'leg_extension', num: 8, name: 'разгибание ног', sub: 'Leg Extension', sets: '3×12-15', rest: 90, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
+  { id: 'calf_raise', num: 9, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3×10-15', rest: 90, url: 'https://youtube.com/shorts/icp4RMn5MAA?si=NLYSQUwFN7bSUOkM' },
+  { id: 'total_abs', num: 10, name: 'скручивания', sub: 'Abdominal Crunch', sets: '3×12-15', rest: 90, url: 'https://youtube.com/shorts/DVCmFYlNFRg' }
 ];
 const trainingB = [
-  { id: 'prone_leg_curl', num: 1, name: 'сгибание ног лёжа', sub: 'Prone Leg Curl', sets: '3×10-12', url: 'https://youtube.com/shorts/FMCq0hT3KRU?si=cbbo1yN9xsXNqdqe' },
-  { id: 'lat_pulldown', num: 2, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×10-12', url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
-  { id: 'low_row', num: 3, name: 'горизонтальная тяга сидя', sub: 'Low Row', sets: '3×10-12', url: 'https://www.youtube.com/shorts/j3k4DsTAgx8?feature=share' },
-  { id: 'reverse_pec_deck', num: 4, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '4×12-15', url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
-  { id: 'arm_curl', num: 5, name: 'сгибание рук в тренажёре', sub: 'Arm Curl Machine', sets: '3×10-12', url: 'https://youtube.com/shorts/IWDHXA1ZcT8?is=9QgKqBX6kU9lXxLr' },
-  { id: 'cable_bicep_curl', num: 6, name: 'подъём на бицепс на блоке', sub: 'Cable Bicep Curl', sets: '3×10-12', url: 'https://www.youtube.com/shorts/ctfcKdoCfxM?feature=share' },
-  { id: 'calf_raise', num: 7, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3×10-15', url: 'https://youtube.com/shorts/icp4RMn5MAA?si=NLYSQUwFN7bSUOkM' },
-  { id: 'total_abs', num: 8, name: 'скручивания', sub: 'Abdominal Crunch', sets: '3×12-15', url: 'https://youtube.com/shorts/DVCmFYlNFRg' }
+  { id: 'lat_pulldown', num: 1, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×10-12', rest: 120, url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
+  { id: 'low_row', num: 2, name: 'горизонтальная тяга сидя', sub: 'Low Row', sets: '3×10-12', rest: 120, url: 'https://www.youtube.com/shorts/j3k4DsTAgx8?feature=share' },
+  { id: 'prone_leg_curl', num: 3, name: 'сгибание ног лёжа', sub: 'Prone Leg Curl', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/FMCq0hT3KRU?si=cbbo1yN9xsXNqdqe' },
+  { id: 'reverse_pec_deck', num: 4, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '3×12-15', rest: 90, url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
+  { id: 'arm_curl', num: 5, name: 'сгибание рук в тренажёре', sub: 'Arm Curl Machine', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/IWDHXA1ZcT8?is=9QgKqBX6kU9lXxLr' },
+  { id: 'incline_db_curl', num: 6, name: 'наклонный подъём гантелей', sub: 'Incline DB Curl', sets: '3×8-12', rest: 90, url: 'https://youtube.com/shorts/uCUaRFlA9vE?si=_q-PSgOpB3iQviPn' },
+  { id: 'calf_raise', num: 7, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3×10-15', rest: 90, url: 'https://youtube.com/shorts/icp4RMn5MAA?si=NLYSQUwFN7bSUOkM' },
+  { id: 'total_abs', num: 8, name: 'скручивания', sub: 'Abdominal Crunch', sets: '3×12-15', rest: 90, url: 'https://youtube.com/shorts/DVCmFYlNFRg' }
 ];
 
 const DAYS_RU = ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
@@ -1694,6 +1763,13 @@ function parseTotalSets(setsStr) {
   const m = String(setsStr || '').match(/^(\d+)/);
   return m ? Math.max(1, +m[1]) : 3;
 }
+function formatRest(seconds) {
+  if (!seconds) return '';
+  if (seconds < 60) return seconds + ' сек';
+  const mins = seconds / 60;
+  if (mins === Math.floor(mins)) return mins + ' мин';
+  return mins.toFixed(1).replace(/\.0$/, '') + ' мин';
+}
 function getSetsRemaining(ex) {
   const total = parseTotalSets(ex.sets);
   const done = (getExSession(ex.id).setsDone) || 0;
@@ -1759,7 +1835,7 @@ function renderTraining() {
       <div class="ex-header">
         <div class="ex-meta">
           <div class="ex-title">${ex.num}. ${ex.name}</div>
-          <div class="ex-sub">${ex.sub} · ${ex.sets}</div>
+          <div class="ex-sub">${ex.sub} · ${ex.sets}${ex.rest ? `<span class="ex-rest"><i class="ti ti-clock"></i>${formatRest(ex.rest)}</span>` : ''}</div>
         </div>
         <div class="sets-area">
           <button class="sets-badge${isDone ? ' done' : ''}" data-action="sets-tap" aria-label="подходы">${badgeContent}</button>
@@ -2643,11 +2719,41 @@ function appAlert(message, opts) {
 }
 
 // ================= TIMER =================
-const TIMER_FIXED_MS = 90000;
 const TIMER_CIRC = 2 * Math.PI * 100; // ~628.3
+const TIMER_PRESETS = [90, 120, 150]; // seconds
+let timerDuration = 90000; // current preset duration in ms
 let startedAt = null;
 let pausedRemaining = null;
 let rafId = null;
+
+function loadTimerPreset() {
+  const saved = parseInt(LS.getRaw('levshub_timer_preset_s') || '90');
+  const secs = TIMER_PRESETS.includes(saved) ? saved : 90;
+  timerDuration = secs * 1000;
+  return secs;
+}
+
+function applyTimerPreset(secs, opts) {
+  opts = opts || {};
+  if (!TIMER_PRESETS.includes(secs)) return;
+  timerDuration = secs * 1000;
+  LS.setRaw('levshub_timer_preset_s', String(secs));
+  // Update chip active state
+  document.querySelectorAll('#timerPresets .preset-chip').forEach(c => {
+    c.classList.toggle('active', +c.dataset.secs === secs);
+  });
+  if (!opts.silent) {
+    // Hard reset to the new duration (cancel any running/paused state)
+    startedAt = null;
+    pausedRemaining = null;
+    cancelAnimationFrame(rafId);
+    LS.remove('levshub_timer_start');
+    LS.remove('levshub_timer_paused');
+    const timeEl = document.getElementById('timerTime');
+    if (timeEl) timeEl.classList.remove('finished');
+    updateTimerDisplay(timerDuration);
+  }
+}
 
 function loadTimer() {
   const s = LS.getRaw('levshub_timer_start');
@@ -2665,8 +2771,8 @@ function loadTimer() {
 }
 
 function getRemaining() {
-  if (startedAt === null) return pausedRemaining !== null ? pausedRemaining : TIMER_FIXED_MS;
-  return Math.max(0, TIMER_FIXED_MS - (Date.now() - startedAt));
+  if (startedAt === null) return pausedRemaining !== null ? pausedRemaining : timerDuration;
+  return Math.max(0, timerDuration - (Date.now() - startedAt));
 }
 
 function updateTimerDisplay(remaining) {
@@ -2676,7 +2782,7 @@ function updateTimerDisplay(remaining) {
   const t = mins + ':' + String(secs).padStart(2,'0');
   document.getElementById('timerTime').textContent = t;
   document.getElementById('timerTime').classList.toggle('finished', remaining === 0);
-  const prog = remaining / TIMER_FIXED_MS;
+  const prog = remaining / timerDuration;
   const offset = TIMER_CIRC * (1 - prog);
   document.getElementById('timerProg').setAttribute('stroke-dashoffset', offset);
   const startBtn = document.getElementById('timerStart');
@@ -2708,7 +2814,7 @@ function onFinish() {
   document.getElementById('timerTime').classList.add('finished');
   document.getElementById('timerStart').textContent = 'start';
   setTimeout(() => {
-    if (getRemaining() === TIMER_FIXED_MS || startedAt === null) {
+    if (getRemaining() === timerDuration || startedAt === null) {
       // keep red briefly
     }
   }, 100);
@@ -2716,7 +2822,7 @@ function onFinish() {
 
 function startTimer() {
   if (pausedRemaining !== null) {
-    startedAt = Date.now() - (TIMER_FIXED_MS - pausedRemaining);
+    startedAt = Date.now() - (timerDuration - pausedRemaining);
     pausedRemaining = null;
   } else {
     startedAt = Date.now();
@@ -2743,7 +2849,7 @@ function resetTimer() {
   LS.remove('levshub_timer_start');
   LS.remove('levshub_timer_paused');
   document.getElementById('timerTime').classList.remove('finished');
-  updateTimerDisplay(TIMER_FIXED_MS);
+  updateTimerDisplay(timerDuration);
 }
 
 function resyncTimer() {
@@ -2753,7 +2859,7 @@ function resyncTimer() {
     if (rem > 0) tick();
     else { onFinish(); updateTimerDisplay(0); }
   } else {
-    updateTimerDisplay(pausedRemaining !== null ? pausedRemaining : TIMER_FIXED_MS);
+    updateTimerDisplay(pausedRemaining !== null ? pausedRemaining : timerDuration);
   }
 }
 
@@ -2765,6 +2871,11 @@ document.getElementById('timerStart').addEventListener('click', () => {
   }
 });
 document.getElementById('timerReset').addEventListener('click', resetTimer);
+
+// Timer presets
+document.querySelectorAll('#timerPresets .preset-chip').forEach(chip => {
+  chip.addEventListener('click', () => applyTimerPreset(+chip.dataset.secs));
+});
 
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) {
@@ -2986,6 +3097,8 @@ window.addEventListener('resize', updateAllToggleIndicators);
 // ================= INIT =================
 migrateWorkoutData(); // one-time migration from levshub_workout_A/B → levshub_workout
 runSplash();
+const initialPreset = loadTimerPreset();
+applyTimerPreset(initialPreset, { silent: true });
 loadTimer();
 renderHome();
 // Pre-render others lightly so cached values exist
