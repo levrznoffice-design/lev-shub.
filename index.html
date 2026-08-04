@@ -489,6 +489,9 @@
   }
   .sets-undo.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
+  /* dual sets badges (leg extension — left/right leg trained separately) */
+  .sets-dual { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
   /* session bar */
   .session-bar {
     display: flex; align-items: center; gap: 10px;
@@ -989,6 +992,31 @@
     letter-spacing: 0.5px;
     padding: 8px 16px;
   }
+  .timer-adjust {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    max-width: 340px;
+    padding: 0 4px;
+    margin-bottom: 16px;
+  }
+  .timer-adjust button {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 6px;
+    border-radius: 12px;
+    border: 1px solid var(--border-2);
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    transition: transform 100ms ease, background 150ms ease;
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+  }
+  .timer-adjust button:active { transform: scale(0.95); }
+  .timer-adjust .adj-minus { background: rgba(200,48,44,0.1); color: var(--red); }
+  .timer-adjust .adj-plus { background: rgba(93,202,165,0.1); color: var(--green); }
 
   /* ============ Choice modal ============ */
   .choice-list { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
@@ -1428,6 +1456,10 @@
           <span class="chip-hint">жим ногами</span>
         </button>
       </div>
+      <div class="timer-adjust" id="timerAdjust">
+        <button class="adj-minus" id="timerMinus30" aria-label="минус 30 секунд">−30 сек</button>
+        <button class="adj-plus" id="timerPlus30" aria-label="плюс 30 секунд">+30 сек</button>
+      </div>
       <div class="timer-controls">
         <button class="timer-start" id="timerStart">start</button>
         <button class="timer-reset" id="timerReset">reset</button>
@@ -1501,7 +1533,7 @@ const trainingA = [
   { id: 'leg_press', num: 7, name: 'жим ногами', sub: 'Leg Press', sets: '3×8-12', rest: 150, url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' },
   { id: 'leg_extension', num: 8, name: 'разгибание ног', sub: 'Leg Extension', sets: '3×12-15', rest: 90, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
   { id: 'calf_raise', num: 9, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3×10-15', rest: 90, url: 'https://youtube.com/shorts/icp4RMn5MAA?si=NLYSQUwFN7bSUOkM' },
-  { id: 'total_abs', num: 10, name: 'скручивания', sub: 'Abdominal Crunch', sets: '3×12-15', rest: 90, url: 'https://youtube.com/shorts/DVCmFYlNFRg' }
+  { id: 'total_abs', num: 10, name: 'кроссовер на коленях головой вниз', sub: 'Kneeling Cable Crunch', sets: '3×10-15', rest: 90, url: 'https://youtube.com/shorts/HblXVNG_uR8?is=4yBMVAbOKIKF25Qq' }
 ];
 const trainingB = [
   { id: 'lat_pulldown', num: 1, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×10-12', rest: 120, url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
@@ -1511,7 +1543,7 @@ const trainingB = [
   { id: 'arm_curl', num: 5, name: 'сгибание рук в тренажёре', sub: 'Arm Curl Machine', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/IWDHXA1ZcT8?is=9QgKqBX6kU9lXxLr' },
   { id: 'incline_db_curl', num: 6, name: 'наклонный подъём гантелей', sub: 'Incline DB Curl', sets: '3×8-12', rest: 90, url: 'https://youtube.com/shorts/uCUaRFlA9vE?si=_q-PSgOpB3iQviPn' },
   { id: 'calf_raise', num: 7, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3×10-15', rest: 90, url: 'https://youtube.com/shorts/icp4RMn5MAA?si=NLYSQUwFN7bSUOkM' },
-  { id: 'total_abs', num: 8, name: 'скручивания', sub: 'Abdominal Crunch', sets: '3×12-15', rest: 90, url: 'https://youtube.com/shorts/DVCmFYlNFRg' }
+  { id: 'total_abs', num: 8, name: 'кроссовер на коленях головой вниз', sub: 'Kneeling Cable Crunch', sets: '3×10-15', rest: 90, url: 'https://youtube.com/shorts/HblXVNG_uR8?is=4yBMVAbOKIKF25Qq' }
 ];
 
 const DAYS_RU = ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
@@ -1810,16 +1842,27 @@ function renderTraining() {
     const saved = getExSaved(ex.id);
     const sess = getExSession(ex.id);
     const total = parseTotalSets(ex.sets);
+    const isLeg = ex.id === 'leg_extension';
     const done = Math.min(total, sess.setsDone || 0);
     const remaining = total - done;
-    const isDone = remaining === 0;
+    const isDone = isLeg ? isExComplete(ex) : (remaining === 0);
     const isCollapsed = !!sess.collapsed || isDone;
     const w = saved.w !== undefined ? saved.w : '';
     const r = saved.r !== undefined ? saved.r : '';
     const n = saved.n || '';
-    const badgeContent = isDone
+    const badgeContent = (remaining === 0)
       ? '<i class="ti ti-check"></i>'
       : `<span class="badge-num">${remaining}</span>`;
+    const setsAreaHTML = isLeg ? buildLegSetsArea(ex) : `
+        <div class="sets-area">
+          <button class="sets-badge${isDone ? ' done' : ''}" data-action="sets-tap" aria-label="подходы">${badgeContent}</button>
+          <div class="sets-prompt" data-id="${ex.id}">
+            <span class="sp-label">−1 подход?</span>
+            <button class="sp-yes" data-action="sets-yes" aria-label="да">✓</button>
+            <button class="sp-no" data-action="sets-no" aria-label="нет">✕</button>
+          </div>
+          <button class="sets-undo" data-action="sets-undo" aria-label="вернуть подход"><span style="font-size:14px;line-height:1">↶</span> вернуть</button>
+        </div>`;
     const summaryData = (w !== '' || r !== '')
       ? `<span class="cs-data">${w !== '' ? w + 'кг' : ''}${w !== '' && r !== '' ? ' × ' : ''}${r !== '' ? r : ''}</span>`
       : '<span class="cs-hint">не записано</span>';
@@ -1837,15 +1880,7 @@ function renderTraining() {
           <div class="ex-title">${ex.num}. ${ex.name}</div>
           <div class="ex-sub">${ex.sub} · ${ex.sets}${ex.rest ? `<span class="ex-rest"><i class="ti ti-clock"></i>${formatRest(ex.rest)}</span>` : ''}</div>
         </div>
-        <div class="sets-area">
-          <button class="sets-badge${isDone ? ' done' : ''}" data-action="sets-tap" aria-label="подходы">${badgeContent}</button>
-          <div class="sets-prompt" data-id="${ex.id}">
-            <span class="sp-label">−1 подход?</span>
-            <button class="sp-yes" data-action="sets-yes" aria-label="да">✓</button>
-            <button class="sp-no" data-action="sets-no" aria-label="нет">✕</button>
-          </div>
-          <button class="sets-undo" data-action="sets-undo" aria-label="вернуть подход"><span style="font-size:14px;line-height:1">↶</span> вернуть</button>
-        </div>
+        ${setsAreaHTML}
         <button class="yt-btn" data-yt="${ex.url}"><i class="ti ti-brand-youtube"></i></button>
       </div>
       <div class="ex-grid">
@@ -1908,7 +1943,8 @@ function bindTrainingHandlers(exList) {
     // Numeric keypad
     card.querySelectorAll('.stepper-input').forEach(makeNumeric);
     // Sets tracker
-    bindSetsHandlers(card);
+    if (id === 'leg_extension') bindLegSetsHandlers(card);
+    else bindSetsHandlers(card);
     // Swipe + collapsed tap
     bindSwipeHandlers(card);
     // Note icon-trigger
@@ -2091,6 +2127,164 @@ function hideUndo() {
   document.querySelectorAll('.sets-undo.show').forEach(u => u.classList.remove('show'));
 }
 
+// ----- Dual-badge sets (leg extension: left/right leg counted separately) -----
+// Each leg keeps its own independent count in the session under setsDoneL / setsDoneR.
+function isExComplete(ex) {
+  const total = parseTotalSets(ex.sets);
+  const sess = getExSession(ex.id);
+  if (ex.id === 'leg_extension') {
+    return (sess.setsDoneL || 0) >= total && (sess.setsDoneR || 0) >= total;
+  }
+  return (sess.setsDone || 0) >= total;
+}
+function getLegDone(id, leg) {
+  const sess = getExSession(id);
+  return (leg === 'L' ? sess.setsDoneL : sess.setsDoneR) || 0;
+}
+function setLegDone(id, leg, val) {
+  setExSession(id, leg === 'L' ? { setsDoneL: val } : { setsDoneR: val });
+}
+function legRemaining(ex, leg) {
+  return Math.max(0, parseTotalSets(ex.sets) - getLegDone(ex.id, leg));
+}
+function buildLegSetsArea(ex) {
+  const mk = (leg) => {
+    const rem = legRemaining(ex, leg);
+    const inner = rem === 0 ? '<i class="ti ti-check"></i>' : `<span class="badge-num">${rem}</span>`;
+    return `
+        <div class="sets-area" data-leg="${leg}">
+          <button class="sets-badge${rem === 0 ? ' done' : ''}" data-action="sets-tap" aria-label="подходы">${inner}</button>
+          <div class="sets-prompt">
+            <span class="sp-label">−1 подход?</span>
+            <button class="sp-yes" aria-label="да">✓</button>
+            <button class="sp-no" aria-label="нет">✕</button>
+          </div>
+          <button class="sets-undo" aria-label="вернуть подход"><span style="font-size:14px;line-height:1">↶</span> вернуть</button>
+        </div>`;
+  };
+  return `<div class="sets-dual">${mk('L')}${mk('R')}</div>`;
+}
+function bindLegSetsHandlers(card) {
+  const id = card.dataset.id;
+  card.querySelectorAll('.sets-dual .sets-area').forEach(area => {
+    const leg = area.dataset.leg;
+    const badge = area.querySelector('.sets-badge');
+    const prompt = area.querySelector('.sets-prompt');
+    const undoBtn = area.querySelector('.sets-undo');
+    if (!badge) return;
+    let lpTimer = null;
+    let lpFired = false;
+
+    badge.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (lpFired) { lpFired = false; return; }
+      const ex = findExById(id);
+      if (!ex) return;
+      if (legRemaining(ex, leg) === 0) return; // already done — no prompt
+      if (prompt.classList.contains('show')) {
+        prompt.classList.remove('show');
+      } else {
+        document.querySelectorAll('.sets-prompt.show').forEach(p => p.classList.remove('show'));
+        hideUndo();
+        prompt.classList.add('show');
+      }
+    });
+    // Long-press restores +1 for this leg
+    const startLp = () => {
+      lpFired = false;
+      clearTimeout(lpTimer);
+      lpTimer = setTimeout(() => {
+        lpFired = true;
+        restoreLegSet(id, leg);
+        if (navigator.vibrate) navigator.vibrate(20);
+      }, 600);
+    };
+    const cancelLp = () => clearTimeout(lpTimer);
+    badge.addEventListener('touchstart', startLp, { passive: true });
+    badge.addEventListener('touchend', cancelLp);
+    badge.addEventListener('touchcancel', cancelLp);
+    badge.addEventListener('touchmove', cancelLp);
+    badge.addEventListener('mousedown', startLp);
+    badge.addEventListener('mouseup', cancelLp);
+    badge.addEventListener('mouseleave', cancelLp);
+
+    prompt.querySelector('.sp-yes').addEventListener('click', (e) => {
+      e.stopPropagation();
+      prompt.classList.remove('show');
+      decrementLegSet(id, leg);
+    });
+    prompt.querySelector('.sp-no').addEventListener('click', (e) => {
+      e.stopPropagation();
+      prompt.classList.remove('show');
+    });
+    undoBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      restoreLegSet(id, leg);
+      hideUndo();
+    });
+  });
+}
+function decrementLegSet(id, leg) {
+  const ex = findExById(id);
+  if (!ex) return;
+  const total = parseTotalSets(ex.sets);
+  const newDone = Math.min(total, getLegDone(id, leg) + 1);
+  setLegDone(id, leg, newDone);
+  animateLegBadge(id, leg);
+  showLegUndoFor(id, leg);
+  updateSessionBar();
+  if (isExComplete(ex)) {
+    // Both legs finished — auto-collapse after a short celebration delay
+    setTimeout(() => {
+      setExSession(id, { collapsed: true });
+      collapseCard(id, true);
+      updateSessionBar();
+    }, 700);
+  }
+}
+function restoreLegSet(id, leg) {
+  const cur = getLegDone(id, leg);
+  if (cur <= 0) return;
+  setLegDone(id, leg, cur - 1);
+  collapseCard(id, false);
+  animateLegBadge(id, leg);
+  updateSessionBar();
+}
+function animateLegBadge(id, leg) {
+  const card = document.querySelector(`.ex-card[data-id="${id}"]`);
+  if (!card) return;
+  const area = card.querySelector(`.sets-dual .sets-area[data-leg="${leg}"]`);
+  const ex = findExById(id);
+  if (!area || !ex) return;
+  const badge = area.querySelector('.sets-badge');
+  const remaining = legRemaining(ex, leg);
+  const isDone = remaining === 0;
+  badge.classList.add('shrink');
+  setTimeout(() => {
+    badge.innerHTML = isDone
+      ? '<i class="ti ti-check"></i>'
+      : `<span class="badge-num">${remaining}</span>`;
+    badge.classList.toggle('done', isDone);
+    badge.classList.remove('shrink');
+    badge.classList.remove('flash');
+    void badge.offsetWidth;
+    badge.classList.add('flash');
+    setTimeout(() => badge.classList.remove('flash'), 720);
+  }, 160);
+}
+function showLegUndoFor(id, leg) {
+  const card = document.querySelector(`.ex-card[data-id="${id}"]`);
+  if (!card) return;
+  document.querySelectorAll('.sets-undo.show').forEach(u => u.classList.remove('show'));
+  const area = card.querySelector(`.sets-dual .sets-area[data-leg="${leg}"]`);
+  if (!area) return;
+  const undo = area.querySelector('.sets-undo');
+  if (!undo) return;
+  undo.classList.add('show');
+  clearTimeout(undoTimer);
+  undoTimer = setTimeout(() => undo.classList.remove('show'), 6000);
+}
+
 // Close prompts/undo when tapping outside
 document.addEventListener('click', (e) => {
   if (e.target.closest && (e.target.closest('.sets-area') || e.target.closest('.sets-prompt'))) return;
@@ -2170,7 +2364,9 @@ function bindSwipeHandlers(card) {
         card.style.opacity = '0';
         const ex = findExById(id);
         if (ex) {
-          setExSession(id, { setsDone: parseTotalSets(ex.sets), collapsed: true });
+          const total = parseTotalSets(ex.sets);
+          if (id === 'leg_extension') setExSession(id, { setsDoneL: total, setsDoneR: total, collapsed: true });
+          else setExSession(id, { setsDone: total, collapsed: true });
           updateSessionBar();
         }
         setTimeout(() => {
@@ -2179,7 +2375,8 @@ function bindSwipeHandlers(card) {
           card.style.transition = '';
           card.style.transform = '';
           card.style.opacity = '';
-          animateBadgeUpdate(id);
+          if (id === 'leg_extension') { animateLegBadge(id, 'L'); animateLegBadge(id, 'R'); }
+          else animateBadgeUpdate(id);
           collapseCard(id, true);
         }, 380);
       } else if (isCollapsed && dx > 80) {
@@ -2225,9 +2422,7 @@ function updateSessionBar() {
   const program = view === 'A' ? trainingA : trainingB;
   let doneCount = 0;
   program.forEach(ex => {
-    const total = parseTotalSets(ex.sets);
-    const sess = getExSession(ex.id);
-    if ((sess.setsDone || 0) >= total) doneCount++;
+    if (isExComplete(ex)) doneCount++;
   });
   document.getElementById('sessionProgress').textContent = `сегодня: ${doneCount} из ${program.length}`;
   bar.hidden = false;
@@ -2239,7 +2434,9 @@ document.getElementById('sessionReset').addEventListener('click', () => {
     const view = getTrainingView();
     const program = view === 'A' ? trainingA : trainingB;
     program.forEach(ex => {
-      setExSession(ex.id, { setsDone: 0, collapsed: false });
+      setExSession(ex.id, ex.id === 'leg_extension'
+        ? { setsDone: 0, setsDoneL: 0, setsDoneR: 0, collapsed: false }
+        : { setsDone: 0, collapsed: false });
     });
     renderTraining();
   });
@@ -2852,6 +3049,39 @@ function resetTimer() {
   updateTimerDisplay(timerDuration);
 }
 
+// Add/subtract time (±30s) — works while idle, paused, or running
+function bumpTimer(deltaMs) {
+  if (startedAt !== null) {
+    // running
+    const newRem = getRemaining() + deltaMs;
+    if (newRem <= 0) {
+      // rest cut down to zero — stop cleanly (no buzz)
+      startedAt = null;
+      pausedRemaining = null;
+      cancelAnimationFrame(rafId);
+      LS.remove('levshub_timer_start');
+      LS.remove('levshub_timer_paused');
+      updateTimerDisplay(0);
+      return;
+    }
+    if (newRem > timerDuration) timerDuration = newRem; // keep progress ring in range
+    startedAt = Date.now() - (timerDuration - newRem);
+    LS.setRaw('levshub_timer_start', String(startedAt));
+    updateTimerDisplay(newRem);
+  } else if (pausedRemaining !== null) {
+    // paused
+    const newRem = Math.max(0, pausedRemaining + deltaMs);
+    if (newRem > timerDuration) timerDuration = newRem;
+    pausedRemaining = newRem;
+    LS.setRaw('levshub_timer_paused', String(pausedRemaining));
+    updateTimerDisplay(pausedRemaining);
+  } else {
+    // idle (not started) — adjust the base duration, min 30s
+    timerDuration = Math.max(30000, timerDuration + deltaMs);
+    updateTimerDisplay(timerDuration);
+  }
+}
+
 function resyncTimer() {
   loadTimer();
   if (startedAt !== null) {
@@ -2871,6 +3101,8 @@ document.getElementById('timerStart').addEventListener('click', () => {
   }
 });
 document.getElementById('timerReset').addEventListener('click', resetTimer);
+document.getElementById('timerMinus30').addEventListener('click', () => bumpTimer(-30000));
+document.getElementById('timerPlus30').addEventListener('click', () => bumpTimer(30000));
 
 // Timer presets
 document.querySelectorAll('#timerPresets .preset-chip').forEach(chip => {
