@@ -489,7 +489,7 @@
   }
   .sets-undo.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
-  /* dual sets badges (leg extension — left/right leg trained separately) */
+  /* dual sets badges (dual: true — левая/правая сторона тренируются отдельно) */
   .sets-dual { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 
   /* session bar */
@@ -1523,27 +1523,30 @@
 
 <script>
 // ================= DATA =================
+// dual: true → подходы считаются отдельно для левой и правой стороны (две колонки)
 const trainingA = [
   { id: 'chest_press', num: 1, name: 'жим от груди', sub: 'Chest Press', sets: '3×8-12', rest: 120, url: 'https://youtube.com/shorts/EC1Yf3M0im8?is=bdAV9DSniv4fxSXm' },
-  { id: 'pec_fly', num: 2, name: 'сведение рук', sub: 'Pectoral', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/tByJiJj9n0U?is=U_ARILKFH2tixe2S' },
-  { id: 'shoulder_press', num: 3, name: 'жим плеч', sub: 'Shoulder Press', sets: '3×8-12', rest: 120, url: 'https://youtube.com/shorts/lC9uiTqYH84?is=_g4ItfNvBMRiUnXt' },
+  { id: 'shoulder_press', num: 2, name: 'жим плеч', sub: 'Shoulder Press', sets: '3×8-12', rest: 120, url: 'https://youtube.com/shorts/lC9uiTqYH84?is=_g4ItfNvBMRiUnXt' },
+  { id: 'pec_fly', num: 3, name: 'сведение рук', sub: 'Pectoral', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/tByJiJj9n0U?is=U_ARILKFH2tixe2S' },
   { id: 'delts_machine', num: 4, name: 'дельты в тренажёре', sub: 'Delts Machine', sets: '3×12-15', rest: 90, url: 'https://youtube.com/shorts/78hk4Fy_kDA?is=unzsenWO7tAKGqns' },
   { id: 'triceps_pushdown', num: 5, name: 'трицепс на блоке', sub: 'Triceps Pushdown', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/NMY70SP-OHY?si=4jPio5STfDrrKV8_' },
-  { id: 'arm_extension', num: 6, name: 'разгибание рук в тренажёре', sub: 'Arm Extension Machine', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/tVNSmck6hnE?is=wEnysnqCti6nnDQ3' },
-  { id: 'leg_press', num: 7, name: 'жим ногами', sub: 'Leg Press', sets: '3×8-12', rest: 150, url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' },
-  { id: 'leg_extension', num: 8, name: 'разгибание ног', sub: 'Leg Extension', sets: '3×12-15', rest: 90, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
-  { id: 'calf_raise', num: 9, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3×10-15', rest: 90, url: 'https://youtube.com/shorts/icp4RMn5MAA?si=NLYSQUwFN7bSUOkM' },
-  { id: 'total_abs', num: 10, name: 'кроссовер на коленях головой вниз', sub: 'Kneeling Cable Crunch', sets: '3×10-15', rest: 90, url: 'https://youtube.com/shorts/HblXVNG_uR8?is=4yBMVAbOKIKF25Qq' }
+  { id: 'reverse_cable_curl', num: 6, name: 'обратный подъём на блоке', sub: 'Reverse Cable Curl', sets: '3×12-15', rest: 90, url: 'https://www.youtube.com/shorts/_0icSYP3PlE?feature=share' },
+  { id: 'arm_extension', num: 7, name: 'разгибание рук в тренажёре', sub: 'Arm Extension Machine', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/tVNSmck6hnE?is=wEnysnqCti6nnDQ3' },
+  { id: 'leg_press', num: 8, name: 'жим ногами', sub: 'Leg Press', sets: '3×8-12', rest: 150, url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' },
+  { id: 'leg_extension', num: 9, name: 'разгибание ног', sub: 'Leg Extension', sets: '3+3×12-15', rest: 90, dual: true, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
+  { id: 'calf_raise', num: 10, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 90, dual: true, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
+  { id: 'total_abs', num: 11, name: 'скручивания в тренажёре', sub: 'Abdominal Crunch', sets: '3×10-15', rest: 90, url: 'https://www.youtube.com/shorts/DVCmFYlNFRg?feature=share' }
 ];
 const trainingB = [
   { id: 'lat_pulldown', num: 1, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×10-12', rest: 120, url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
-  { id: 'low_row', num: 2, name: 'горизонтальная тяга сидя', sub: 'Low Row', sets: '3×10-12', rest: 120, url: 'https://www.youtube.com/shorts/j3k4DsTAgx8?feature=share' },
-  { id: 'prone_leg_curl', num: 3, name: 'сгибание ног лёжа', sub: 'Prone Leg Curl', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/FMCq0hT3KRU?si=cbbo1yN9xsXNqdqe' },
-  { id: 'reverse_pec_deck', num: 4, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '3×12-15', rest: 90, url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
-  { id: 'arm_curl', num: 5, name: 'сгибание рук в тренажёре', sub: 'Arm Curl Machine', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/IWDHXA1ZcT8?is=9QgKqBX6kU9lXxLr' },
-  { id: 'incline_db_curl', num: 6, name: 'наклонный подъём гантелей', sub: 'Incline DB Curl', sets: '3×8-12', rest: 90, url: 'https://youtube.com/shorts/uCUaRFlA9vE?si=_q-PSgOpB3iQviPn' },
-  { id: 'calf_raise', num: 7, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3×10-15', rest: 90, url: 'https://youtube.com/shorts/icp4RMn5MAA?si=NLYSQUwFN7bSUOkM' },
-  { id: 'total_abs', num: 8, name: 'кроссовер на коленях головой вниз', sub: 'Kneeling Cable Crunch', sets: '3×10-15', rest: 90, url: 'https://youtube.com/shorts/HblXVNG_uR8?is=4yBMVAbOKIKF25Qq' }
+  { id: 'prone_leg_curl', num: 2, name: 'сгибание ног лёжа', sub: 'Prone Leg Curl', sets: '3×12-20', rest: 90, url: 'https://youtube.com/shorts/FMCq0hT3KRU?si=cbbo1yN9xsXNqdqe' },
+  { id: 'low_row', num: 3, name: 'горизонтальная тяга сидя', sub: 'Low Row', sets: '3×10-12', rest: 120, url: 'https://www.youtube.com/shorts/j3k4DsTAgx8?feature=share' },
+  { id: 'calf_raise', num: 4, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 90, dual: true, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
+  { id: 'reverse_pec_deck', num: 5, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '3×12-15', rest: 90, url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
+  { id: 'arm_curl', num: 6, name: 'сгибание рук в тренажёре', sub: 'Arm Curl Machine', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/IWDHXA1ZcT8?is=9QgKqBX6kU9lXxLr' },
+  { id: 'total_abs', num: 7, name: 'скручивания в тренажёре', sub: 'Abdominal Crunch', sets: '3×10-15', rest: 90, url: 'https://www.youtube.com/shorts/DVCmFYlNFRg?feature=share' },
+  { id: 'incline_db_curl', num: 8, name: 'наклонный подъём гантелей', sub: 'Incline DB Curl', sets: '3×8-12', rest: 90, url: 'https://youtube.com/shorts/uCUaRFlA9vE?si=_q-PSgOpB3iQviPn' },
+  { id: 'wrist_curl', num: 9, name: 'сгибание запястий', sub: 'Wrist Curl', sets: '3×15-20', rest: 60, url: 'https://youtu.be/qMtmHwaCmYI?t=16' }
 ];
 
 const DAYS_RU = ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
@@ -1842,7 +1845,7 @@ function renderTraining() {
     const saved = getExSaved(ex.id);
     const sess = getExSession(ex.id);
     const total = parseTotalSets(ex.sets);
-    const isLeg = ex.id === 'leg_extension';
+    const isLeg = !!ex.dual;
     const done = Math.min(total, sess.setsDone || 0);
     const remaining = total - done;
     const isDone = isLeg ? isExComplete(ex) : (remaining === 0);
@@ -1943,7 +1946,7 @@ function bindTrainingHandlers(exList) {
     // Numeric keypad
     card.querySelectorAll('.stepper-input').forEach(makeNumeric);
     // Sets tracker
-    if (id === 'leg_extension') bindLegSetsHandlers(card);
+    if (isDualId(id)) bindLegSetsHandlers(card);
     else bindSetsHandlers(card);
     // Swipe + collapsed tap
     bindSwipeHandlers(card);
@@ -2055,6 +2058,11 @@ function bindSetsHandlers(card) {
 function findExById(id) {
   return trainingA.find(e => e.id === id) || trainingB.find(e => e.id === id);
 }
+// Упражнение считается по сторонам (левая/правая) — две колонки подходов
+function isDualId(id) {
+  const ex = findExById(id);
+  return !!(ex && ex.dual);
+}
 
 function decrementSet(id) {
   const ex = findExById(id);
@@ -2127,12 +2135,12 @@ function hideUndo() {
   document.querySelectorAll('.sets-undo.show').forEach(u => u.classList.remove('show'));
 }
 
-// ----- Dual-badge sets (leg extension: left/right leg counted separately) -----
-// Each leg keeps its own independent count in the session under setsDoneL / setsDoneR.
+// ----- Dual-badge sets (dual: true — левая/правая сторона считаются отдельно) -----
+// Each side keeps its own independent count in the session under setsDoneL / setsDoneR.
 function isExComplete(ex) {
   const total = parseTotalSets(ex.sets);
   const sess = getExSession(ex.id);
-  if (ex.id === 'leg_extension') {
+  if (ex.dual) {
     return (sess.setsDoneL || 0) >= total && (sess.setsDoneR || 0) >= total;
   }
   return (sess.setsDone || 0) >= total;
@@ -2365,7 +2373,7 @@ function bindSwipeHandlers(card) {
         const ex = findExById(id);
         if (ex) {
           const total = parseTotalSets(ex.sets);
-          if (id === 'leg_extension') setExSession(id, { setsDoneL: total, setsDoneR: total, collapsed: true });
+          if (isDualId(id)) setExSession(id, { setsDoneL: total, setsDoneR: total, collapsed: true });
           else setExSession(id, { setsDone: total, collapsed: true });
           updateSessionBar();
         }
@@ -2375,7 +2383,7 @@ function bindSwipeHandlers(card) {
           card.style.transition = '';
           card.style.transform = '';
           card.style.opacity = '';
-          if (id === 'leg_extension') { animateLegBadge(id, 'L'); animateLegBadge(id, 'R'); }
+          if (isDualId(id)) { animateLegBadge(id, 'L'); animateLegBadge(id, 'R'); }
           else animateBadgeUpdate(id);
           collapseCard(id, true);
         }, 380);
@@ -2434,7 +2442,7 @@ document.getElementById('sessionReset').addEventListener('click', () => {
     const view = getTrainingView();
     const program = view === 'A' ? trainingA : trainingB;
     program.forEach(ex => {
-      setExSession(ex.id, ex.id === 'leg_extension'
+      setExSession(ex.id, ex.dual
         ? { setsDone: 0, setsDoneL: 0, setsDoneR: 0, collapsed: false }
         : { setsDone: 0, collapsed: false });
     });
