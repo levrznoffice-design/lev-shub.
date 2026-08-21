@@ -1443,17 +1443,17 @@
         <div class="timer-time" id="timerTime">1:30</div>
       </div>
       <div class="timer-presets" id="timerPresets" role="tablist" aria-label="пресеты отдыха">
+        <button class="preset-chip" data-secs="60">
+          <span class="chip-time">60 сек</span>
+          <span class="chip-hint">икры/пресс</span>
+        </button>
         <button class="preset-chip active" data-secs="90">
           <span class="chip-time">90 сек</span>
           <span class="chip-hint">изоляция</span>
         </button>
-        <button class="preset-chip" data-secs="120">
-          <span class="chip-time">2 мин</span>
-          <span class="chip-hint">базовые</span>
-        </button>
-        <button class="preset-chip" data-secs="150">
-          <span class="chip-time">2.5 мин</span>
-          <span class="chip-hint">жим ногами</span>
+        <button class="preset-chip" data-secs="180">
+          <span class="chip-time">3 мин</span>
+          <span class="chip-hint">база</span>
         </button>
       </div>
       <div class="timer-adjust" id="timerAdjust">
@@ -1525,26 +1525,26 @@
 // ================= DATA =================
 // dual: true → подходы считаются отдельно для левой и правой стороны (две колонки)
 const trainingA = [
-  { id: 'chest_press', num: 1, name: 'жим от груди', sub: 'Chest Press', sets: '3×8-12', rest: 120, url: 'https://youtube.com/shorts/EC1Yf3M0im8?is=bdAV9DSniv4fxSXm' },
-  { id: 'shoulder_press', num: 2, name: 'жим плеч', sub: 'Shoulder Press', sets: '3×8-12', rest: 120, url: 'https://youtube.com/shorts/lC9uiTqYH84?is=_g4ItfNvBMRiUnXt' },
+  { id: 'chest_press', num: 1, name: 'жим от груди', sub: 'Chest Press', sets: '3×8-12', rest: 180, url: 'https://youtube.com/shorts/EC1Yf3M0im8?is=bdAV9DSniv4fxSXm' },
+  { id: 'shoulder_press', num: 2, name: 'жим плеч', sub: 'Shoulder Press', sets: '3×8-12', rest: 180, url: 'https://youtube.com/shorts/lC9uiTqYH84?is=_g4ItfNvBMRiUnXt' },
   { id: 'pec_fly', num: 3, name: 'сведение рук', sub: 'Pectoral', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/tByJiJj9n0U?is=U_ARILKFH2tixe2S' },
   { id: 'delts_machine', num: 4, name: 'дельты в тренажёре', sub: 'Delts Machine', sets: '3×12-15', rest: 90, url: 'https://youtube.com/shorts/78hk4Fy_kDA?is=unzsenWO7tAKGqns' },
   { id: 'triceps_pushdown', num: 5, name: 'трицепс на блоке', sub: 'Triceps Pushdown', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/NMY70SP-OHY?si=4jPio5STfDrrKV8_' },
-  { id: 'reverse_cable_curl', num: 6, name: 'обратный подъём на блоке', sub: 'Reverse Cable Curl', sets: '3×12-15', rest: 90, url: 'https://youtube.com/shorts/C2HNEz0Z17o?is=YN06Rq-3oo4-Dre3' },
+  { id: 'reverse_cable_curl', num: 6, name: 'обратный подъём на блоке', sub: 'Reverse Cable Curl', sets: '3×12-15', rest: 90, url: 'https://www.youtube.com/shorts/_0icSYP3PlE?feature=share' },
   { id: 'arm_extension', num: 7, name: 'разгибание рук в тренажёре', sub: 'Arm Extension Machine', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/tVNSmck6hnE?is=wEnysnqCti6nnDQ3' },
-  { id: 'leg_press', num: 8, name: 'жим ногами', sub: 'Leg Press', sets: '3×8-12', rest: 150, url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' },
+  { id: 'leg_press', num: 8, name: 'жим ногами', sub: 'Leg Press', sets: '3×8-12', rest: 180, url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' },
   { id: 'leg_extension', num: 9, name: 'разгибание ног', sub: 'Leg Extension', sets: '3+3×12-15', rest: 90, dual: true, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
-  { id: 'calf_raise', num: 10, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 90, dual: true, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
-  { id: 'total_abs', num: 11, name: 'скручивания в тренажёре', sub: 'Abdominal Crunch', sets: '3×10-15', rest: 90, url: 'https://www.youtube.com/shorts/DVCmFYlNFRg?feature=share' }
+  { id: 'calf_raise', num: 10, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, dual: true, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
+  { id: 'total_abs', num: 11, name: 'скручивания в тренажёре', sub: 'Abdominal Crunch', sets: '3×10-15', rest: 60, url: 'https://www.youtube.com/shorts/DVCmFYlNFRg?feature=share' }
 ];
 const trainingB = [
-  { id: 'lat_pulldown', num: 1, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×10-12', rest: 120, url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
+  { id: 'lat_pulldown', num: 1, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×10-12', rest: 180, url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
   { id: 'prone_leg_curl', num: 2, name: 'сгибание ног лёжа', sub: 'Prone Leg Curl', sets: '3×12-20', rest: 90, url: 'https://youtube.com/shorts/FMCq0hT3KRU?si=cbbo1yN9xsXNqdqe' },
-  { id: 'low_row', num: 3, name: 'горизонтальная тяга сидя', sub: 'Low Row', sets: '3×10-12', rest: 120, url: 'https://www.youtube.com/shorts/j3k4DsTAgx8?feature=share' },
-  { id: 'calf_raise', num: 4, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 90, dual: true, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
+  { id: 'low_row', num: 3, name: 'горизонтальная тяга сидя', sub: 'Low Row', sets: '3×10-12', rest: 180, url: 'https://www.youtube.com/shorts/j3k4DsTAgx8?feature=share' },
+  { id: 'calf_raise', num: 4, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, dual: true, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
   { id: 'reverse_pec_deck', num: 5, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '3×12-15', rest: 90, url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
   { id: 'arm_curl', num: 6, name: 'сгибание рук в тренажёре', sub: 'Arm Curl Machine', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/IWDHXA1ZcT8?is=9QgKqBX6kU9lXxLr' },
-  { id: 'total_abs', num: 7, name: 'скручивания в тренажёре', sub: 'Abdominal Crunch', sets: '3×10-15', rest: 90, url: 'https://www.youtube.com/shorts/DVCmFYlNFRg?feature=share' },
+  { id: 'total_abs', num: 7, name: 'скручивания в тренажёре', sub: 'Abdominal Crunch', sets: '3×10-15', rest: 60, url: 'https://www.youtube.com/shorts/DVCmFYlNFRg?feature=share' },
   { id: 'incline_db_curl', num: 8, name: 'наклонный подъём гантелей', sub: 'Incline DB Curl', sets: '3×8-12', rest: 90, url: 'https://youtube.com/shorts/uCUaRFlA9vE?si=_q-PSgOpB3iQviPn' },
   { id: 'wrist_curl', num: 9, name: 'сгибание запястий', sub: 'Wrist Curl', sets: '3×15-20', rest: 60, url: 'https://youtu.be/qMtmHwaCmYI?t=16' }
 ];
@@ -2925,7 +2925,7 @@ function appAlert(message, opts) {
 
 // ================= TIMER =================
 const TIMER_CIRC = 2 * Math.PI * 100; // ~628.3
-const TIMER_PRESETS = [90, 120, 150]; // seconds
+const TIMER_PRESETS = [60, 90, 180]; // seconds
 let timerDuration = 90000; // current preset duration in ms
 let startedAt = null;
 let pausedRemaining = null;
