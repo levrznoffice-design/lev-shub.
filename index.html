@@ -609,6 +609,102 @@
   .note-input::placeholder { color: rgba(245,242,232,0.3); }
   .note-input:focus { border-color: rgba(200,48,44,0.4); }
 
+  /* ============ Technique notes (блокнот) ============ */
+  .tech-btn {
+    color: var(--muted-2);
+    padding: 4px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    transition: color 150ms ease, transform 100ms ease;
+  }
+  .tech-btn svg { width: 20px; height: 20px; display: block; }
+  .tech-btn:active { transform: scale(0.92); color: var(--cream); }
+  .tech-ex {
+    font-size: 14px;
+    color: var(--cream);
+    letter-spacing: 0.2px;
+    margin-bottom: 14px;
+    padding-bottom: 11px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tech-ex span {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.3px;
+    margin-top: 3px;
+  }
+  .tech-body {
+    font-size: 14px;
+    line-height: 1.65;
+    color: rgba(245,242,232,0.78); /* ярче muted-2: длинный текст читается легче */
+    letter-spacing: 0.1px;
+  }
+  .tech-body h4 {
+    margin: 18px 0 9px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--cream);
+    letter-spacing: 0.3px;
+  }
+  .tech-body h4:first-child { margin-top: 0; }
+  .tech-body p { margin: 0 0 11px; }
+  .tech-body p:last-child { margin-bottom: 0; }
+  .tech-body b { color: var(--cream); font-weight: 600; }
+  .tech-body ul { margin: 0 0 11px; padding: 0; list-style: none; }
+  .tech-body ul:last-child { margin-bottom: 0; }
+  .tech-body li { position: relative; padding-left: 17px; margin-bottom: 10px; }
+  .tech-body li:last-child { margin-bottom: 0; }
+  .tech-body li::before {
+    content: '';
+    position: absolute;
+    left: 2px; top: 8px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--red);
+    opacity: 0.75;
+  }
+
+  /* ============ Archive (упражнения вне активных дней) ============ */
+  .archive-link { padding: 6px 18px 2px; }
+  .archive-link button {
+    width: 100%;
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    gap: 7px;
+    padding: 11px 14px;
+    border-radius: 10px;
+    background: rgba(245,242,232,0.03);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.4px;
+    transition: transform 100ms ease, color 150ms ease;
+  }
+  .archive-link button:active { transform: scale(0.98); color: var(--muted-2); }
+  .arch-hint {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.3px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+  .arch-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .arch-row:last-child { border-bottom: none; }
+  .arch-meta { flex: 1; min-width: 0; }
+  .arch-name { font-size: 13px; color: var(--cream); letter-spacing: 0.2px; }
+  .arch-sub { font-size: 11px; color: var(--muted); letter-spacing: 0.3px; margin-top: 2px; }
+  .arch-note { font-size: 11px; color: var(--muted-2); margin-top: 5px; font-style: italic; }
+  .arch-data { font-size: 13px; color: var(--cream); font-weight: 500; white-space: nowrap; flex-shrink: 0; }
+  .arch-data.empty { color: var(--muted); font-weight: 400; font-size: 11px; }
+
   /* ============ Rest screen ============ */
   .rest-screen {
     display: flex; flex-direction: column;
@@ -1523,6 +1619,29 @@
 
 <script>
 // ================= DATA =================
+// ----- Заметки по технике (иконка блокнота на карточке) -----
+// Чтобы добавить заметку другому упражнению — напиши текст здесь
+// и поставь в объекте упражнения поле tech: TECH_ИМЯ.
+const TECH_OVERHEAD_EXT = `
+  <h4>Техника</h4>
+  <ul>
+    <li>Максимальное сгибание в плече (руки строго за головой, корпус наклонён вперёд) — именно это растягивает длинную головку, а не диапазон в локте.</li>
+    <li>Локти зафиксированы, работает только локтевой сустав; амплитуда ~0–90°.</li>
+    <li>Не жалеть растянутой фазы: частичные повторения в растянутой позиции в разгибаниях на блоке дали не меньше (а по ряду данных больше) гипертрофии длинной головки, чем полная амплитуда, и обе — больше, чем «укороченные» повторы. При этом крупная многоцентровая репликация 2025 г. показала эквивалентность растянутых частичных и полной амплитуды — то есть полная амплитуда полностью рабочий вариант, главное не делать верхние «полурепы».</li>
+  </ul>
+  <h4>Про рукоять</h4>
+  <p>Прямых исследований гипертрофии «канат vs гриф» нет. Есть только ЭМГ на пуловере вниз: активность длинной головки была выше при супинированном хвате с рукоятью, чем при остальных вариантах — но ЭМГ плохо предсказывает рост. В самих исследованиях Maeo использовался супинированный хват на блоке.</p>
+  <p><b>Практически:</b> бери то, что даёт самый глубокий растяг за головой без боли в запястье. Канат/двойная лямка удобнее по траектории и позволяет завести руки дальше; EZ (изогнутый) гриф мягче для запястий, чем прямой; прямой гриф — если нужен вес побольше. По росту мышц разницы, скорее всего, нет.</p>
+`;
+const TECH_SEATED_LEG_CURL = `
+  <h4>Заметки по технике</h4>
+  <ul>
+    <li>Спина прижата, таз не отрывать — приподнял бёдра, вернул мышцу в укороченное положение, весь смысл свапа исчез.</li>
+    <li>Валик на бёдрах затянуть жёстко.</li>
+    <li>Носки от себя — меньше икры, больше задней поверхности.</li>
+  </ul>
+`;
+
 // dual: true → подходы считаются отдельно для левой и правой стороны (две колонки)
 const trainingA = [
   { id: 'chest_press', num: 1, name: 'жим от груди', sub: 'Chest Press', sets: '3×8-12', rest: 180, url: 'https://youtube.com/shorts/EC1Yf3M0im8?is=bdAV9DSniv4fxSXm' },
@@ -1531,7 +1650,7 @@ const trainingA = [
   { id: 'delts_machine', num: 4, name: 'дельты в тренажёре', sub: 'Delts Machine', sets: '3×12-15', rest: 90, url: 'https://youtube.com/shorts/78hk4Fy_kDA?is=unzsenWO7tAKGqns' },
   { id: 'triceps_pushdown', num: 5, name: 'трицепс на блоке', sub: 'Triceps Pushdown', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/NMY70SP-OHY?si=4jPio5STfDrrKV8_' },
   { id: 'reverse_cable_curl', num: 6, name: 'обратный подъём на блоке', sub: 'Reverse Cable Curl', sets: '3×12-15', rest: 90, url: 'https://www.youtube.com/shorts/_0icSYP3PlE?feature=share' },
-  { id: 'arm_extension', num: 7, name: 'разгибание рук в тренажёре', sub: 'Arm Extension Machine', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/tVNSmck6hnE?is=wEnysnqCti6nnDQ3' },
+  { id: 'overhead_cable_extension', num: 7, name: 'разгибание из-за головы на блоке', sub: 'Overhead Cable Extension', sets: '3×10-12', rest: 90, tech: TECH_OVERHEAD_EXT, url: 'https://www.youtube.com/shorts/0IM1J_GmQ34?feature=share' },
   { id: 'leg_press', num: 8, name: 'жим ногами', sub: 'Leg Press', sets: '3×8-12', rest: 180, url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' },
   { id: 'leg_extension', num: 9, name: 'разгибание ног', sub: 'Leg Extension', sets: '3+3×12-15', rest: 90, dual: true, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
   { id: 'calf_raise', num: 10, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, dual: true, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
@@ -1539,7 +1658,7 @@ const trainingA = [
 ];
 const trainingB = [
   { id: 'lat_pulldown', num: 1, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×10-12', rest: 180, url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
-  { id: 'prone_leg_curl', num: 2, name: 'сгибание ног лёжа', sub: 'Prone Leg Curl', sets: '3×12-20', rest: 90, url: 'https://youtube.com/shorts/FMCq0hT3KRU?si=cbbo1yN9xsXNqdqe' },
+  { id: 'seated_leg_curl', num: 2, name: 'сгибание ног сидя', sub: 'Seated Leg Curl', sets: '3×10-15', rest: 90, tech: TECH_SEATED_LEG_CURL, url: 'https://www.youtube.com/shorts/xdbEG3xGLI8?feature=share' },
   { id: 'low_row', num: 3, name: 'горизонтальная тяга сидя', sub: 'Low Row', sets: '3×10-12', rest: 180, url: 'https://www.youtube.com/shorts/j3k4DsTAgx8?feature=share' },
   { id: 'calf_raise', num: 4, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, dual: true, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
   { id: 'reverse_pec_deck', num: 5, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '3×12-15', rest: 90, url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
@@ -1549,7 +1668,15 @@ const trainingB = [
   { id: 'wrist_curl', num: 9, name: 'сгибание запястий', sub: 'Wrist Curl', sets: '3×15-20', rest: 60, url: 'https://youtu.be/qMtmHwaCmYI?t=16' }
 ];
 
-const DAYS_RU = ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
+// ----- Архив -----
+// Упражнения, выведенные из активных дней. Из базы НЕ удаляются:
+// записи в levshub_workout лежат под теми же id, история видна в архиве.
+const ARCHIVE = [
+  { id: 'arm_extension', name: 'разгибание рук в тренажёре', sub: 'Arm Extension Machine', sets: '3×10-12', url: 'https://youtube.com/shorts/tVNSmck6hnE?is=wEnysnqCti6nnDQ3' },
+  { id: 'prone_leg_curl', name: 'сгибание ног лёжа', sub: 'Prone Leg Curl', sets: '3×12-20', url: 'https://youtube.com/shorts/FMCq0hT3KRU?si=cbbo1yN9xsXNqdqe' }
+];
+
+const DAYS_RU =['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
 const AUTO_SCHEDULE = ['A','B','rest','A','rest','B','rest']; // [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
 // Wait — spec says Mon→A, Tue→rest, Wed→B, Thu→rest, Fri→A, Sat→rest, Sun→B
 // JS day index: 0=Sun, 1=Mon, ..., 6=Sat
@@ -1884,6 +2011,7 @@ function renderTraining() {
           <div class="ex-sub">${ex.sub} · ${ex.sets}${ex.rest ? `<span class="ex-rest"><i class="ti ti-clock"></i>${formatRest(ex.rest)}</span>` : ''}</div>
         </div>
         ${setsAreaHTML}
+        ${ex.tech ? `<button class="tech-btn" data-tech="${ex.id}" aria-label="заметки по технике" title="заметки по технике"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5h12.5a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H5a1.5 1.5 0 0 1-1.5-1.5v-14A1.5 1.5 0 0 1 5 3.5z"/><path d="M8.5 3.5v17"/><path d="M11.75 8.75h3.75M11.75 12.5h3.75"/></svg></button>` : ''}
         <button class="yt-btn" data-yt="${ex.url}"><i class="ti ti-brand-youtube"></i></button>
       </div>
       <div class="ex-grid">
@@ -1915,13 +2043,72 @@ function renderTraining() {
     exList.appendChild(card);
   });
 
+  // Ссылка на архив — упражнения, выведенные из активных дней
+  if (ARCHIVE.length) {
+    const arch = document.createElement('div');
+    arch.className = 'archive-link';
+    arch.innerHTML = `<button type="button" id="archiveBtn"><i class="ti ti-archive"></i>архив · ${ARCHIVE.length}</button>`;
+    exList.appendChild(arch);
+    arch.querySelector('#archiveBtn').addEventListener('click', openArchive);
+  }
+
   bindTrainingHandlers(exList);
   updateSessionBar();
+}
+
+// ----- Заметки по технике -----
+function openTech(id) {
+  const ex = findExById(id);
+  if (!ex || !ex.tech) return;
+  openModal(`
+    <div class="modal-head">
+      <div class="t">техника</div>
+      <button class="x" onclick="closeModal()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="tech-ex">${ex.name}<span>${ex.sub}</span></div>
+    <div class="tech-body">${ex.tech}</div>
+  `);
+}
+
+// ----- Архив -----
+function escHtml(s) {
+  return String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+}
+function openArchive() {
+  const rows = ARCHIVE.map(ex => {
+    const saved = getExSaved(ex.id);
+    const w = (saved.w !== undefined && saved.w !== '') ? saved.w : null;
+    const r = (saved.r !== undefined && saved.r !== '') ? saved.r : null;
+    const hasData = w !== null || r !== null;
+    const data = hasData
+      ? `${w !== null ? w + ' кг' : ''}${w !== null && r !== null ? ' × ' : ''}${r !== null ? r : ''}`
+      : 'нет записей';
+    return `
+      <div class="arch-row">
+        <div class="arch-meta">
+          <div class="arch-name">${escHtml(ex.name)}</div>
+          <div class="arch-sub">${escHtml(ex.sub)}${ex.sets ? ' · ' + escHtml(ex.sets) : ''}</div>
+          ${saved.n ? `<div class="arch-note">${escHtml(saved.n)}</div>` : ''}
+        </div>
+        <div class="arch-data${hasData ? '' : ' empty'}">${data}</div>
+      </div>`;
+  }).join('');
+  openModal(`
+    <div class="modal-head">
+      <div class="t">архив</div>
+      <button class="x" onclick="closeModal()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="arch-hint">упражнения убраны из активных дней — история весов сохранена</div>
+    <div class="arch-list">${rows}</div>
+  `);
 }
 
 function bindTrainingHandlers(exList) {
   exList.querySelectorAll('.yt-btn').forEach(b => {
     b.addEventListener('click', (e) => { e.stopPropagation(); openYouTube(b.dataset.yt); });
+  });
+  exList.querySelectorAll('.tech-btn').forEach(b => {
+    b.addEventListener('click', (e) => { e.stopPropagation(); openTech(b.dataset.tech); });
   });
   exList.querySelectorAll('.ex-card').forEach(card => {
     const id = card.dataset.id;
@@ -2415,7 +2602,7 @@ function bindSwipeHandlers(card) {
   // Tap to expand when collapsed
   card.addEventListener('click', (e) => {
     if (!card.classList.contains('collapsed')) return;
-    if (e.target.closest('.sets-area, .yt-btn, .stepper-btn, .stepper-input, .note-area')) return;
+    if (e.target.closest('.sets-area, .yt-btn, .tech-btn, .stepper-btn, .stepper-input, .note-area')) return;
     setExSession(id, { collapsed: false });
     collapseCard(id, false);
     updateSessionBar();
