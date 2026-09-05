@@ -332,6 +332,7 @@
   }
   .ex-card.collapsed > .ex-header,
   .ex-card.collapsed > .ex-grid,
+  .ex-card.collapsed > .sets-block,
   .ex-card.collapsed > .note-area { display: none; }
   .ex-card .collapsed-summary { display: none; }
   .ex-card.collapsed .collapsed-summary {
@@ -489,7 +490,7 @@
   }
   .sets-undo.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
-  /* dual sets badges (dual: true — левая/правая сторона тренируются отдельно) */
+  /* dual sets badges (unilateral: true — левая/правая сторона тренируются отдельно) */
   .sets-dual { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 
   /* session bar */
@@ -555,6 +556,57 @@
     margin-top: 3px;
     letter-spacing: 0.5px;
   }
+
+  /* ---- Подходы 1/2/3 (компактная сетка ввода) ---- */
+  .sets-block { margin-bottom: 8px; }
+  .sets-grid { display: flex; flex-direction: column; gap: 5px; }
+  .sg-head, .sg-row {
+    display: grid;
+    grid-template-columns: 16px 1fr 1fr;
+    gap: 6px;
+    align-items: center;
+  }
+  .sets-grid.uni .sg-head,
+  .sets-grid.uni .sg-row { grid-template-columns: 16px 1fr 1fr 1fr; }
+  .sg-head span {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    text-align: center;
+  }
+  .sg-n {
+    font-family: var(--serif); font-style: italic;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+    -webkit-user-select: none; user-select: none;
+  }
+  .sg-in {
+    height: 34px;
+    background: rgba(245,242,232,0.03);
+    border: 1px solid var(--border-2);
+    border-radius: 8px;
+    text-align: center;
+    color: var(--cream);
+    font-size: 16px; /* iOS не зумит при >=16 */
+    width: 100%;
+    min-width: 0;
+    outline: none;
+    padding: 0 4px;
+    -webkit-appearance: none;
+    transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
+  }
+  .sg-in::placeholder { color: rgba(245,242,232,0.25); }
+  /* предзаполненный вес (зеркалит подход 1) — приглушён, пока его не правили */
+  .sg-in[data-auto="1"] { color: var(--muted-2); }
+  .sg-retention {
+    margin-top: 9px;
+    font-size: 11px;
+    color: var(--muted-2);
+    letter-spacing: 0.3px;
+  }
+  .sg-retention b { color: var(--green); font-weight: 600; }
+  .sg-retention .sg-warn { color: var(--muted); }
   .note-area {
     margin-top: 6px;
   }
@@ -1642,7 +1694,8 @@ const TECH_SEATED_LEG_CURL = `
   </ul>
 `;
 
-// dual: true → подходы считаются отдельно для левой и правой стороны (две колонки)
+// unilateral: true → упражнение делается по сторонам: отдельные счётчики
+// подходов (две колонки) и отдельные повторы слева/справа.
 const trainingA = [
   { id: 'chest_press', num: 1, name: 'жим от груди', sub: 'Chest Press', sets: '3×8-12', rest: 180, url: 'https://youtube.com/shorts/EC1Yf3M0im8?is=bdAV9DSniv4fxSXm' },
   { id: 'shoulder_press', num: 2, name: 'жим плеч', sub: 'Shoulder Press', sets: '3×8-12', rest: 180, url: 'https://youtube.com/shorts/lC9uiTqYH84?is=_g4ItfNvBMRiUnXt' },
@@ -1652,15 +1705,15 @@ const trainingA = [
   { id: 'reverse_cable_curl', num: 6, name: 'обратный подъём на блоке', sub: 'Reverse Cable Curl', sets: '3×12-15', rest: 90, url: 'https://www.youtube.com/shorts/_0icSYP3PlE?feature=share' },
   { id: 'overhead_cable_extension', num: 7, name: 'разгибание из-за головы на блоке', sub: 'Overhead Cable Extension', sets: '3×10-12', rest: 90, tech: TECH_OVERHEAD_EXT, url: 'https://www.youtube.com/shorts/0IM1J_GmQ34?feature=share' },
   { id: 'leg_press', num: 8, name: 'жим ногами', sub: 'Leg Press', sets: '3×8-12', rest: 180, url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' },
-  { id: 'leg_extension', num: 9, name: 'разгибание ног', sub: 'Leg Extension', sets: '3+3×12-15', rest: 90, dual: true, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
-  { id: 'calf_raise', num: 10, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, dual: true, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
+  { id: 'leg_extension', num: 9, name: 'разгибание ног', sub: 'Leg Extension', sets: '3+3×12-15', rest: 90, unilateral: true, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
+  { id: 'calf_raise', num: 10, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, unilateral: true, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
   { id: 'total_abs', num: 11, name: 'скручивания в тренажёре', sub: 'Abdominal Crunch', sets: '3×10-15', rest: 60, url: 'https://www.youtube.com/shorts/DVCmFYlNFRg?feature=share' }
 ];
 const trainingB = [
   { id: 'lat_pulldown', num: 1, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×10-12', rest: 180, url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
   { id: 'seated_leg_curl', num: 2, name: 'сгибание ног сидя', sub: 'Seated Leg Curl', sets: '3×10-15', rest: 90, tech: TECH_SEATED_LEG_CURL, url: 'https://www.youtube.com/shorts/xdbEG3xGLI8?feature=share' },
   { id: 'low_row', num: 3, name: 'горизонтальная тяга сидя', sub: 'Low Row', sets: '3×10-12', rest: 180, url: 'https://www.youtube.com/shorts/j3k4DsTAgx8?feature=share' },
-  { id: 'calf_raise', num: 4, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, dual: true, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
+  { id: 'calf_raise', num: 4, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, unilateral: true, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
   { id: 'reverse_pec_deck', num: 5, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '3×12-15', rest: 90, url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
   { id: 'arm_curl', num: 6, name: 'сгибание рук в тренажёре', sub: 'Arm Curl Machine', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/IWDHXA1ZcT8?is=9QgKqBX6kU9lXxLr' },
   { id: 'total_abs', num: 7, name: 'скручивания в тренажёре', sub: 'Abdominal Crunch', sets: '3×10-15', rest: 60, url: 'https://www.youtube.com/shorts/DVCmFYlNFRg?feature=share' },
@@ -1888,6 +1941,129 @@ function saveExField(id, field, value) {
   LS.set('levshub_workout', data);
 }
 
+// ----- Подходы 1/2/3 -----
+// Запись упражнения: { sets: [set1, set2, set3], n: 'заметка' }
+//   двустороннее:   set = { w, r }            | null
+//   одностороннее:  set = { w, rl, rr }       | null   (rl/rr — стороны, не ноги)
+// Пустой подход = null (не 0). Пустое поле внутри подхода = null.
+// PR, «последний вес» и сводки читают ТОЛЬКО подход 1 (getSet1).
+const SETS_PER_EX = 3;
+
+// '' → null, '?' → '?', иначе число (мусор → null)
+function normVal(v) {
+  if (v === '?' ) return '?';
+  if (v === '' || v === null || v === undefined) return null;
+  const num = parseFloat(v);
+  return isNaN(num) ? null : num;
+}
+// только настоящее число (для расчётов): '?' и null не считаются
+function numOrNull(v) {
+  if (typeof v === 'number' && isFinite(v)) return v;
+  return null;
+}
+
+function getExSets(id) {
+  const rec = getExSaved(id);
+  const arr = Array.isArray(rec.sets) ? rec.sets : [];
+  const out = [];
+  for (let i = 0; i < SETS_PER_EX; i++) out.push(arr[i] || null);
+  return out;
+}
+function getSet1(id) { return getExSets(id)[0]; }
+
+function saveExSets(id, sets) {
+  const data = getWorkoutData();
+  if (!data[id]) data[id] = {};
+  data[id].sets = sets;
+  LS.set('levshub_workout', data);
+}
+
+// Повторы подхода. Для одностороннего — среднее из сторон.
+function setReps(set, uni) {
+  if (!set) return null;
+  if (uni) {
+    const a = numOrNull(set.rl), b = numOrNull(set.rr);
+    if (a === null && b === null) return null;
+    if (a === null) return b;
+    if (b === null) return a;
+    return (a + b) / 2;
+  }
+  return numOrNull(set.r);
+}
+
+// Удержание повторов = подход 3 / подход 1 × 100 (целые проценты).
+// Считается только когда заполнены и 1-й, и 3-й. Разный вес — считаем, но помечаем.
+function computeRetention(id) {
+  const uni = isUnilateralId(id);
+  const sets = getExSets(id);
+  const r1 = setReps(sets[0], uni);
+  const r3 = setReps(sets[2], uni);
+  if (r1 === null || r3 === null || r1 <= 0) return null;
+  const w1 = numOrNull(sets[0] && sets[0].w);
+  const w3 = numOrNull(sets[2] && sets[2].w);
+  return {
+    pct: Math.round((r3 / r1) * 100),
+    weightChanged: (w1 !== null && w3 !== null && w1 !== w3)
+  };
+}
+
+// Короткая сводка по подходу 1 — для свёрнутой карточки и архива
+function set1Summary(id) {
+  const uni = isUnilateralId(id);
+  const s1 = getSet1(id);
+  if (!s1) return null;
+  const w = (s1.w === null || s1.w === undefined || s1.w === '') ? null : s1.w;
+  let reps = null;
+  if (uni) {
+    const a = (s1.rl === undefined || s1.rl === '') ? null : s1.rl;
+    const b = (s1.rr === undefined || s1.rr === '') ? null : s1.rr;
+    if (a !== null && b !== null) reps = a + '/' + b;
+    else if (a !== null) reps = String(a);
+    else if (b !== null) reps = String(b);
+  } else {
+    reps = (s1.r === null || s1.r === undefined || s1.r === '') ? null : String(s1.r);
+  }
+  if (w === null && reps === null) return null;
+  return (w !== null ? w + 'кг' : '') + (w !== null && reps !== null ? ' × ' : '') + (reps !== null ? reps : '');
+}
+
+// Разовая миграция {w,r,n} → {sets:[set1,null,null], n}. Ничего не удаляет.
+// Бэкап пишется один раз; при несовпадении числа записей миграция отменяется.
+const WORKOUT_BACKUP_KEY = 'levshub_workout_backup_pre_sets';
+function migrateWorkoutToSets() {
+  const raw = localStorage.getItem('levshub_workout');
+  if (raw === null) return;
+  let data;
+  try { data = JSON.parse(raw); } catch (e) { return; }
+  if (!data || typeof data !== 'object') return;
+  const ids = Object.keys(data);
+  const pending = ids.filter(id => data[id] && !Array.isArray(data[id].sets));
+  if (!pending.length) return;
+  try {
+    if (localStorage.getItem(WORKOUT_BACKUP_KEY) === null) {
+      localStorage.setItem(WORKOUT_BACKUP_KEY, raw);
+    }
+  } catch (e) { return; } // без бэкапа не мигрируем
+  const out = {};
+  ids.forEach(id => {
+    const rec = data[id] || {};
+    if (Array.isArray(rec.sets)) { out[id] = rec; return; }
+    const w = normVal(rec.w);
+    const r = normVal(rec.r);
+    let s1 = null;
+    if (w !== null || r !== null) {
+      // старые записи стороны не различали → всё уходит в rl, rr остаётся null
+      s1 = isUnilateralId(id) ? { w: w, rl: r, rr: null } : { w: w, r: r };
+    }
+    out[id] = { sets: [s1, null, null], n: rec.n || '' };
+  });
+  if (Object.keys(out).length !== ids.length) {
+    console.error('[levshub] миграция подходов отменена: было', ids.length, 'стало', Object.keys(out).length);
+    return; // старые данные остаются нетронутыми
+  }
+  LS.set('levshub_workout', out);
+}
+
 // One-time migration from old index-keyed levshub_workout_A/B → levshub_workout
 function migrateWorkoutData() {
   if (LS.get('levshub_workout', null)) return;
@@ -1938,6 +2114,80 @@ function getSetsRemaining(ex) {
   return Math.max(0, total - done);
 }
 
+// ----- Сетка ввода подходов 1/2/3 -----
+function buildSetsBlock(ex) {
+  const uni = !!ex.unilateral;
+  const sets = getExSets(ex.id);
+  const s1 = sets[0];
+  const s1w = (s1 && s1.w !== null && s1.w !== undefined) ? s1.w : '';
+  const cell = (i, f, val, auto) =>
+    `<input class="sg-in np-input" type="text" inputmode="none" readonly data-set="${i}" data-f="${f}"` +
+    (auto ? ' data-auto="1"' : '') + ` value="${val === null || val === undefined ? '' : val}" placeholder="—"` +
+    ` aria-label="подход ${i + 1} · ${f === 'w' ? 'кг' : f === 'rl' ? 'левая' : f === 'rr' ? 'правая' : 'повторы'}">`;
+  let rows = '';
+  for (let i = 0; i < SETS_PER_EX; i++) {
+    const s = sets[i];
+    const own = (s && s.w !== null && s.w !== undefined) ? s.w : null;
+    // подходы 2 и 3: вес предзаполняется весом подхода 1, пока его не правили
+    const auto = i > 0 && (own === null || own === s1w);
+    const wVal = i === 0 ? s1w : (auto ? s1w : own);
+    rows += `<div class="sg-row"><span class="sg-n">${i + 1}</span>${cell(i, 'w', wVal, auto)}` +
+      (uni
+        ? cell(i, 'rl', s ? s.rl : '', false) + cell(i, 'rr', s ? s.rr : '', false)
+        : cell(i, 'r', s ? s.r : '', false)) +
+      `</div>`;
+  }
+  const head = `<div class="sg-head"><span></span><span>кг</span>` +
+    (uni ? `<span>лев</span><span>прав</span>` : `<span>повт</span>`) + `</div>`;
+  return `<div class="sets-block">
+        <div class="sets-grid${uni ? ' uni' : ''}">${head}${rows}</div>
+        <div class="sg-retention" hidden></div>
+      </div>`;
+}
+
+// Собирает подходы из полей карточки и сохраняет.
+// Подход 2/3 становится записью только когда введены повторы — вес там
+// это предзаполнение из подхода 1, само по себе оно подход не создаёт.
+function commitSets(card) {
+  const id = card.dataset.id;
+  const uni = isUnilateralId(id);
+  const rows = card.querySelectorAll('.sg-row');
+  const sets = [];
+  let firstW = null;
+  rows.forEach((row, i) => {
+    const el = (f) => row.querySelector(`[data-f="${f}"]`);
+    const val = (f) => { const e = el(f); return e ? normVal(e.value.trim()) : null; };
+    const wEl = el('w');
+    const isAuto = wEl && wEl.dataset.auto === '1';
+    const ownW = isAuto ? null : val('w');
+    if (i === 0) firstW = ownW;
+    const w = (ownW !== null) ? ownW : (i > 0 ? firstW : null);
+    if (uni) {
+      const rl = val('rl'), rr = val('rr');
+      const has = rl !== null || rr !== null;
+      if (i === 0) sets.push((w === null && !has) ? null : { w: w, rl: rl, rr: rr });
+      else sets.push(has ? { w: w, rl: rl, rr: rr } : null);
+    } else {
+      const r = val('r');
+      if (i === 0) sets.push((w === null && r === null) ? null : { w: w, r: r });
+      else sets.push(r !== null ? { w: w, r: r } : null);
+    }
+  });
+  saveExSets(id, sets);
+  renderRetention(card);
+}
+
+// Удержание повторов — только внутри карточки упражнения
+function renderRetention(card) {
+  const box = card.querySelector('.sg-retention');
+  if (!box) return;
+  const res = computeRetention(card.dataset.id);
+  if (!res) { box.hidden = true; box.innerHTML = ''; return; }
+  box.hidden = false;
+  box.innerHTML = `удержание повторов <b>${res.pct}%</b>` +
+    (res.weightChanged ? ` <span class="sg-warn">· вес менялся</span>` : '');
+}
+
 // ----- Render -----
 function renderTraining() {
   const view = getTrainingView();
@@ -1972,13 +2222,11 @@ function renderTraining() {
     const saved = getExSaved(ex.id);
     const sess = getExSession(ex.id);
     const total = parseTotalSets(ex.sets);
-    const isLeg = !!ex.dual;
+    const isLeg = !!ex.unilateral;
     const done = Math.min(total, sess.setsDone || 0);
     const remaining = total - done;
     const isDone = isLeg ? isExComplete(ex) : (remaining === 0);
     const isCollapsed = !!sess.collapsed || isDone;
-    const w = saved.w !== undefined ? saved.w : '';
-    const r = saved.r !== undefined ? saved.r : '';
     const n = saved.n || '';
     const badgeContent = (remaining === 0)
       ? '<i class="ti ti-check"></i>'
@@ -1993,8 +2241,9 @@ function renderTraining() {
           </div>
           <button class="sets-undo" data-action="sets-undo" aria-label="вернуть подход"><span style="font-size:14px;line-height:1">↶</span> вернуть</button>
         </div>`;
-    const summaryData = (w !== '' || r !== '')
-      ? `<span class="cs-data">${w !== '' ? w + 'кг' : ''}${w !== '' && r !== '' ? ' × ' : ''}${r !== '' ? r : ''}</span>`
+    const sum1 = set1Summary(ex.id);
+    const summaryData = sum1
+      ? `<span class="cs-data">${sum1}</span>`
       : '<span class="cs-hint">не записано</span>';
     const card = document.createElement('div');
     card.className = 'ex-card' + (isDone ? ' done' : '') + (isCollapsed ? ' collapsed' : '');
@@ -2014,24 +2263,7 @@ function renderTraining() {
         ${ex.tech ? `<button class="tech-btn" data-tech="${ex.id}" aria-label="заметки по технике" title="заметки по технике"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5h12.5a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H5a1.5 1.5 0 0 1-1.5-1.5v-14A1.5 1.5 0 0 1 5 3.5z"/><path d="M8.5 3.5v17"/><path d="M11.75 8.75h3.75M11.75 12.5h3.75"/></svg></button>` : ''}
         <button class="yt-btn" data-yt="${ex.url}"><i class="ti ti-brand-youtube"></i></button>
       </div>
-      <div class="ex-grid">
-        <div>
-          <div class="stepper">
-            <button class="stepper-btn stepper-minus" data-step="w" data-dir="-1">−</button>
-            <input class="stepper-input" type="text" inputmode="none" readonly data-field="w" value="${w}" placeholder="0">
-            <button class="stepper-btn stepper-plus" data-step="w" data-dir="1">+</button>
-          </div>
-          <div class="stepper-label">кг</div>
-        </div>
-        <div>
-          <div class="stepper">
-            <button class="stepper-btn stepper-minus" data-step="r" data-dir="-1">−</button>
-            <input class="stepper-input" type="text" inputmode="none" readonly data-field="r" value="${r}" placeholder="0">
-            <button class="stepper-btn stepper-plus" data-step="r" data-dir="1">+</button>
-          </div>
-          <div class="stepper-label">повт</div>
-        </div>
-      </div>
+      ${buildSetsBlock(ex)}
       <div class="note-area${n ? ' has-note-init' : ''}">
         <button type="button" class="note-trigger${n ? ' has-note' : ''}">
           <svg class="note-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
@@ -2077,12 +2309,9 @@ function escHtml(s) {
 function openArchive() {
   const rows = ARCHIVE.map(ex => {
     const saved = getExSaved(ex.id);
-    const w = (saved.w !== undefined && saved.w !== '') ? saved.w : null;
-    const r = (saved.r !== undefined && saved.r !== '') ? saved.r : null;
-    const hasData = w !== null || r !== null;
-    const data = hasData
-      ? `${w !== null ? w + ' кг' : ''}${w !== null && r !== null ? ' × ' : ''}${r !== null ? r : ''}`
-      : 'нет записей';
+    const sum = set1Summary(ex.id);
+    const hasData = !!sum;
+    const data = hasData ? sum.replace('кг', ' кг') : 'нет записей';
     return `
       <div class="arch-row">
         <div class="arch-meta">
@@ -2112,34 +2341,57 @@ function bindTrainingHandlers(exList) {
   });
   exList.querySelectorAll('.ex-card').forEach(card => {
     const id = card.dataset.id;
-    // Stepper +/-
-    card.querySelectorAll('.stepper-btn').forEach(b => {
-      b.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const field = b.dataset.step;
-        const dir = +b.dataset.dir;
-        const step = field === 'w' ? 2.5 : 1;
-        const input = card.querySelector(`input[data-field="${field}"]`);
-        let cur = parseFloat(input.value) || 0;
-        cur = Math.max(0, cur + dir * step);
-        input.value = (cur % 1 === 0) ? String(cur) : cur.toFixed(1);
-        saveExField(id, field, input.value);
-      });
-    });
-    // Input changes
+    // Заметка
     card.querySelectorAll('input[data-field]').forEach(inp => {
       inp.addEventListener('input', () => saveExField(id, inp.dataset.field, inp.value));
     });
-    // Numeric keypad
-    card.querySelectorAll('.stepper-input').forEach(makeNumeric);
+    // Подходы 1/2/3
+    card.querySelectorAll('.sg-in').forEach(makeNumeric);
+    bindSetsGrid(card);
     // Sets tracker
-    if (isDualId(id)) bindLegSetsHandlers(card);
+    if (isUnilateralId(id)) bindLegSetsHandlers(card);
+    else bindSetsHandlers(card);
+    // Sets tracker
+    if (isUnilateralId(id)) bindLegSetsHandlers(card);
     else bindSetsHandlers(card);
     // Swipe + collapsed tap
     bindSwipeHandlers(card);
     // Note icon-trigger
     bindNoteHandlers(card);
   });
+}
+
+// ----- Ввод подходов 1/2/3 -----
+function bindSetsGrid(card) {
+  const inputs = card.querySelectorAll('.sg-in');
+  if (!inputs.length) return;
+  const set1W = card.querySelector('.sg-row [data-set="0"][data-f="w"]');
+
+  inputs.forEach(inp => {
+    inp.addEventListener('input', () => {
+      const isW = inp.dataset.f === 'w';
+      const idx = +inp.dataset.set;
+      // ручная правка веса в подходе 2/3 отвязывает его от подхода 1
+      if (isW && idx > 0) inp.dataset.auto = '0';
+      // вес подхода 1 тянет за собой те подходы, где его ещё не правили
+      if (isW && idx === 0) {
+        card.querySelectorAll('.sg-in[data-f="w"][data-auto="1"]').forEach(t => {
+          if (t !== inp) t.value = inp.value;
+        });
+      }
+      commitSets(card);
+    });
+  });
+  renderRetention(card);
+}
+
+// Следующее поле ввода подходов в этой же карточке (для «готово» на клавиатуре)
+function nextSetsInput(cur) {
+  const card = cur.closest('.ex-card');
+  if (!card) return null;
+  const all = Array.from(card.querySelectorAll('.sg-in'));
+  const i = all.indexOf(cur);
+  return (i >= 0 && i < all.length - 1) ? all[i + 1] : null;
 }
 
 // ----- Note icon-trigger (collapsed by default, expand on tap) -----
@@ -2246,9 +2498,9 @@ function findExById(id) {
   return trainingA.find(e => e.id === id) || trainingB.find(e => e.id === id);
 }
 // Упражнение считается по сторонам (левая/правая) — две колонки подходов
-function isDualId(id) {
+function isUnilateralId(id) {
   const ex = findExById(id);
-  return !!(ex && ex.dual);
+  return !!(ex && ex.unilateral);
 }
 
 function decrementSet(id) {
@@ -2322,12 +2574,12 @@ function hideUndo() {
   document.querySelectorAll('.sets-undo.show').forEach(u => u.classList.remove('show'));
 }
 
-// ----- Dual-badge sets (dual: true — левая/правая сторона считаются отдельно) -----
+// ----- Dual-badge sets (unilateral: true — левая/правая сторона считаются отдельно) -----
 // Each side keeps its own independent count in the session under setsDoneL / setsDoneR.
 function isExComplete(ex) {
   const total = parseTotalSets(ex.sets);
   const sess = getExSession(ex.id);
-  if (ex.dual) {
+  if (ex.unilateral) {
     return (sess.setsDoneL || 0) >= total && (sess.setsDoneR || 0) >= total;
   }
   return (sess.setsDone || 0) >= total;
@@ -2490,15 +2742,13 @@ document.addEventListener('click', (e) => {
 function collapseCard(id, collapsed) {
   const card = document.querySelector(`.ex-card[data-id="${id}"]`);
   if (!card) return;
-  // Update summary with current data before collapsing
-  const saved = getExSaved(id);
-  const w = saved.w !== undefined ? saved.w : '';
-  const r = saved.r !== undefined ? saved.r : '';
+  // Update summary with current data before collapsing (подход 1)
+  const sum = set1Summary(id);
   const dataEl = card.querySelector('.cs-text');
   if (dataEl) {
     const ex = findExById(id);
-    const dataStr = (w !== '' || r !== '')
-      ? `<span class="cs-data">${w !== '' ? w + 'кг' : ''}${w !== '' && r !== '' ? ' × ' : ''}${r !== '' ? r : ''}</span>`
+    const dataStr = sum
+      ? `<span class="cs-data">${sum}</span>`
       : '<span class="cs-hint">не записано</span>';
     if (ex) dataEl.innerHTML = `<span style="color:var(--cream)">${ex.num}.</span> ${ex.name} · ${dataStr}`;
   }
@@ -2560,7 +2810,7 @@ function bindSwipeHandlers(card) {
         const ex = findExById(id);
         if (ex) {
           const total = parseTotalSets(ex.sets);
-          if (isDualId(id)) setExSession(id, { setsDoneL: total, setsDoneR: total, collapsed: true });
+          if (isUnilateralId(id)) setExSession(id, { setsDoneL: total, setsDoneR: total, collapsed: true });
           else setExSession(id, { setsDone: total, collapsed: true });
           updateSessionBar();
         }
@@ -2570,7 +2820,7 @@ function bindSwipeHandlers(card) {
           card.style.transition = '';
           card.style.transform = '';
           card.style.opacity = '';
-          if (isDualId(id)) { animateLegBadge(id, 'L'); animateLegBadge(id, 'R'); }
+          if (isUnilateralId(id)) { animateLegBadge(id, 'L'); animateLegBadge(id, 'R'); }
           else animateBadgeUpdate(id);
           collapseCard(id, true);
         }, 380);
@@ -2629,7 +2879,7 @@ document.getElementById('sessionReset').addEventListener('click', () => {
     const view = getTrainingView();
     const program = view === 'A' ? trainingA : trainingB;
     program.forEach(ex => {
-      setExSession(ex.id, ex.dual
+      setExSession(ex.id, ex.unilateral
         ? { setsDone: 0, setsDoneL: 0, setsDoneR: 0, collapsed: false }
         : { setsDone: 0, collapsed: false });
     });
@@ -3357,19 +3607,14 @@ function getInputLabel(input) {
   // Previous sibling <label>
   const prev = input.previousElementSibling;
   if (prev && prev.tagName === 'LABEL') return prev.textContent.trim().replace(/\s+/g, ' ');
-  // Stepper inputs: look for sibling .stepper-label
-  if (input.classList.contains('stepper-input')) {
-    const stepperWrap = input.closest('.stepper');
-    if (stepperWrap && stepperWrap.parentElement) {
-      const lbl = stepperWrap.parentElement.querySelector('.stepper-label');
-      if (lbl) {
-        // Add exercise name for context if available
-        const card = input.closest('.ex-card');
-        const title = card && card.querySelector('.ex-title');
-        if (title) return title.textContent.trim() + ' · ' + lbl.textContent.trim();
-        return lbl.textContent.trim();
-      }
-    }
+  // Поля подходов: «упражнение · подход N · кг/повт/лев/прав»
+  if (input.classList.contains('sg-in')) {
+    const f = input.dataset.f;
+    const what = f === 'w' ? 'кг' : f === 'rl' ? 'левая' : f === 'rr' ? 'правая' : 'повт';
+    const part = 'подход ' + (+input.dataset.set + 1) + ' · ' + what;
+    const card = input.closest('.ex-card');
+    const title = card && card.querySelector('.ex-title');
+    return title ? title.textContent.trim() + ' · ' + part : part;
   }
   // Measurement modal inputs: look up field label
   const mk = input.dataset.mk;
@@ -3458,6 +3703,12 @@ document.getElementById('numpadBack').addEventListener('click', (e) => {
 });
 document.getElementById('numpadDone').addEventListener('click', (e) => {
   e.preventDefault(); e.stopPropagation();
+  // В сетке подходов «готово» переводит на следующее поле — меньше тапов.
+  // На остальных полях (диета, замеры) поведение прежнее: просто закрыть.
+  if (activeNpInput && activeNpInput.classList.contains('sg-in')) {
+    const next = nextSetsInput(activeNpInput);
+    if (next) { openNumpad(next); return; }
+  }
   closeNumpad();
 });
 // Prevent backdrop touches from bubbling to body close handler
@@ -3523,6 +3774,7 @@ window.addEventListener('resize', updateAllToggleIndicators);
 
 // ================= INIT =================
 migrateWorkoutData(); // one-time migration from levshub_workout_A/B → levshub_workout
+migrateWorkoutToSets(); // one-time migration {w,r} → sets[0]; старые записи сохраняются
 runSplash();
 const initialPreset = loadTimerPreset();
 applyTimerPreset(initialPreset, { silent: true });
