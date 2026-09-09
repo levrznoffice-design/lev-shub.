@@ -1716,18 +1716,19 @@ const TECH_OVERHEAD_EXT = `
   <p>Прямых исследований гипертрофии «канат vs гриф» нет. Есть только ЭМГ на пуловере вниз: активность длинной головки была выше при супинированном хвате с рукоятью, чем при остальных вариантах — но ЭМГ плохо предсказывает рост. В самих исследованиях Maeo использовался супинированный хват на блоке.</p>
   <p><b>Практически:</b> бери то, что даёт самый глубокий растяг за головой без боли в запястье. Канат/двойная лямка удобнее по траектории и позволяет завести руки дальше; EZ (изогнутый) гриф мягче для запястий, чем прямой; прямой гриф — если нужен вес побольше. По росту мышц разницы, скорее всего, нет.</p>
 `;
-const TECH_KNEELING_CABLE_CRUNCH = `
+const TECH_STANDING_CABLE_CRUNCH = `
   <h4>Заметки по технике</h4>
+  <p>Стоя, лицом от стека. Косичка на верхнем блоке.</p>
   <ul>
-    <li>Ноги завести под валики для бёдер — это якорь, иначе вес поднимает тело.</li>
-    <li>Канат держать у висков, локти опущены и неподвижны.</li>
-    <li><b>ГЛАВНОЕ:</b> таз стоит на месте. Двигается только позвоночник. Если таз уходит назад — это наклон, пресс выключен.</li>
-    <li>Скручивать рёбра к тазу, спина округляется. Руки мёртвые, канат — просто крючок на голове.</li>
-    <li>Внизу резкий выдох.</li>
-    <li>Вверх 2–3 секунды, не разгибаться полностью — держать натяжение.</li>
-    <li>Отказ = позвоночник перестал сгибаться.</li>
+    <li><b>ЯКОРЬ</b> (стоя это главное): бёдра упереть сзади в сиденье тренажёра или в валики. Иначе таз поедет и вес тебя поднимет.</li>
+    <li>Ноги на ширине плеч, колени чуть согнуты и <b>НЕ МЕНЯЮТ УГОЛ</b> всё упражнение.</li>
+    <li>Руки держат канат у висков. Локти вниз, руки мёртвые — канат просто крючок на голове.</li>
+    <li><b>ГЛАВНОЕ:</b> таз стоит на месте. Двигается только позвоночник. Если таз уходит назад — это наклон, а не скручивание, пресс выключен.</li>
+    <li>Скручивай рёбра к тазу, спина округляется сверху вниз.</li>
+    <li>Внизу резкий выдох — так дожимаешь сокращение.</li>
+    <li>Вверх 2–3 секунды, не разгибаться полностью, держать натяжение.</li>
+    <li>Отказ = позвоночник перестал сгибаться, дальше тянут руки.</li>
   </ul>
-  <p>Стартовый вес 40–50 кг.</p>
 `;
 const TECH_SEATED_LEG_CURL = `
   <h4>Заметки по технике</h4>
@@ -1751,7 +1752,7 @@ const trainingA = [
   { id: 'leg_press', num: 8, name: 'жим ногами', sub: 'Leg Press', sets: '3×8-12', rest: 180, url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' },
   { id: 'leg_extension', num: 9, name: 'разгибание ног', sub: 'Leg Extension', sets: '3+3×12-15', rest: 90, unilateral: true, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
   { id: 'calf_raise', num: 10, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, unilateral: true, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
-  { id: 'kneeling_cable_crunch', num: 11, name: 'скручивания на блоке стоя на коленях', sub: 'Kneeling Cable Crunch', sets: '3×10-15', rest: 60, tech: TECH_KNEELING_CABLE_CRUNCH, url: 'https://vt.tiktok.com/ZSqAY7peS/' }
+  { id: 'kneeling_cable_crunch', num: 11, name: 'скручивания на блоке стоя', sub: 'Standing Cable Crunch', sets: '3×10-15', rest: 60, tech: TECH_STANDING_CABLE_CRUNCH, url: 'https://vt.tiktok.com/ZSqAY7peS/' }
 ];
 const trainingB = [
   { id: 'lat_pulldown', num: 1, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×10-12', rest: 180, url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
@@ -1760,7 +1761,7 @@ const trainingB = [
   { id: 'calf_raise', num: 4, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, unilateral: true, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
   { id: 'reverse_pec_deck', num: 5, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '3×12-15', rest: 90, url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
   { id: 'arm_curl', num: 6, name: 'сгибание рук в тренажёре', sub: 'Arm Curl Machine', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/IWDHXA1ZcT8?is=9QgKqBX6kU9lXxLr' },
-  { id: 'kneeling_cable_crunch', num: 7, name: 'скручивания на блоке стоя на коленях', sub: 'Kneeling Cable Crunch', sets: '3×10-15', rest: 60, tech: TECH_KNEELING_CABLE_CRUNCH, url: 'https://vt.tiktok.com/ZSqAY7peS/' },
+  { id: 'kneeling_cable_crunch', num: 7, name: 'скручивания на блоке стоя', sub: 'Standing Cable Crunch', sets: '3×10-15', rest: 60, tech: TECH_STANDING_CABLE_CRUNCH, url: 'https://vt.tiktok.com/ZSqAY7peS/' },
   { id: 'incline_db_curl', num: 8, name: 'наклонный подъём гантелей', sub: 'Incline DB Curl', sets: '3×8-12', rest: 90, url: 'https://youtube.com/shorts/uCUaRFlA9vE?si=_q-PSgOpB3iQviPn' },
   { id: 'wrist_curl', num: 9, name: 'сгибание запястий', sub: 'Wrist Curl', sets: '3×15-20', rest: 60, url: 'https://youtu.be/qMtmHwaCmYI?t=16' }
 ];
