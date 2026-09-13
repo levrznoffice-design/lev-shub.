@@ -661,6 +661,55 @@
     text-align: left;
   }
 
+  /* ---- Ссылка на видео (иконка в строке заметки + редактор) ---- */
+  .note-row { display: flex; align-items: flex-start; gap: 2px; }
+  .note-row .note-trigger { flex: 1; min-width: 0; width: auto; }
+  .url-btn {
+    flex-shrink: 0;
+    padding: 6px 8px;
+    border-radius: 8px;
+    color: var(--muted);
+    display: inline-flex;
+    align-items: center;
+    transition: color 150ms ease, transform 100ms ease;
+  }
+  .url-btn svg { width: 15px; height: 15px; display: block; }
+  .url-btn.custom { color: var(--green); } /* стоит своя ссылка */
+  .url-btn:active { transform: scale(0.92); color: var(--cream); }
+  .modal.url-sheet { min-height: 72vh; } /* поле повыше — клавиатура его не закроет */
+  .url-input {
+    width: 100%;
+    background: rgba(245,242,232,0.03);
+    border: 1px solid var(--border-2);
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: var(--cream);
+    font-size: 16px; /* iOS не зумит при >=16 */
+    outline: none;
+    -webkit-appearance: none;
+  }
+  .url-input:focus { border-color: rgba(200,48,44,0.4); }
+  .url-input.invalid { border-color: var(--red); }
+  .url-msg {
+    min-height: 16px;
+    margin: 8px 2px 14px;
+    font-size: 11px;
+    line-height: 1.45;
+    color: var(--muted);
+    letter-spacing: 0.3px;
+  }
+  .url-msg.error { color: var(--red); }
+  .url-actions { display: flex; gap: 8px; }
+  .url-default {
+    margin-top: 16px;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.3px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+  .url-default span { color: var(--muted-2); }
+
   /* заметка на весь экран */
   .modal.note-sheet {
     height: 92vh;
@@ -787,6 +836,8 @@
   .arch-note { font-size: 11px; color: var(--muted-2); margin-top: 5px; font-style: italic; }
   .arch-data { font-size: 13px; color: var(--cream); font-weight: 500; white-space: nowrap; flex-shrink: 0; }
   .arch-data.empty { color: var(--muted); font-weight: 400; font-size: 11px; }
+  .arch-set { text-align: right; line-height: 1.55; }
+  .arch-set span { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 12px; color: var(--muted); margin-right: 7px; }
 
   /* ============ Rest screen ============ */
   .rest-screen {
@@ -1716,6 +1767,27 @@ const TECH_OVERHEAD_EXT = `
   <p>Прямых исследований гипертрофии «канат vs гриф» нет. Есть только ЭМГ на пуловере вниз: активность длинной головки была выше при супинированном хвате с рукоятью, чем при остальных вариантах — но ЭМГ плохо предсказывает рост. В самих исследованиях Maeo использовался супинированный хват на блоке.</p>
   <p><b>Практически:</b> бери то, что даёт самый глубокий растяг за головой без боли в запястье. Канат/двойная лямка удобнее по траектории и позволяет завести руки дальше; EZ (изогнутый) гриф мягче для запястий, чем прямой; прямой гриф — если нужен вес побольше. По росту мышц разницы, скорее всего, нет.</p>
 `;
+const TECH_WEIGHTED_LEG_RAISE = `
+  <h4>Заметки по технике</h4>
+  <p>Гантель зажата между стопами. Колени согнуты — это рабочий вариант, прямые ноги не нужны.</p>
+  <ul>
+    <li><b>ГЛАВНОЕ:</b> не поднимать ноги, а <b>СКРУЧИВАТЬ ТАЗ</b> вверх. Подтягивать лобковую кость к рёбрам. Если работают только бёдра — тянет подвздошно-поясничная, пресс почти выключен.</li>
+    <li>Поясница внизу не прогибается. Не расслабляться в нижней точке, держать натяжение.</li>
+    <li>Опускание 2–3 секунды, контролируемо.</li>
+    <li>Отказ = таз перестал скручиваться, ноги идут одной инерцией.</li>
+  </ul>
+  <p><b>Прогрессия:</b> увеличивать вес гантели.</p>
+`;
+const TECH_LOW_ROW = `
+  <h4>Заметки по технике</h4>
+  <p>Шаг стека 7 кг — промежуточных весов нет.</p>
+  <ul>
+    <li><b>Прогрессия:</b> набирать повторения до 20 на текущем весе, только потом переходить на следующее деление.</li>
+    <li>Судья — техника, а не цифра. Лопатки идут вниз и назад. Если лопатки перестают сводиться и тянут только руки — вес слишком большой, откатиться на деление вниз.</li>
+    <li>Сесть чуть дальше от стека: в начальной точке должна быть лёгкая растяжка, а не рывок.</li>
+  </ul>
+  <p>Рабочая точка на 13 сентября 2026: 95 кг.</p>
+`;
 const TECH_STANDING_CABLE_CRUNCH = `
   <h4>Заметки по технике</h4>
   <p>Стоя, лицом от стека. Косичка на верхнем блоке.</p>
@@ -1747,21 +1819,23 @@ const trainingA = [
   { id: 'pec_fly', num: 3, name: 'сведение рук', sub: 'Pectoral', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/tByJiJj9n0U?is=U_ARILKFH2tixe2S' },
   { id: 'delts_machine', num: 4, name: 'дельты в тренажёре', sub: 'Delts Machine', sets: '3×12-15', rest: 90, url: 'https://youtube.com/shorts/78hk4Fy_kDA?is=unzsenWO7tAKGqns' },
   { id: 'triceps_pushdown', num: 5, name: 'трицепс на блоке', sub: 'Triceps Pushdown', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/NMY70SP-OHY?si=4jPio5STfDrrKV8_' },
-  { id: 'reverse_cable_curl', num: 6, name: 'обратный подъём на блоке', sub: 'Reverse Cable Curl', sets: '3×12-15', rest: 90, url: 'https://www.youtube.com/shorts/_0icSYP3PlE?feature=share' },
+  { id: 'reverse_cable_curl', num: 6, name: 'обратный подъём на блоке', sub: 'Reverse Cable Curl', sets: '3×12-15', rest: 90, url: 'https://www.youtube.com/shorts/KY_c3LkPZa8?feature=share' },
   { id: 'overhead_cable_extension', num: 7, name: 'разгибание из-за головы на блоке', sub: 'Overhead Cable Extension', sets: '3×10-12', rest: 90, tech: TECH_OVERHEAD_EXT, url: 'https://www.youtube.com/shorts/0IM1J_GmQ34?feature=share' },
   { id: 'leg_press', num: 8, name: 'жим ногами', sub: 'Leg Press', sets: '3×8-12', rest: 180, url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' },
   { id: 'leg_extension', num: 9, name: 'разгибание ног', sub: 'Leg Extension', sets: '3+3×12-15', rest: 90, unilateral: true, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
   { id: 'calf_raise', num: 10, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, unilateral: true, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
-  { id: 'kneeling_cable_crunch', num: 11, name: 'скручивания на блоке стоя', sub: 'Standing Cable Crunch', sets: '3×10-15', rest: 60, tech: TECH_STANDING_CABLE_CRUNCH, url: 'https://vt.tiktok.com/ZSqAY7peS/' }
+  { id: 'weighted_leg_raise', num: 11, name: 'подъёмы ног с гантелей', sub: 'Weighted Leg Raise', sets: '3×10-15', rest: 60, tech: TECH_WEIGHTED_LEG_RAISE, url: 'https://youtube.com/shorts/RQDKs_EBNPY?si=BESSkagxInn_gHsV' }
 ];
 const trainingB = [
   { id: 'lat_pulldown', num: 1, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×10-12', rest: 180, url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
   { id: 'seated_leg_curl', num: 2, name: 'сгибание ног сидя', sub: 'Seated Leg Curl', sets: '3×10-15', rest: 90, tech: TECH_SEATED_LEG_CURL, url: 'https://www.youtube.com/shorts/xdbEG3xGLI8?feature=share' },
-  { id: 'low_row', num: 3, name: 'горизонтальная тяга сидя', sub: 'Low Row', sets: '3×10-12', rest: 180, url: 'https://www.youtube.com/shorts/j3k4DsTAgx8?feature=share' },
+  // 10-20: шаг стека 7 кг (88.2 / 95 / 102 / 109), промежуточных весов нет — в узкий
+  // диапазон не попасть. Прогрессия по повторам, вес повышается только на верхней границе.
+  { id: 'low_row', num: 3, name: 'горизонтальная тяга сидя', sub: 'Low Row', sets: '3×10-20', rest: 180, tech: TECH_LOW_ROW, url: 'https://www.youtube.com/shorts/j3k4DsTAgx8?feature=share' },
   { id: 'calf_raise', num: 4, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, unilateral: true, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
   { id: 'reverse_pec_deck', num: 5, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '3×12-15', rest: 90, url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
   { id: 'arm_curl', num: 6, name: 'сгибание рук в тренажёре', sub: 'Arm Curl Machine', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/IWDHXA1ZcT8?is=9QgKqBX6kU9lXxLr' },
-  { id: 'kneeling_cable_crunch', num: 7, name: 'скручивания на блоке стоя', sub: 'Standing Cable Crunch', sets: '3×10-15', rest: 60, tech: TECH_STANDING_CABLE_CRUNCH, url: 'https://vt.tiktok.com/ZSqAY7peS/' },
+  { id: 'weighted_leg_raise', num: 7, name: 'подъёмы ног с гантелей', sub: 'Weighted Leg Raise', sets: '3×10-15', rest: 60, tech: TECH_WEIGHTED_LEG_RAISE, url: 'https://youtube.com/shorts/RQDKs_EBNPY?si=BESSkagxInn_gHsV' },
   { id: 'incline_db_curl', num: 8, name: 'наклонный подъём гантелей', sub: 'Incline DB Curl', sets: '3×8-12', rest: 90, url: 'https://youtube.com/shorts/uCUaRFlA9vE?si=_q-PSgOpB3iQviPn' },
   { id: 'wrist_curl', num: 9, name: 'сгибание запястий', sub: 'Wrist Curl', sets: '3×15-20', rest: 60, url: 'https://youtu.be/qMtmHwaCmYI?t=16' }
 ];
@@ -1772,7 +1846,8 @@ const trainingB = [
 const ARCHIVE = [
   { id: 'arm_extension', name: 'разгибание рук в тренажёре', sub: 'Arm Extension Machine', sets: '3×10-12', url: 'https://youtube.com/shorts/tVNSmck6hnE?is=wEnysnqCti6nnDQ3' },
   { id: 'prone_leg_curl', name: 'сгибание ног лёжа', sub: 'Prone Leg Curl', sets: '3×12-20', url: 'https://youtube.com/shorts/FMCq0hT3KRU?si=cbbo1yN9xsXNqdqe' },
-  { id: 'total_abs', name: 'скручивания в тренажёре', sub: 'Abdominal Crunch', sets: '3×10-15', url: 'https://www.youtube.com/shorts/DVCmFYlNFRg?feature=share' }
+  { id: 'total_abs', name: 'скручивания в тренажёре', sub: 'Abdominal Crunch', sets: '3×10-15', url: 'https://www.youtube.com/shorts/DVCmFYlNFRg?feature=share' },
+  { id: 'kneeling_cable_crunch', name: 'скручивания на блоке стоя', sub: 'Standing Cable Crunch', sets: '3×10-15', tech: TECH_STANDING_CABLE_CRUNCH, url: 'https://vt.tiktok.com/ZSqAY7peS/' }
 ];
 
 const DAYS_RU =['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
@@ -2053,24 +2128,28 @@ function computeRetention(id) {
   };
 }
 
-// Короткая сводка по подходу 1 — для свёрнутой карточки и архива
-function set1Summary(id) {
-  const uni = isUnilateralId(id);
-  const s1 = getSet1(id);
-  if (!s1) return null;
-  const w = (s1.w === null || s1.w === undefined || s1.w === '') ? null : s1.w;
+// Один подход строкой: «45кг × 12», для одностороннего «250кг × 30/28»
+function formatSetData(set, uni) {
+  if (!set) return null;
+  const has = (v) => !(v === null || v === undefined || v === '');
+  const w = has(set.w) ? set.w : null;
   let reps = null;
   if (uni) {
-    const a = (s1.rl === undefined || s1.rl === '') ? null : s1.rl;
-    const b = (s1.rr === undefined || s1.rr === '') ? null : s1.rr;
+    const a = has(set.rl) ? set.rl : null;
+    const b = has(set.rr) ? set.rr : null;
     if (a !== null && b !== null) reps = a + '/' + b;
     else if (a !== null) reps = String(a);
     else if (b !== null) reps = String(b);
   } else {
-    reps = (s1.r === null || s1.r === undefined || s1.r === '') ? null : String(s1.r);
+    reps = has(set.r) ? String(set.r) : null;
   }
   if (w === null && reps === null) return null;
   return (w !== null ? w + 'кг' : '') + (w !== null && reps !== null ? ' × ' : '') + (reps !== null ? reps : '');
+}
+
+// Короткая сводка по подходу 1 — для свёрнутой карточки
+function set1Summary(id) {
+  return formatSetData(getSet1(id), isUnilateralId(id));
 }
 
 // Разовая миграция {w,r,n} → {sets:[set1,null,null], n}. Ничего не удаляет.
@@ -2307,14 +2386,17 @@ function renderTraining() {
         </div>
         ${setsAreaHTML}
         ${ex.tech ? `<button class="tech-btn" data-tech="${ex.id}" aria-label="заметки по технике" title="заметки по технике"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5h12.5a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H5a1.5 1.5 0 0 1-1.5-1.5v-14A1.5 1.5 0 0 1 5 3.5z"/><path d="M8.5 3.5v17"/><path d="M11.75 8.75h3.75M11.75 12.5h3.75"/></svg></button>` : ''}
-        <button class="yt-btn" data-yt="${ex.url}"><i class="ti ti-brand-youtube"></i></button>
+        <button class="yt-btn" data-yt="${escHtml(getExUrl(ex))}"><i class="ti ti-brand-youtube"></i></button>
       </div>
       ${buildSetsBlock(ex)}
       <div class="note-area">
-        <button type="button" class="note-trigger${n ? ' has-note' : ''}">
-          <svg class="note-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-          <span class="note-preview"></span>
-        </button>
+        <div class="note-row">
+          <button type="button" class="note-trigger${n ? ' has-note' : ''}">
+            <svg class="note-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            <span class="note-preview"></span>
+          </button>
+          <button type="button" class="url-btn${getUrlOverride(ex.id) ? ' custom' : ''}" aria-label="ссылка на видео" title="ссылка на видео"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11.5 4.5"/><path d="M14 11a5 5 0 0 0-7.07 0L4.1 13.83a5 5 0 0 0 7.07 7.07L12.5 19.5"/></svg></button>
+        </div>
         <button type="button" class="note-more" hidden>показать больше</button>
       </div>
     `;
@@ -2355,9 +2437,16 @@ function escHtml(s) {
 function openArchive() {
   const rows = ARCHIVE.map(ex => {
     const saved = getExSaved(ex.id);
-    const sum = set1Summary(ex.id);
-    const hasData = !!sum;
-    const data = hasData ? sum.replace('кг', ' кг') : 'нет записей';
+    const sets = getExSets(ex.id);
+    // архивных нет в днях, поэтому одностороннее определяем по форме записи
+    const uni = sets.some(st => st && ('rl' in st || 'rr' in st));
+    const lines = [];
+    sets.forEach((st, i) => {
+      const d = formatSetData(st, uni);
+      if (d) lines.push(`<div class="arch-set"><span>${i + 1}</span>${escHtml(d.replace('кг', ' кг'))}</div>`);
+    });
+    const hasData = lines.length > 0;
+    const data = hasData ? lines.join('') : 'нет записей';
     return `
       <div class="arch-row">
         <div class="arch-meta">
@@ -2380,7 +2469,16 @@ function openArchive() {
 
 function bindTrainingHandlers(exList) {
   exList.querySelectorAll('.yt-btn').forEach(b => {
-    b.addEventListener('click', (e) => { e.stopPropagation(); openYouTube(b.dataset.yt); });
+    b.addEventListener('click', (e) => {
+      e.stopPropagation();
+      // ссылку берём в момент нажатия: своя (если сохранена) или исходная из программы
+      const card = b.closest('.ex-card');
+      const ex = card && findExById(card.dataset.id);
+      openYouTube(ex ? getExUrl(ex) : b.dataset.yt);
+    });
+  });
+  exList.querySelectorAll('.url-btn').forEach(b => {
+    b.addEventListener('click', (e) => { e.stopPropagation(); openUrlEditor(b.closest('.ex-card').dataset.id); });
   });
   exList.querySelectorAll('.tech-btn').forEach(b => {
     b.addEventListener('click', (e) => { e.stopPropagation(); openTech(b.dataset.tech); });
@@ -2958,6 +3056,126 @@ document.querySelectorAll('#trainToggle .toggle-seg').forEach(s => {
     renderTraining();
   });
 });
+
+// ----- Ссылка на видео: своя поверх исходной -----
+// Исходные ссылки живут в программе (поле url у упражнения) и не меняются.
+// Своя ссылка хранится отдельно в levshub_video_urls по id упражнения, поэтому
+// миграции записей подходов её не трогают, а общее упражнение (икры, пресс)
+// получает одну ссылку сразу в обоих днях.
+// Пустое поле или ссылка, совпадающая с исходной, = своей ссылки нет.
+const VIDEO_URLS_KEY = 'levshub_video_urls';
+
+function getUrlOverrides() {
+  try {
+    const o = JSON.parse(localStorage.getItem(VIDEO_URLS_KEY) || '{}');
+    return (o && typeof o === 'object' && !Array.isArray(o)) ? o : {};
+  } catch (e) { return {}; }
+}
+function getUrlOverride(id) {
+  const v = getUrlOverrides()[id];
+  return (typeof v === 'string' && v) ? v : null;
+}
+function getExUrl(ex) {
+  return getUrlOverride(ex.id) || ex.url;
+}
+function sameUrl(a, b) {
+  try { return new URL(a).href === new URL(b).href; } catch (e) { return a === b; }
+}
+// true — только если запись реально легла в хранилище (проверяем чтением)
+function setUrlOverride(id, url) {
+  const ex = findExById(id);
+  const map = getUrlOverrides();
+  if (!url || (ex && sameUrl(url, ex.url))) delete map[id];
+  else map[id] = url;
+  const json = JSON.stringify(map);
+  try {
+    localStorage.setItem(VIDEO_URLS_KEY, json);
+    return localStorage.getItem(VIDEO_URLS_KEY) === json;
+  } catch (e) { return false; }
+}
+
+// Приводит ввод к рабочей ссылке. Пусто → { ok: true, url: null } (вернуть исходную).
+// Разрешены только http(s): javascript:, data: и прочее отклоняется.
+function normalizeVideoUrl(raw) {
+  let v = String(raw || '').trim();
+  if (!v) return { ok: true, url: null };
+  // из «Поделиться» часто прилетает текст вокруг ссылки — вытаскиваем саму ссылку
+  const found = v.match(/https?:\/\/[^\s<>"']+/i);
+  if (found) v = found[0].replace(/[.,;:!?)\]}»]+$/, '');
+  if (/\s/.test(v)) return { ok: false, error: 'это не похоже на ссылку' };
+  if (!/^[a-z][a-z0-9+.-]*:/i.test(v)) v = 'https://' + v;
+  let u;
+  try { u = new URL(v); } catch (e) { return { ok: false, error: 'это не похоже на ссылку' }; }
+  if (u.protocol !== 'https:' && u.protocol !== 'http:') return { ok: false, error: 'нужна ссылка вида https://…' };
+  if (u.hostname.indexOf('.') === -1) return { ok: false, error: 'в ссылке нет адреса сайта' };
+  return { ok: true, url: u.href };
+}
+
+// Обновляет кнопки видео и ссылки на уже отрисованных карточках
+function refreshUrlButton(id) {
+  const ex = findExById(id);
+  if (!ex) return;
+  document.querySelectorAll(`.ex-card[data-id="${id}"]`).forEach(card => {
+    const yt = card.querySelector('.yt-btn');
+    if (yt) yt.dataset.yt = getExUrl(ex);
+    const ub = card.querySelector('.url-btn');
+    if (ub) ub.classList.toggle('custom', !!getUrlOverride(id));
+  });
+}
+
+function openUrlEditor(id) {
+  const ex = findExById(id);
+  if (!ex) return;
+  const hasCustom = !!getUrlOverride(id);
+  openModal(`
+    <div class="modal-head">
+      <div class="t">ссылка на видео</div>
+      <button class="x" onclick="closeModal()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="note-ex">${escHtml(ex.name)}</div>
+    <input class="url-input" id="urlInput" type="url" inputmode="url" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="https://youtube.com/shorts/…">
+    <div class="url-msg" id="urlMsg"></div>
+    <div class="url-actions">
+      ${hasCustom ? '<button type="button" class="btn btn-ghost" id="urlReset">вернуть исходную</button>' : ''}
+      <button type="button" class="btn btn-red grow" id="urlSave">сохранить</button>
+    </div>
+    <div class="url-default">исходная ссылка: <span id="urlDefault"></span></div>
+  `);
+  document.getElementById('modalBox').classList.add('url-sheet');
+  const input = document.getElementById('urlInput');
+  const msg = document.getElementById('urlMsg');
+  document.getElementById('urlDefault').textContent = ex.url;
+  input.value = getExUrl(ex);
+  const say = (text, isError) => {
+    msg.textContent = text;
+    msg.classList.toggle('error', !!isError);
+    input.classList.toggle('invalid', !!isError);
+  };
+  say(hasCustom ? 'сейчас стоит своя ссылка · очисти поле и сохрани, чтобы вернуть исходную'
+                : 'сейчас стоит исходная ссылка', false);
+
+  // Сохранение только по кнопке/Enter: недописанная ссылка не перетрёт рабочую
+  const save = () => {
+    const res = normalizeVideoUrl(input.value);
+    if (!res.ok) { say(res.error, true); return; }
+    if (!setUrlOverride(id, res.url)) {
+      say('не удалось сохранить: память браузера недоступна', true);
+      return;
+    }
+    refreshUrlButton(id);
+    closeModal();
+  };
+  document.getElementById('urlSave').addEventListener('click', save);
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); save(); } });
+  input.addEventListener('input', () => { if (msg.classList.contains('error')) say('', false); });
+  const reset = document.getElementById('urlReset');
+  if (reset) reset.addEventListener('click', () => {
+    if (!setUrlOverride(id, null)) { say('не удалось сохранить: память браузера недоступна', true); return; }
+    refreshUrlButton(id);
+    closeModal();
+  });
+  setTimeout(() => { try { input.focus(); input.select(); } catch (e) {} }, 80);
+}
 
 function openYouTube(url) {
   const m = url.match(/shorts\/([a-zA-Z0-9_-]+)/);
