@@ -607,6 +607,20 @@
   }
   .sg-retention b { color: var(--green); font-weight: 600; }
   .sg-retention .sg-warn { color: var(--muted); }
+  /* прежние подходы в другом формате (например, двумя руками) — только просмотр */
+  .sg-history {
+    margin-top: 10px;
+    padding-top: 9px;
+    border-top: 1px dashed var(--border-2);
+  }
+  .sg-hist-row { font-size: 11px; line-height: 1.55; color: var(--muted-2); letter-spacing: 0.2px; }
+  .sg-hist-label { color: var(--muted); }
+  .sg-hist-note {
+    font-size: 11px; line-height: 1.5;
+    color: var(--muted); font-style: italic;
+    margin-top: 2px;
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
   .note-area {
     margin-top: 6px;
   }
@@ -1779,14 +1793,28 @@ const TECH_WEIGHTED_LEG_RAISE = `
   <p><b>Прогрессия:</b> увеличивать вес гантели.</p>
 `;
 const TECH_LOW_ROW = `
-  <h4>Заметки по технике</h4>
-  <p>Шаг стека 7 кг — промежуточных весов нет.</p>
+  <h4>Почему одной рукой</h4>
   <ul>
-    <li><b>Прогрессия:</b> набирать повторения до 20 на текущем весе, только потом переходить на следующее деление.</li>
-    <li>Судья — техника, а не цифра. Лопатки идут вниз и назад. Если лопатки перестают сводиться и тянут только руки — вес слишком большой, откатиться на деление вниз.</li>
-    <li>Сесть чуть дальше от стека: в начальной точке должна быть лёгкая растяжка, а не рывок.</li>
+    <li><b>Больше амплитуды:</b> рука свободно уходит вперёд в растяжку и дальше назад в конце. Двумя руками так не получается — корпус мешает.</li>
+    <li>Видно разницу между сторонами. Слабая рука больше не прячется за сильной.</li>
+    <li>Нравится делать. Двумя руками это было одно из самых нелюбимых упражнений, а туда, куда идёшь с желанием, вкладываешься больше.</li>
   </ul>
-  <p>Рабочая точка на 13 сентября 2026: 95 кг.</p>
+  <p>Прямых исследований «одной рукой растит лучше» нет — обоснование в амплитуде, симметрии и отношении.</p>
+  <p><b>Про ручку:</b> узкий нейтральный хват для широчайшей не хуже, а лучше. HD-EMG исследование на 14 тренированных мужчинах показало большую активацию широчайшей при узком хвате (ES = 1.08), широкий хват выигрывает по трапеции и средней дельте. Отдельные ручки на лямках — правильный выбор.</p>
+  <h4>Техника</h4>
+  <ul>
+    <li>Отдельная ручка на лямке, не V-гриф.</li>
+    <li>В растяжке отпустить лопатку вперёд — дать ей уйти, это и есть та амплитуда, ради которой всё затевалось.</li>
+    <li>В конце лопатку вниз и назад, локоть вдоль корпуса.</li>
+    <li>Корпусом не скручиваться и не откидываться назад. Работает спина, а не инерция.</li>
+    <li>Отказ = лопатка перестала сводиться, тянет только рука.</li>
+  </ul>
+  <h4>Отдых</h4>
+  <ul>
+    <li>Между руками — ноль, сразу переходишь на вторую.</li>
+    <li>Между кругами — 2:00.</li>
+    <li>Каждая рука по факту отдыхает (пока работает вторая + сама пауза), так что полноценный отдых сохраняется.</li>
+  </ul>
 `;
 const TECH_STANDING_CABLE_CRUNCH = `
   <h4>Заметки по технике</h4>
@@ -1829,9 +1857,9 @@ const trainingA = [
 const trainingB = [
   { id: 'lat_pulldown', num: 1, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×10-12', rest: 180, url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
   { id: 'seated_leg_curl', num: 2, name: 'сгибание ног сидя', sub: 'Seated Leg Curl', sets: '3×10-15', rest: 90, tech: TECH_SEATED_LEG_CURL, url: 'https://www.youtube.com/shorts/xdbEG3xGLI8?feature=share' },
-  // 10-20: шаг стека 7 кг (88.2 / 95 / 102 / 109), промежуточных весов нет — в узкий
-  // диапазон не попасть. Прогрессия по повторам, вес повышается только на верхней границе.
-  { id: 'low_row', num: 3, name: 'горизонтальная тяга сидя', sub: 'Low Row', sets: '3×10-20', rest: 180, tech: TECH_LOW_ROW, url: 'https://www.youtube.com/shorts/j3k4DsTAgx8?feature=share' },
+  // С 14.09.2026 одной рукой (3+3): тот же тренажёр и тот же id. Подходы двумя руками
+  // не пересчитаны — перенесены как есть в history этой же записи (migrateLowRowSingleArm).
+  { id: 'low_row', num: 3, name: 'горизонтальная тяга одной рукой', sub: 'Single-Arm Low Row', sets: '3+3×10-15', rest: 150, unilateral: true, tech: TECH_LOW_ROW, url: 'https://www.youtube.com/shorts/j3k4DsTAgx8?feature=share' },
   { id: 'calf_raise', num: 4, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, unilateral: true, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
   { id: 'reverse_pec_deck', num: 5, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '3×12-15', rest: 90, url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
   { id: 'arm_curl', num: 6, name: 'сгибание рук в тренажёре', sub: 'Arm Curl Machine', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/IWDHXA1ZcT8?is=9QgKqBX6kU9lXxLr' },
@@ -2152,6 +2180,55 @@ function set1Summary(id) {
   return formatSetData(getSet1(id), isUnilateralId(id));
 }
 
+// ----- Разовый перевод горизонтальной тяги на одну руку (3+3), 14.09.2026 -----
+// Тот же тренажёр и тот же id. Подходы двумя руками НЕ пересчитываются и НЕ удаляются:
+// переносятся как есть в history этой же записи и показываются в карточке, а новые
+// подходы пишутся с нуля слева/справа. Заметка заполняется один раз; прежняя заметка,
+// если была, остаётся в history. Отметка singleArmSince не даёт миграции повториться.
+// Запускается ДО migrateWorkoutToSets, чтобы совсем старый {w, r} не ушёл в «левую».
+const LOW_ROW_SINGLE_ARM_NOTE =
+  'Старт: 45 кг, искать 10–15 повторений. Не половина от 95 — одной рукой рычаг лучше, может выйти больше.\n\n' +
+  'Прогрессия: магнитные довески 2.3 кг. Шаг стека 7 кг слишком грубый, довески дают нормальные 2.4%.\n\n' +
+  'Проверить, кладутся ли блины 1.25 кг сверху на верхнюю плиту стека.\n\n' +
+  'Для истории: двумя руками рабочая точка была 95.3 кг на 17 повторений, 13 сентября 2026.';
+
+function migrateLowRowSingleArm() {
+  let data;
+  try { data = JSON.parse(localStorage.getItem('levshub_workout') || '{}'); } catch (e) { return; }
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return;
+  const rec = (data.low_row && typeof data.low_row === 'object') ? data.low_row : {};
+  if (rec.singleArmSince) return; // уже переведено
+  // прежние подходы в любом из старых форматов: { sets: [...] } или совсем старый { w, r }
+  let oldSets = [];
+  if (Array.isArray(rec.sets)) oldSets = rec.sets.slice();
+  else if (normVal(rec.w) !== null || normVal(rec.r) !== null) {
+    oldSets = [{ w: normVal(rec.w), r: normVal(rec.r) }, null, null];
+  }
+  const kept = oldSets.filter(Boolean);
+  const oldNote = typeof rec.n === 'string' ? rec.n : '';
+  const hasOld = kept.length > 0 || oldNote.trim() !== '';
+  const next = Object.assign({}, rec);
+  delete next.w; delete next.r;
+  next.history = Array.isArray(rec.history) ? rec.history.slice() : [];
+  if (hasOld) next.history.push({ label: 'двумя руками', until: todayISO(), sets: oldSets, n: oldNote });
+  // сверка до записи: прежние подходы лежат в history без единого изменения
+  const moved = hasOld ? next.history[next.history.length - 1].sets.filter(Boolean) : [];
+  if (JSON.stringify(moved) !== JSON.stringify(kept)) {
+    console.error('[levshub] перевод тяги на одну руку отменён: подходы не сошлись');
+    return;
+  }
+  next.sets = [null, null, null];
+  next.n = LOW_ROW_SINGLE_ARM_NOTE;
+  next.singleArmSince = todayISO();
+  try {
+    localStorage.setItem('levshub_backup_low_row_pre_single_arm', JSON.stringify(rec));
+    data.low_row = next;
+    localStorage.setItem('levshub_workout', JSON.stringify(data));
+  } catch (e) {
+    console.error('[levshub] перевод тяги на одну руку не записан', e);
+  }
+}
+
 // Разовая миграция {w,r,n} → {sets:[set1,null,null], n}. Ничего не удаляет.
 // Бэкап пишется один раз; при несовпадении числа записей миграция отменяется.
 const WORKOUT_BACKUP_KEY = 'levshub_workout_backup_pre_sets';
@@ -2239,6 +2316,28 @@ function getSetsRemaining(ex) {
   return Math.max(0, total - done);
 }
 
+// Прежние подходы в другом формате (например, двумя руками до перехода на одну руку).
+// Только просмотр: значения показываются как записаны, без пересчёта.
+function buildHistoryHtml(id) {
+  const hist = getExSaved(id).history;
+  if (!Array.isArray(hist) || !hist.length) return '';
+  const rows = hist.map(h => {
+    if (!h || typeof h !== 'object') return '';
+    const sets = Array.isArray(h.sets) ? h.sets : [];
+    const uni = sets.some(st => st && ('rl' in st || 'rr' in st));
+    const parts = sets.map(st => formatSetData(st, uni)).filter(Boolean)
+      .map(d => escHtml(d.replace('кг', ' кг')));
+    const note = (typeof h.n === 'string' && h.n.trim())
+      ? `<div class="sg-hist-note">${escHtml(h.n)}</div>` : '';
+    if (!parts.length && !note) return '';
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(h.until || '');
+    const until = m ? ` · до ${m[3]}.${m[2]}.${m[1]}` : '';
+    return `<div class="sg-hist-row"><span class="sg-hist-label">${escHtml(h.label || 'раньше')}${until}:</span>` +
+      (parts.length ? ' ' + parts.join(' · ') : '') + `</div>${note}`;
+  }).join('');
+  return rows ? `<div class="sg-history">${rows}</div>` : '';
+}
+
 // ----- Сетка ввода подходов 1/2/3 -----
 function buildSetsBlock(ex) {
   const uni = !!ex.unilateral;
@@ -2267,6 +2366,7 @@ function buildSetsBlock(ex) {
   return `<div class="sets-block">
         <div class="sets-grid${uni ? ' uni' : ''}">${head}${rows}</div>
         <div class="sg-retention" hidden></div>
+        ${buildHistoryHtml(ex.id)}
       </div>`;
 }
 
@@ -4059,6 +4159,7 @@ window.addEventListener('resize', updateAllToggleIndicators);
 
 // ================= INIT =================
 migrateWorkoutData(); // one-time migration from levshub_workout_A/B → levshub_workout
+migrateLowRowSingleArm(); // разовый перевод тяги на одну руку; подходы двумя руками → history
 migrateWorkoutToSets(); // one-time migration {w,r} → sets[0]; старые записи сохраняются
 runSplash();
 const initialPreset = loadTimerPreset();
