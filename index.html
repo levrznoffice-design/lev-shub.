@@ -494,7 +494,7 @@
   .sets-dual { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 
   /* session bar */
-  /* шапка тренировок + кнопка «копировать A+B» */
+  /* шапка тренировок + кнопка «копировать всё» */
   .train-head { display: flex; align-items: center; gap: 10px; padding-right: 18px; }
   .train-head .section-h1 { flex: 1; min-width: 0; }
   .copy-prog-btn {
@@ -514,6 +514,44 @@
   .copy-prog-btn svg { width: 14px; height: 14px; display: block; }
   .copy-prog-btn:active { transform: scale(0.95); }
   .copy-prog-btn.done { color: var(--green); border-color: rgba(93,202,165,0.45); background: rgba(93,202,165,0.08); }
+
+  /* главная: следующая тренировка */
+  .today-next { font-size: 12px; color: var(--muted-2); letter-spacing: 0.3px; margin: -6px 0 14px; }
+  .today-next b { color: var(--cream); font-weight: 500; }
+  /* шапка тренировки: подпись кофеина */
+  .h1-caf { font-size: 13px; font-weight: 400; color: var(--muted); letter-spacing: 0.4px; margin-left: 4px; white-space: nowrap; }
+  .h1-caf.on { color: #f59e0b; }
+  /* переключатель «кофеин да/нет» */
+  .caf-btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 5px 9px;
+    border-radius: 7px;
+    font-size: 11px;
+    letter-spacing: 0.3px;
+    color: var(--muted-2);
+    background: rgba(245,242,232,0.04);
+    border: 1px solid var(--border-2);
+    white-space: nowrap;
+    transition: transform 80ms ease, color 150ms ease, background 150ms ease, border-color 150ms ease;
+  }
+  .caf-btn i { font-size: 14px; }
+  .caf-btn.on { color: #f59e0b; background: rgba(245,158,11,0.10); border-color: rgba(245,158,11,0.35); }
+  .caf-btn:active { transform: scale(0.94); }
+  /* подсказка под названием упражнения */
+  .ex-hint { font-size: 11px; color: var(--muted-2); font-style: italic; letter-spacing: 0.2px; margin: -8px 0 10px; }
+  /* у упражнения ещё нет ссылки на видео */
+  .yt-btn.no-url { color: var(--muted); opacity: 0.55; }
+  /* объём в неделю */
+  .vol-card { margin-top: 10px; }
+  .vol-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .vol-table th { text-align: left; font-weight: 400; font-size: 10px; color: var(--muted); letter-spacing: 0.5px; padding: 0 0 6px; }
+  .vol-table th.r { text-align: right; }
+  .vol-table td { padding: 8px 0; border-top: 1px solid var(--border); vertical-align: top; }
+  .vol-table td.m { color: var(--cream); padding-right: 8px; line-height: 1.4; }
+  .vol-table td.n { text-align: right; color: var(--cream); font-weight: 500; white-space: nowrap; }
+  .vol-table td.was { text-align: right; color: var(--muted); white-space: nowrap; padding-left: 10px; font-size: 11px; }
+  .vol-day { font-size: 10px; color: var(--muted); letter-spacing: 0.3px; margin-top: 2px; }
+  .vol-foot { font-size: 10px; color: var(--muted); margin-top: 8px; line-height: 1.5; letter-spacing: 0.2px; }
 
   .session-bar {
     display: flex; align-items: center; gap: 10px;
@@ -1512,6 +1550,7 @@
       <div class="label" id="todayLabel">сегодня</div>
       <div class="today-title" id="todayTitle">—</div>
       <div class="today-sub" id="todaySub">—</div>
+      <div class="today-next" id="todayNext"></div>
       <div class="row">
         <button class="btn btn-red grow" id="startTrainBtn">start the training.</button>
         <button class="btn btn-ghost" id="changeDayBtn">изменить</button>
@@ -1530,6 +1569,12 @@
         <div class="sub" id="homeMacros"></div>
       </div>
     </div>
+
+    <div class="card vol-card" id="volumeCard">
+      <div class="label">объём в неделю · подходов на мышцу</div>
+      <div id="volumeTable"></div>
+      <div class="vol-foot">считается из программы и расписания: основное упражнение — 1 подход, помогающее — ½, 3+3 = 3 подхода на мышцу</div>
+    </div>
   </section>
 
   <!-- TRAINING -->
@@ -1537,13 +1582,14 @@
     <div class="section-label">training</div>
     <div class="train-head">
       <div class="section-h1" id="trainHeader">a · push</div>
-      <button type="button" class="copy-prog-btn" id="copyProgramBtn" title="скопировать тренировки A и B с рекордами и заметками"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><span>копировать A+B</span></button>
+      <button type="button" class="copy-prog-btn" id="copyProgramBtn" title="скопировать тренировки A, B и C с рекордами, заметками и объёмом"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><span>копировать всё</span></button>
     </div>
 
     <div class="toggle-bar" id="trainToggle">
       <div class="toggle-seg active" data-mode="A">a · push</div>
-      <div class="toggle-seg" data-mode="rest">rest</div>
       <div class="toggle-seg" data-mode="B">b · pull</div>
+      <div class="toggle-seg" data-mode="C">c · legs</div>
+      <div class="toggle-seg" data-mode="rest">rest</div>
     </div>
 
     <div class="prog-reminder" id="progReminder">
@@ -1552,6 +1598,7 @@
 
     <div class="session-bar" id="sessionBar" hidden>
       <span class="session-progress" id="sessionProgress">сегодня: 0 из 0</span>
+      <button type="button" class="caf-btn" id="caffeineBtn" aria-pressed="false" title="кофеин сегодня">кофеин</button>
       <button class="session-reset" id="sessionReset" title="сбросить подходы">↺</button>
     </div>
 
@@ -1866,30 +1913,60 @@ const TECH_SEATED_LEG_CURL = `
 // unilateral: true → упражнение делается по сторонам: отдельные счётчики
 // подходов (две колонки) и отдельные повторы слева/справа.
 const trainingA = [
-  { id: 'chest_press', num: 1, name: 'жим от груди', sub: 'Chest Press', sets: '3×8-12', rest: 180, url: 'https://youtube.com/shorts/EC1Yf3M0im8?is=bdAV9DSniv4fxSXm' },
-  { id: 'shoulder_press', num: 2, name: 'жим плеч', sub: 'Shoulder Press', sets: '3×8-12', rest: 180, url: 'https://youtube.com/shorts/lC9uiTqYH84?is=_g4ItfNvBMRiUnXt' },
-  { id: 'pec_fly', num: 3, name: 'сведение рук', sub: 'Pectoral', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/tByJiJj9n0U?is=U_ARILKFH2tixe2S' },
-  { id: 'delts_machine', num: 4, name: 'дельты в тренажёре', sub: 'Delts Machine', sets: '3×12-15', rest: 90, url: 'https://youtube.com/shorts/78hk4Fy_kDA?is=unzsenWO7tAKGqns' },
-  { id: 'triceps_pushdown', num: 5, name: 'трицепс на блоке', sub: 'Triceps Pushdown', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/NMY70SP-OHY?si=4jPio5STfDrrKV8_' },
-  { id: 'reverse_cable_curl', num: 6, name: 'обратный подъём на блоке', sub: 'Reverse Cable Curl', sets: '3×12-15', rest: 90, url: 'https://www.youtube.com/shorts/KY_c3LkPZa8?feature=share' },
-  { id: 'overhead_cable_extension', num: 7, name: 'разгибание из-за головы на блоке', sub: 'Overhead Cable Extension', sets: '3×10-12', rest: 90, tech: TECH_OVERHEAD_EXT, url: 'https://www.youtube.com/shorts/0IM1J_GmQ34?feature=share' },
-  { id: 'leg_press', num: 8, name: 'жим ногами', sub: 'Leg Press', sets: '3×8-12', rest: 180, url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' },
-  { id: 'leg_extension', num: 9, name: 'разгибание ног', sub: 'Leg Extension', sets: '3+3×12-15', rest: 90, unilateral: true, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
-  { id: 'calf_raise', num: 10, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, unilateral: true, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
-  { id: 'weighted_leg_raise', num: 11, name: 'подъёмы ног с гантелей', sub: 'Weighted Leg Raise', sets: '3×10-15', rest: 60, tech: TECH_WEIGHTED_LEG_RAISE, url: 'https://youtube.com/shorts/RQDKs_EBNPY?si=BESSkagxInn_gHsV' }
+  { id: 'chest_press', num: 1, name: 'жим от груди', sub: 'Chest Press', sets: '3×8-12', rest: 180, work: { chest: 1, front_delts: 0.5, triceps: 0.5 }, url: 'https://youtube.com/shorts/EC1Yf3M0im8?is=bdAV9DSniv4fxSXm' },
+  { id: 'shoulder_press', num: 2, name: 'жим плеч', sub: 'Shoulder Press', sets: '3×8-12', rest: 180, work: { front_delts: 1, mid_delts: 0.5, triceps: 0.5 }, url: 'https://youtube.com/shorts/lC9uiTqYH84?is=_g4ItfNvBMRiUnXt' },
+  { id: 'pec_fly', num: 3, name: 'сведение рук', sub: 'Pectoral', sets: '3×10-12', rest: 90, work: { chest: 1 }, url: 'https://youtube.com/shorts/tByJiJj9n0U?is=U_ARILKFH2tixe2S' },
+  { id: 'delts_machine', num: 4, name: 'дельты в тренажёре', sub: 'Delts Machine', sets: '3×12-20', rest: 90, hint: 'в лог — только чистые', work: { mid_delts: 1 }, url: 'https://youtube.com/shorts/78hk4Fy_kDA?is=unzsenWO7tAKGqns' },
+  { id: 'triceps_pushdown', num: 5, name: 'трицепс на блоке', sub: 'Triceps Pushdown', sets: '3×10-12', rest: 90, work: { triceps: 1 }, url: 'https://youtube.com/shorts/NMY70SP-OHY?si=4jPio5STfDrrKV8_' },
+  { id: 'cable_lateral_raise', num: 6, name: 'махи в стороны на блоке одной рукой', sub: 'Single-Arm Cable Lateral Raise', sets: '3+3×12-20', rest: 60, unilateral: true, work: { mid_delts: 1 }, url: '' },
+  { id: 'overhead_cable_extension', num: 7, name: 'разгибание из-за головы на блоке', sub: 'Overhead Cable Extension', sets: '3×10-12', rest: 90, tech: TECH_OVERHEAD_EXT, work: { triceps: 1 }, url: 'https://www.youtube.com/shorts/0IM1J_GmQ34?feature=share' }
 ];
 const trainingB = [
-  { id: 'lat_pulldown', num: 1, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×10-12', rest: 180, url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
-  { id: 'seated_leg_curl', num: 2, name: 'сгибание ног сидя', sub: 'Seated Leg Curl', sets: '3×10-15', rest: 90, tech: TECH_SEATED_LEG_CURL, url: 'https://www.youtube.com/shorts/xdbEG3xGLI8?feature=share' },
+  { id: 'lat_pulldown', num: 1, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×10-12', rest: 180, work: { back: 1, rear_delts: 0.5, biceps: 0.5 }, url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
+  { id: 'reverse_pec_deck', num: 2, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '3×12-15', rest: 90, work: { rear_delts: 1 }, url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
   // С 14.09.2026 одной рукой (3+3): тот же тренажёр и тот же id. Подходы двумя руками
   // не пересчитаны — перенесены как есть в history этой же записи (migrateLowRowSingleArm).
-  { id: 'low_row', num: 3, name: 'горизонтальная тяга одной рукой', sub: 'Single-Arm Low Row', sets: '3+3×10-15', rest: 120, unilateral: true, tech: TECH_LOW_ROW, url: 'https://www.youtube.com/shorts/bLVeOunB-c0?feature=share' },
-  { id: 'calf_raise', num: 4, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, unilateral: true, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
-  { id: 'reverse_pec_deck', num: 5, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '3×12-15', rest: 90, url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
-  { id: 'arm_curl', num: 6, name: 'сгибание рук в тренажёре', sub: 'Arm Curl Machine', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/IWDHXA1ZcT8?is=9QgKqBX6kU9lXxLr' },
-  { id: 'weighted_leg_raise', num: 7, name: 'подъёмы ног с гантелей', sub: 'Weighted Leg Raise', sets: '3×10-15', rest: 60, tech: TECH_WEIGHTED_LEG_RAISE, url: 'https://youtube.com/shorts/RQDKs_EBNPY?si=BESSkagxInn_gHsV' },
-  { id: 'incline_db_curl', num: 8, name: 'наклонный подъём гантелей', sub: 'Incline DB Curl', sets: '3×8-12', rest: 90, url: 'https://youtube.com/shorts/uCUaRFlA9vE?si=_q-PSgOpB3iQviPn' },
-  { id: 'wrist_curl', num: 9, name: 'сгибание запястий', sub: 'Wrist Curl', sets: '3×15-20', rest: 60, url: 'https://youtu.be/qMtmHwaCmYI?t=16' }
+  { id: 'low_row', num: 3, name: 'горизонтальная тяга одной рукой', sub: 'Single-Arm Low Row', sets: '3+3×10-15', rest: 120, unilateral: true, tech: TECH_LOW_ROW, work: { back: 1, rear_delts: 0.5, biceps: 0.5 }, url: 'https://www.youtube.com/shorts/bLVeOunB-c0?feature=share' },
+  { id: 'arm_curl', num: 4, name: 'сгибание рук в тренажёре', sub: 'Arm Curl Machine', sets: '3×10-12', rest: 90, work: { biceps: 1 }, url: 'https://youtube.com/shorts/IWDHXA1ZcT8?is=9QgKqBX6kU9lXxLr' },
+  { id: 'weighted_leg_raise', num: 5, name: 'подъёмы ног с гантелей', sub: 'Weighted Leg Raise', sets: '4×10-15', rest: 60, tech: TECH_WEIGHTED_LEG_RAISE, work: { abs: 1 }, url: 'https://youtube.com/shorts/RQDKs_EBNPY?si=BESSkagxInn_gHsV' },
+  { id: 'incline_db_curl', num: 6, name: 'наклонный подъём гантелей', sub: 'Incline DB Curl', sets: '3×8-12', rest: 90, work: { biceps: 1 }, url: 'https://youtube.com/shorts/uCUaRFlA9vE?si=_q-PSgOpB3iQviPn' },
+  { id: 'wrist_curl', num: 7, name: 'сгибание запястий', sub: 'Wrist Curl', sets: '3×15-20', rest: 60, work: { forearms: 1 }, url: 'https://youtu.be/qMtmHwaCmYI?t=16' },
+  { id: 'reverse_cable_curl', num: 8, name: 'обратный подъём на блоке', sub: 'Reverse Cable Curl', sets: '3×12-15', rest: 90, work: { forearms: 1, biceps: 0.5 }, url: 'https://www.youtube.com/shorts/KY_c3LkPZa8?feature=share' }
+];
+const trainingC = [
+  { id: 'leg_press', num: 1, name: 'жим ногами', sub: 'Leg Press', sets: '3×8-12', rest: 180, work: { quads: 1 }, url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' },
+  { id: 'seated_leg_curl', num: 2, name: 'сгибание ног сидя', sub: 'Seated Leg Curl', sets: '3×10-15', rest: 90, tech: TECH_SEATED_LEG_CURL, work: { hamstrings: 1 }, url: 'https://www.youtube.com/shorts/xdbEG3xGLI8?feature=share' },
+  { id: 'leg_extension', num: 3, name: 'разгибание ног', sub: 'Leg Extension', sets: '3+3×12-15', rest: 90, unilateral: true, work: { quads: 1 }, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
+  { id: 'hip_adduction', num: 4, name: 'аддуктор (сведение ног)', sub: 'Hip Adduction', sets: '3×10-15', rest: 90, work: { adductors: 1 }, url: '' },
+  { id: 'calf_raise', num: 5, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '4+4×10-15', rest: 60, unilateral: true, work: { calves: 1 }, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
+  { id: 'hip_abduction', num: 6, name: 'абдуктор (разведение ног)', sub: 'Hip Abduction', sets: '3×12-20', rest: 90, work: { glute_med: 1 }, url: '' }
+];
+
+// ----- Дни программы v6 (с 03.10.2026) -----
+// caffeine — план по умолчанию: A и B с кофеином, C без. Отметку на сегодня
+// можно поменять в самой тренировке (хранится по дате).
+const DAYS = {
+  A: { short: 'a · push', title: 'A · PUSH', focus: 'грудь · плечи · трицепс', duration: '~70–75 мин', caffeine: true },
+  B: { short: 'b · pull', title: 'B · PULL', focus: 'спина · задние дельты · бицепс · пресс', duration: '~75 мин', caffeine: true },
+  C: { short: 'c · legs', title: 'C · LEGS', focus: 'квадрицепс · бицепс бедра · икры · приводящие', duration: '~70 мин', caffeine: false }
+};
+const TRAINING_DAYS = ['A', 'B', 'C'];
+function getProgram(day) {
+  return day === 'A' ? trainingA : day === 'B' ? trainingB : day === 'C' ? trainingC : [];
+}
+
+// ----- Объём в неделю: строки таблицы -----
+// Числа считаются из программы (поле work у упражнений: 1 — основная мышца,
+// 0.5 — помогает), «было» — объём программы v5 для сравнения.
+const MUSCLE_ROWS = [
+  { label: 'Грудь · передние дельты · трицепс', muscles: ['chest', 'front_delts', 'triceps'], was: 'так же' },
+  { label: 'Средние дельты', muscles: ['mid_delts'], was: '9' },
+  { label: 'Спина · задние дельты', muscles: ['back', 'rear_delts'], was: 'так же' },
+  { label: 'Бицепс · предплечья', muscles: ['biceps', 'forearms'], was: '' },
+  { label: 'Пресс', muscles: ['abs'], was: '12' },
+  { label: 'Квадрицепс · бицепс бедра', muscles: ['quads', 'hamstrings'], was: 'так же' },
+  { label: 'Икры', muscles: ['calves'], was: '12' },
+  { label: 'Приводящие · средняя ягодичная', muscles: ['adductors', 'glute_med'], was: 'новое' }
 ];
 
 // ----- Архив -----
@@ -1903,18 +1980,9 @@ const ARCHIVE = [
 ];
 
 const DAYS_RU =['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
-const AUTO_SCHEDULE = ['A','B','rest','A','rest','B','rest']; // [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
-// Wait — spec says Mon→A, Tue→rest, Wed→B, Thu→rest, Fri→A, Sat→rest, Sun→B
-// JS day index: 0=Sun, 1=Mon, ..., 6=Sat
-// So index by getDay():
-// 0 (Sun) → B
-// 1 (Mon) → A
-// 2 (Tue) → rest
-// 3 (Wed) → B
-// 4 (Thu) → rest
-// 5 (Fri) → A
-// 6 (Sat) → rest
-const SCHEDULE = ['B','A','rest','B','rest','A','rest'];
+// Расписание v6 по дням недели (getDay: 0=Вс … 6=Сб):
+// Пн A · Вт B · Ср C · Чт A · Пт B · Сб C · Вс отдых
+const SCHEDULE = ['rest','A','B','C','A','B','C'];
 
 const MEAS_FIELDS = [
   { key: 'weight', label: 'вес', unit: 'кг' },
@@ -1946,7 +2014,7 @@ function todayISO() {
 function getTodayMode() {
   const iso = todayISO();
   const ov = LS.getRaw('levshub_day_override_' + iso);
-  if (ov === 'A' || ov === 'B' || ov === 'rest') return ov;
+  if (ov === 'A' || ov === 'B' || ov === 'C' || ov === 'rest') return ov;
   return SCHEDULE[new Date().getDay()];
 }
 
@@ -2009,11 +2077,14 @@ function renderHome() {
   const d = new Date();
   document.getElementById('todayLabel').textContent = 'сегодня · ' + DAYS_RU[d.getDay()];
   let title, sub;
-  if (mode === 'A') { title = 'training a · push'; sub = 'грудь · плечи · трицепс · квадрицепс'; }
-  else if (mode === 'B') { title = 'training b · pull'; sub = 'спина · задние дельты · бицепс · задняя цепь'; }
-  else { title = 'день отдыха'; sub = 'день восстановления'; }
+  if (DAYS[mode]) {
+    title = 'training ' + DAYS[mode].short + ' · ' + cafLabel(getCaffeine(mode));
+    sub = DAYS[mode].focus + ' · ' + DAYS[mode].duration;
+  } else { title = 'день отдыха'; sub = 'день восстановления'; }
   document.getElementById('todayTitle').textContent = title;
   document.getElementById('todaySub').textContent = sub;
+  document.getElementById('todayNext').innerHTML = nextTrainingHtml();
+  renderVolume();
 
   // Weight
   const meas = LS.get('levshub_measurements', []) || [];
@@ -2073,8 +2144,9 @@ document.getElementById('changeDayBtn').addEventListener('click', () => {
       <button class="x" onclick="closeModal()"><i class="ti ti-x"></i></button>
     </div>
     <div class="choice-list">
-      <button class="choice-opt ${cur==='A'?'active':''}" onclick="pickDay('A')">a · push <span class="sm">грудь · плечи · трицепс · квадрицепс</span></button>
-      <button class="choice-opt ${cur==='B'?'active':''}" onclick="pickDay('B')">b · pull <span class="sm">спина · задние дельты · бицепс · задняя цепь</span></button>
+      <button class="choice-opt ${cur==='A'?'active':''}" onclick="pickDay('A')">a · push · caffeine <span class="sm">${DAYS.A.focus}</span></button>
+      <button class="choice-opt ${cur==='B'?'active':''}" onclick="pickDay('B')">b · pull · caffeine <span class="sm">${DAYS.B.focus}</span></button>
+      <button class="choice-opt ${cur==='C'?'active':''}" onclick="pickDay('C')">c · legs · no caffeine <span class="sm">${DAYS.C.focus}</span></button>
       <button class="choice-opt ${cur==='rest'?'active':''}" onclick="pickDay('rest')">rest <span class="sm">день восстановления</span></button>
     </div>
   `);
@@ -2088,7 +2160,7 @@ function pickDay(v) {
 // ================= TRAINING =================
 function getTrainingView() {
   const stored = LS.getRaw('levshub_training_view');
-  if (stored === 'A' || stored === 'B' || stored === 'rest') return stored;
+  if (stored === 'A' || stored === 'B' || stored === 'C' || stored === 'rest') return stored;
   return getTodayMode();
 }
 function setTrainingView(v) {
@@ -2120,7 +2192,7 @@ function saveExField(id, field, value) {
 //   одностороннее:  set = { w, rl, rr }       | null   (rl/rr — стороны, не ноги)
 // Пустой подход = null (не 0). Пустое поле внутри подхода = null.
 // PR, «последний вес» и сводки читают ТОЛЬКО подход 1 (getSet1).
-const SETS_PER_EX = 3;
+const SETS_PER_EX = 3; // по умолчанию; у упражнения число берётся из схемы (4+4 → 4)
 
 // '' → null, '?' → '?', иначе число (мусор → null)
 function normVal(v) {
@@ -2135,11 +2207,18 @@ function numOrNull(v) {
   return null;
 }
 
+// Сколько подходов у упражнения по схеме (3×…, 4×…, 3+3, 4+4); архивные — 3
+function setsCountFor(id) {
+  const ex = findExById(id);
+  return ex ? parseTotalSets(ex.sets) : SETS_PER_EX;
+}
 function getExSets(id) {
   const rec = getExSaved(id);
   const arr = Array.isArray(rec.sets) ? rec.sets : [];
+  // не короче схемы и не короче записанного — лишнее из старых записей не теряем
+  const n = Math.max(setsCountFor(id), arr.length);
   const out = [];
-  for (let i = 0; i < SETS_PER_EX; i++) out.push(arr[i] || null);
+  for (let i = 0; i < n; i++) out.push(arr[i] || null);
   return out;
 }
 function getSet1(id) { return getExSets(id)[0]; }
@@ -2164,16 +2243,18 @@ function setReps(set, uni) {
   return numOrNull(set.r);
 }
 
-// Удержание повторов = подход 3 / подход 1 × 100 (целые проценты).
-// Считается только когда заполнены и 1-й, и 3-й. Разный вес — считаем, но помечаем.
+// Удержание повторов = последний подход / подход 1 × 100 (целые проценты):
+// при 3 подходах это 3-й / 1-й, при 4 подходах — 4-й / 1-й.
+// Считается только когда заполнены оба. Разный вес — считаем, но помечаем.
 function computeRetention(id) {
   const uni = isUnilateralId(id);
   const sets = getExSets(id);
+  const last = setsCountFor(id) - 1;
   const r1 = setReps(sets[0], uni);
-  const r3 = setReps(sets[2], uni);
+  const r3 = setReps(sets[last], uni);
   if (r1 === null || r3 === null || r1 <= 0) return null;
   const w1 = numOrNull(sets[0] && sets[0].w);
-  const w3 = numOrNull(sets[2] && sets[2].w);
+  const w3 = numOrNull(sets[last] && sets[last].w);
   return {
     pct: Math.round((r3 / r1) * 100),
     weightChanged: (w1 !== null && w3 !== null && w1 !== w3)
@@ -2343,7 +2424,9 @@ function getSetsRemaining(ex) {
 // Прежние подходы в другом формате (например, двумя руками до перехода на одну руку).
 // Только просмотр: значения показываются как записаны, без пересчёта.
 function buildHistoryHtml(id) {
-  const hist = getExSaved(id).history;
+  const rec = getExSaved(id);
+  const hist = rec.history;
+  const curNote = typeof rec.n === 'string' ? rec.n.trim() : '';
   if (!Array.isArray(hist) || !hist.length) return '';
   const rows = hist.map(h => {
     if (!h || typeof h !== 'object') return '';
@@ -2351,11 +2434,11 @@ function buildHistoryHtml(id) {
     const uni = sets.some(st => st && ('rl' in st || 'rr' in st));
     const parts = sets.map(st => formatSetData(st, uni)).filter(Boolean)
       .map(d => escHtml(d.replace('кг', ' кг')));
-    const note = (typeof h.n === 'string' && h.n.trim())
+    const note = (typeof h.n === 'string' && h.n.trim() && h.n.trim() !== curNote)
       ? `<div class="sg-hist-note">${escHtml(h.n)}</div>` : '';
     if (!parts.length && !note) return '';
     const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(h.until || '');
-    const until = m ? ` · до ${m[3]}.${m[2]}.${m[1]}` : '';
+    const until = m ? ` (до ${m[3]}.${m[2]}.${m[1]})` : '';
     return `<div class="sg-hist-row"><span class="sg-hist-label">${escHtml(h.label || 'раньше')}${until}:</span>` +
       (parts.length ? ' ' + parts.join(' · ') : '') + `</div>${note}`;
   }).join('');
@@ -2373,7 +2456,8 @@ function buildSetsBlock(ex) {
     (auto ? ' data-auto="1"' : '') + ` value="${val === null || val === undefined ? '' : val}" placeholder="—"` +
     ` aria-label="подход ${i + 1} · ${f === 'w' ? 'кг' : f === 'rl' ? 'левая' : f === 'rr' ? 'правая' : 'повторы'}">`;
   let rows = '';
-  for (let i = 0; i < SETS_PER_EX; i++) {
+  const count = parseTotalSets(ex.sets);
+  for (let i = 0; i < count; i++) {
     const s = sets[i];
     const own = (s && s.w !== null && s.w !== undefined) ? s.w : null;
     // подходы 2 и 3: вес предзаполняется весом подхода 1, пока его не правили
@@ -2422,6 +2506,9 @@ function commitSets(card) {
       else sets.push(r !== null ? { w: w, r: r } : null);
     }
   });
+  // подходы сверх схемы (если схема когда-то станет короче) не теряем
+  const stored = getExSaved(id).sets || [];
+  for (let i = sets.length; i < stored.length; i++) sets.push(stored[i] || null);
   saveExSets(id, sets);
   renderRetention(card);
 }
@@ -2443,11 +2530,13 @@ function renderTraining() {
   document.querySelectorAll('#trainToggle .toggle-seg').forEach(s => {
     s.classList.toggle('active', s.dataset.mode === view);
   });
-  let title;
-  if (view === 'A') title = 'a · push';
-  else if (view === 'B') title = 'b · pull';
-  else title = 'rest';
-  document.getElementById('trainHeader').textContent = title;
+  const hEl = document.getElementById('trainHeader');
+  if (DAYS[view]) {
+    const on = getCaffeine(view);
+    hEl.innerHTML = escHtml(DAYS[view].short) + ` <span class="h1-caf${on ? ' on' : ''}">${cafLabel(on)}</span>`;
+  } else {
+    hEl.textContent = 'rest';
+  }
 
   const exList = document.getElementById('exList');
   const restView = document.getElementById('restView');
@@ -2465,7 +2554,7 @@ function renderTraining() {
   reminder.style.display = 'block';
   restView.style.display = 'none';
 
-  const program = view === 'A' ? trainingA : trainingB;
+  const program = getProgram(view);
   exList.innerHTML = '';
   program.forEach(ex => {
     const saved = getExSaved(ex.id);
@@ -2507,10 +2596,11 @@ function renderTraining() {
         <div class="ex-meta">
           <div class="ex-title">${ex.num}. ${ex.name}</div>
           <div class="ex-sub">${ex.sub} · ${ex.sets}${ex.rest ? `<span class="ex-rest"><i class="ti ti-clock"></i>${formatRest(ex.rest)}</span>` : ''}</div>
+          ${ex.hint ? `<div class="ex-hint">${escHtml(ex.hint)}</div>` : ''}
         </div>
         ${setsAreaHTML}
         ${ex.tech ? `<button class="tech-btn" data-tech="${ex.id}" aria-label="заметки по технике" title="заметки по технике"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5h12.5a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H5a1.5 1.5 0 0 1-1.5-1.5v-14A1.5 1.5 0 0 1 5 3.5z"/><path d="M8.5 3.5v17"/><path d="M11.75 8.75h3.75M11.75 12.5h3.75"/></svg></button>` : ''}
-        <button class="yt-btn" data-yt="${escHtml(getExUrl(ex))}"><i class="ti ti-brand-youtube"></i></button>
+        <button class="yt-btn${getExUrl(ex) ? '' : ' no-url'}" data-yt="${escHtml(getExUrl(ex))}"><i class="ti ti-brand-youtube"></i></button>
       </div>
       ${buildSetsBlock(ex)}
       <div class="note-area">
@@ -2598,7 +2688,10 @@ function bindTrainingHandlers(exList) {
       // ссылку берём в момент нажатия: своя (если сохранена) или исходная из программы
       const card = b.closest('.ex-card');
       const ex = card && findExById(card.dataset.id);
-      openYouTube(ex ? getExUrl(ex) : b.dataset.yt);
+      const url = ex ? getExUrl(ex) : b.dataset.yt;
+      // ссылки ещё нет (новое упражнение) — сразу предлагаем добавить свою
+      if (!url) { if (ex) openUrlEditor(ex.id); return; }
+      openYouTube(url);
     });
   });
   exList.querySelectorAll('.url-btn').forEach(b => {
@@ -2780,7 +2873,7 @@ function bindSetsHandlers(card) {
 }
 
 function findExById(id) {
-  return trainingA.find(e => e.id === id) || trainingB.find(e => e.id === id);
+  return trainingA.find(e => e.id === id) || trainingB.find(e => e.id === id) || trainingC.find(e => e.id === id);
 }
 // Упражнение считается по сторонам (левая/правая) — две колонки подходов
 function isUnilateralId(id) {
@@ -3151,20 +3244,21 @@ function updateSessionBar() {
   const view = getTrainingView();
   const bar = document.getElementById('sessionBar');
   if (view === 'rest') { bar.hidden = true; return; }
-  const program = view === 'A' ? trainingA : trainingB;
+  const program = getProgram(view);
   let doneCount = 0;
   program.forEach(ex => {
     if (isExComplete(ex)) doneCount++;
   });
   document.getElementById('sessionProgress').textContent = `сегодня: ${doneCount} из ${program.length}`;
   bar.hidden = false;
+  refreshCaffeineUi();
 }
 
 document.getElementById('sessionReset').addEventListener('click', () => {
   appConfirm('сбросить все подходы и развернуть упражнения за сегодня?', { title: 'сбросить сессию', yesText: 'сбросить' }).then(ok => {
     if (!ok) return;
     const view = getTrainingView();
-    const program = view === 'A' ? trainingA : trainingB;
+    const program = getProgram(view);
     program.forEach(ex => {
       setExSession(ex.id, ex.unilateral
         ? { setsDone: 0, setsDoneL: 0, setsDoneR: 0, collapsed: false }
@@ -3241,7 +3335,7 @@ function refreshUrlButton(id) {
   if (!ex) return;
   document.querySelectorAll(`.ex-card[data-id="${id}"]`).forEach(card => {
     const yt = card.querySelector('.yt-btn');
-    if (yt) yt.dataset.yt = getExUrl(ex);
+    if (yt) { yt.dataset.yt = getExUrl(ex); yt.classList.toggle('no-url', !getExUrl(ex)); }
     const ub = card.querySelector('.url-btn');
     if (ub) ub.classList.toggle('custom', !!getUrlOverride(id));
   });
@@ -3268,7 +3362,7 @@ function openUrlEditor(id) {
   document.getElementById('modalBox').classList.add('url-sheet');
   const input = document.getElementById('urlInput');
   const msg = document.getElementById('urlMsg');
-  document.getElementById('urlDefault').textContent = ex.url;
+  document.getElementById('urlDefault').textContent = ex.url || 'нет — можно добавить свою';
   input.value = getExUrl(ex);
   const say = (text, isError) => {
     msg.textContent = text;
@@ -3301,14 +3395,9 @@ function openUrlEditor(id) {
   setTimeout(() => { try { input.focus(); input.select(); } catch (e) {} }, 80);
 }
 
-// ----- Копирование тренировок A и B в буфер обмена -----
-// Для разборов (в том числе с ИИ): программа, рекорды, подходы и заметки одним текстом.
-// Только читает данные из памяти — ничего не записывает и не меняет.
-const EXPORT_DAYS = [
-  { key: 'A', title: 'Тренировка A · PUSH', focus: 'грудь, плечи, трицепс, квадрицепс' },
-  { key: 'B', title: 'Тренировка B · PULL', focus: 'спина, задние дельты, бицепс, задняя цепь' }
-];
-
+// ----- Копирование программы (A, B, C) в буфер обмена -----
+// Для разборов (в том числе с ИИ): программа, кофеин, рекорды, подходы, заметки,
+// архив v5 и объём одним текстом. Только читает данные — ничего не записывает.
 function exportHas(v) { return !(v === null || v === undefined || v === ''); }
 function capFirst(s) { s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }
 
@@ -3339,27 +3428,33 @@ function exportExercise(ex) {
   const uni = !!ex.unilateral;
   const saved = getExSaved(ex.id);
   const sets = getExSets(ex.id);
+  const count = parseTotalSets(ex.sets);
   const I = '   ';
   const out = [];
-  out.push(ex.num + '. ' + capFirst(ex.name) + ' (' + ex.sub + ')');
-  out.push(I + 'Схема: ' + ex.sets + (uni ? ' — по 3 подхода на каждую сторону' : '') + ', отдых ' + formatRest(ex.rest));
+  // если в названии уже есть скобки — английское название через тире, без двойных скобок
+  out.push(ex.num + '. ' + capFirst(ex.name) + (/\)\s*$/.test(ex.name) ? ' — ' + ex.sub : ' (' + ex.sub + ')'));
+  out.push(I + 'Схема: ' + ex.sets + (uni ? ' — по ' + count + ' подхода на каждую сторону' : '') + ', отдых ' + formatRest(ex.rest));
+  if (ex.hint) out.push(I + 'Важно: ' + ex.hint);
   const rec = exportSetText(sets[0], uni);
   out.push(I + 'Рекорд: ' + (rec || 'не записан'));
   for (let i = 1; i < sets.length; i++) {
     const t = exportSetText(sets[i], uni);
     if (t) out.push(I + 'Подход ' + (i + 1) + ': ' + t);
   }
-  if (typeof saved.n === 'string' && saved.n.trim()) out.push(exportBlock('Заметка', saved.n, I));
-  // прежний формат того же упражнения (например, тяга двумя руками) — как записано
+  const curNote = typeof saved.n === 'string' ? saved.n.trim() : '';
+  if (curNote) out.push(exportBlock('Заметка', saved.n, I));
+  const curSets = sets.map(st => exportSetText(st, uni)).filter(Boolean).join(' · ');
+  // архив того же упражнения (двумя руками, v5…) — как записано; совпадающее с текущим не дублируем
   (Array.isArray(saved.history) ? saved.history : []).forEach(h => {
     if (!h || typeof h !== 'object') return;
     const hs = (Array.isArray(h.sets) ? h.sets : [])
       .map(st => exportSetText(st, !!(st && ('rl' in st || 'rr' in st))))
-      .filter(Boolean);
+      .filter(Boolean).join(' · ');
     const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(h.until || '');
-    const when = (h.label || 'раньше') + (m ? ', до ' + m[3] + '.' + m[2] + '.' + m[1] : '');
-    if (hs.length) out.push(I + 'Раньше (' + when + '): ' + hs.join(' · '));
-    if (typeof h.n === 'string' && h.n.trim()) out.push(exportBlock('Заметка того периода', h.n, I));
+    const when = (h.label || 'раньше') + (m ? ' (до ' + m[3] + '.' + m[2] + '.' + m[1] + ')' : '');
+    if (hs && hs !== curSets) out.push(I + 'Архив ' + when + ': ' + hs);
+    const hn = typeof h.n === 'string' ? h.n.trim() : '';
+    if (hn && hn !== curNote) out.push(exportBlock('Заметка ' + when, h.n, I));
   });
   return out.join('\n');
 }
@@ -3367,8 +3462,11 @@ function exportExercise(ex) {
 function buildProgramExport() {
   const t = todayISO();
   const date = t.slice(8, 10) + '.' + t.slice(5, 7) + '.' + t.slice(0, 4);
+  const wd = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+  const sched = [1, 2, 3, 4, 5, 6, 0]
+    .map(i => wd[i] + ' ' + (DAYS[SCHEDULE[i]] ? SCHEDULE[i] : 'отдых')).join(' · ');
   let anyUnknown = false;
-  EXPORT_DAYS.forEach(d => (d.key === 'A' ? trainingA : trainingB).forEach(ex => {
+  TRAINING_DAYS.forEach(d => getProgram(d).forEach(ex => {
     getExSets(ex.id).forEach(st => {
       if (st && ['w', 'r', 'rl', 'rr'].some(k => st[k] === '?')) anyUnknown = true;
     });
@@ -3376,16 +3474,163 @@ function buildProgramExport() {
   const legend = [
     'Как читать:',
     '- «Рекорд» — подход 1, мой лучший рабочий результат (веду вручную в приложении).',
-    '- «Подход 2», «Подход 3» — остальные записанные подходы, если есть.',
-    '- 3+3 — упражнение на одну сторону: 3 подхода левой + 3 правой, повторы указаны «лев / прав».',
+    '- «Подход 2», «Подход 3»… — остальные записанные подходы, если есть.',
+    '- 3+3 и 4+4 — упражнение на одну сторону: столько подходов левой + столько же правой, повторы «лев / прав». В объёме это 3 (4) подхода на мышцу.',
+    '- Кофеин — отметка на сегодня; если не отмечал, стоит план: A и B с кофеином, C без.',
+    '- «v5 (до 03.10.2026)» — архив рекордов и заметок прошлой программы; показан, только если отличается от текущего.',
     '- Просадки, изменения и детали — в заметках.'
   ];
   if (anyUnknown) legend.push('- «?» — значение в приложении отмечено как неизвестное.');
-  const body = EXPORT_DAYS.map(d => {
-    const program = d.key === 'A' ? trainingA : trainingB;
-    return '## ' + d.title + ' (' + d.focus + ')\n\n' + program.map(exportExercise).join('\n\n');
+  const body = TRAINING_DAYS.map(d => {
+    const info = DAYS[d];
+    const on = getCaffeine(d);
+    const caf = 'кофеин: ' + (on ? 'да' : 'нет') + (getCaffeineMark(d) === null ? ' (по плану)' : ' (отмечено сегодня)');
+    return '## Тренировка ' + info.title + ' · ' + cafLabel(on) + '\n' +
+      info.focus + ' · ' + info.duration + ' · ' + caf + '\n\n' +
+      getProgram(d).map(exportExercise).join('\n\n');
   }).join('\n\n');
-  return "LEV'SHUB — тренировки A и B\nВыгрузка: " + date + '\n\n' + legend.join('\n') + '\n\n' + body + '\n';
+  const vol = '## Объём в неделю (подходов на мышцу)\n' +
+    'Основное упражнение = 1 подход, помогающее = ½; 3+3 = 3. Каждый день по расписанию стоит в неделе дважды.\n\n' +
+    volumeRows().map(r => '- ' + r.label + ': ' + r.nums + ' (' + r.dayText +
+      (r.rest ? ', отдых ' + r.rest : '') + (r.was ? '; было: ' + r.was : '') + ')').join('\n');
+  return "LEV'SHUB — программа v6: A · PUSH, B · PULL, C · LEGS\nВыгрузка: " + date +
+    '\nРасписание: ' + sched + '\n\n' + legend.join('\n') + '\n\n' + body + '\n\n' + vol + '\n';
+}
+
+// ----- Кофеин: отметка на сегодня для каждой тренировки -----
+// Хранится по дате: levshub_caffeine_<дата> = { A: true, C: false }.
+// Не отмечено — значит по плану (DAYS[...].caffeine): A и B с кофеином, C без.
+function caffeineKey() { return 'levshub_caffeine_' + todayISO(); }
+function getCaffeineMark(day) {
+  const m = LS.get(caffeineKey(), {}) || {};
+  return typeof m[day] === 'boolean' ? m[day] : null;
+}
+function getCaffeine(day) {
+  const m = getCaffeineMark(day);
+  return m === null ? !!(DAYS[day] && DAYS[day].caffeine) : m;
+}
+function setCaffeine(day, val) {
+  const m = LS.get(caffeineKey(), {}) || {};
+  m[day] = !!val;
+  LS.set(caffeineKey(), m);
+}
+function cafLabel(on) { return on ? 'caffeine' : 'no caffeine'; }
+function refreshCaffeineUi() {
+  const view = getTrainingView();
+  const btn = document.getElementById('caffeineBtn');
+  if (!btn || !DAYS[view]) return;
+  const on = getCaffeine(view);
+  btn.classList.toggle('on', on);
+  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  btn.innerHTML = `<i class="ti ${on ? 'ti-coffee' : 'ti-coffee-off'}"></i>кофеин: ${on ? 'да' : 'нет'}`;
+  const cap = document.querySelector('#trainHeader .h1-caf');
+  if (cap) { cap.textContent = cafLabel(on); cap.classList.toggle('on', on); }
+}
+
+// ----- Главная: следующая тренировка по расписанию -----
+function nextTrainingHtml() {
+  const now = new Date();
+  for (let k = 1; k <= 7; k++) {
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + k);
+    const mode = SCHEDULE[d.getDay()];
+    if (DAYS[mode]) {
+      const when = k === 1 ? 'завтра' : DAYS_RU[d.getDay()];
+      return 'Следующая тренировка: <b>' + escHtml(DAYS[mode].short + ' · ' + cafLabel(DAYS[mode].caffeine)) +
+        '</b> · ' + escHtml(when);
+    }
+  }
+  return '';
+}
+
+// ----- Объём в неделю -----
+function dayTimesPerWeek(day) { return SCHEDULE.filter(d => d === day).length; }
+// Отдых между одинаковыми днями по расписанию (по кругу недели), в часах
+function dayRestText(day) {
+  const idx = [];
+  SCHEDULE.forEach((d, i) => { if (d === day) idx.push(i); });
+  if (!idx.length) return '';
+  const gaps = idx.map((v, k) => (((idx[(k + 1) % idx.length] - v + 7) % 7) || 7) * 24);
+  const lo = Math.min.apply(null, gaps), hi = Math.max.apply(null, gaps);
+  return lo === hi ? lo + ' ч' : lo + '–' + hi + ' ч';
+}
+function computeVolume() {
+  const vol = {}, primaryDays = {};
+  TRAINING_DAYS.forEach(day => {
+    const times = dayTimesPerWeek(day);
+    getProgram(day).forEach(ex => {
+      const sets = parseTotalSets(ex.sets); // 3+3 = 3 подхода на мышцу
+      Object.keys(ex.work || {}).forEach(m => {
+        vol[m] = (vol[m] || 0) + ex.work[m] * sets * times;
+        if (ex.work[m] >= 1) { primaryDays[m] = primaryDays[m] || {}; primaryDays[m][day] = true; }
+      });
+    });
+  });
+  return { vol: vol, primaryDays: primaryDays };
+}
+function fmtVol(x) { const r = Math.round(x * 10) / 10; return r % 1 === 0 ? String(r) : r.toFixed(1); }
+function volumeRows() {
+  const c = computeVolume();
+  return MUSCLE_ROWS.map(row => {
+    const days = TRAINING_DAYS.filter(d => row.muscles.some(m => c.primaryDays[m] && c.primaryDays[m][d]));
+    return {
+      label: row.label,
+      dayText: days.map(d => DAYS[d].short).join(', '),
+      rest: days.length === 1 ? dayRestText(days[0]) : '',
+      nums: row.muscles.map(m => fmtVol(c.vol[m] || 0)).join(' · '),
+      was: row.was
+    };
+  });
+}
+function renderVolume() {
+  const box = document.getElementById('volumeTable');
+  if (!box) return;
+  box.innerHTML = '<table class="vol-table"><thead><tr><th>мышца</th><th class="r">в неделю</th><th class="r">было</th></tr></thead><tbody>' +
+    volumeRows().map(r =>
+      `<tr><td class="m">${escHtml(r.label)}<div class="vol-day">${escHtml(r.dayText)}${r.rest ? ' · отдых ' + escHtml(r.rest) : ''}</div></td>` +
+      `<td class="n">${escHtml(r.nums)}</td><td class="was">${escHtml(r.was || '—')}</td></tr>`
+    ).join('') + '</tbody></table>';
+}
+
+// ----- Разовый архив v5 перед программой v6 (A·PUSH, B·PULL, C·LEGS) -----
+// Рекорды, подходы и заметки каждого упражнения программы КОПИРУЮТСЯ в history
+// с пометкой «v5 (до 03.10.2026)». Текущие записи не трогаются и ведутся дальше.
+// Перед записью — бэкап всей базы; повторно не запускается (отметка + проверка по записи).
+const V5_ARCHIVE_LABEL = 'v5';
+const V5_ARCHIVE_UNTIL = '2026-10-03';
+function migrateArchiveV5() {
+  if (LS.getRaw('levshub_mig_v6_archive')) return;
+  const raw = localStorage.getItem('levshub_workout');
+  let data;
+  try { data = JSON.parse(raw || '{}'); } catch (e) { return; }
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return;
+  const ids = Array.from(new Set(trainingA.concat(trainingB, trainingC).map(e => e.id)));
+  const snapped = [];
+  ids.forEach(id => {
+    const rec = data[id];
+    if (!rec || typeof rec !== 'object') return;
+    const sets = Array.isArray(rec.sets) ? rec.sets : [];
+    const note = typeof rec.n === 'string' ? rec.n : '';
+    if (!sets.some(Boolean) && !note.trim()) return; // архивировать нечего
+    const hist = Array.isArray(rec.history) ? rec.history : [];
+    if (hist.some(h => h && h.label === V5_ARCHIVE_LABEL)) return; // уже в архиве
+    rec.history = hist.concat([{ label: V5_ARCHIVE_LABEL, until: V5_ARCHIVE_UNTIL, sets: JSON.parse(JSON.stringify(sets)), n: note }]);
+    snapped.push(id);
+  });
+  // сверка до записи: в архиве ровно то, что в текущей записи
+  const ok = snapped.every(id => {
+    const r = data[id], h = r.history[r.history.length - 1];
+    return JSON.stringify(h.sets) === JSON.stringify(r.sets || []) && h.n === (typeof r.n === 'string' ? r.n : '');
+  });
+  if (!ok) { console.error('[levshub] архив v5 отменён: копия не сошлась'); return; }
+  try {
+    if (snapped.length) {
+      localStorage.setItem('levshub_workout_backup_pre_v6', raw);
+      localStorage.setItem('levshub_workout', JSON.stringify(data));
+    }
+    localStorage.setItem('levshub_mig_v6_archive', todayISO());
+  } catch (e) {
+    console.error('[levshub] архив v5 не записан', e);
+  }
 }
 
 // Копирование: Clipboard API, запасной путь через выделение, а если браузер
@@ -3439,13 +3684,19 @@ function copyProgram() {
       clearTimeout(copyBtnTimer);
       copyBtnTimer = setTimeout(() => {
         btn.classList.remove('done');
-        label.textContent = 'копировать A+B';
+        label.textContent = 'копировать всё';
       }, 2200);
     }
     return true;
   });
 }
 document.getElementById('copyProgramBtn').addEventListener('click', copyProgram);
+document.getElementById('caffeineBtn').addEventListener('click', () => {
+  const view = getTrainingView();
+  if (!DAYS[view]) return;
+  setCaffeine(view, !getCaffeine(view));
+  refreshCaffeineUi();
+});
 
 function openYouTube(url) {
   const m = url.match(/shorts\/([a-zA-Z0-9_-]+)/);
@@ -4331,6 +4582,7 @@ window.addEventListener('resize', updateAllToggleIndicators);
 migrateWorkoutData(); // one-time migration from levshub_workout_A/B → levshub_workout
 migrateLowRowSingleArm(); // разовый перевод тяги на одну руку; подходы двумя руками → history
 migrateWorkoutToSets(); // one-time migration {w,r} → sets[0]; старые записи сохраняются
+migrateArchiveV5(); // разовый архив v5 перед программой v6: копия рекордов и заметок в history
 runSplash();
 const initialPreset = loadTimerPreset();
 applyTimerPreset(initialPreset, { silent: true });
