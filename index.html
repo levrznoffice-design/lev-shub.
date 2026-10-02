@@ -246,11 +246,6 @@
   .btn-full { width: 100%; }
   .grow { flex: 1; }
 
-  .stats-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-    padding: 0 18px;
-  }
-  .stats-grid .card { margin: 0; }
 
   /* ============ Training ============ */
   .toggle-bar {
@@ -935,171 +930,66 @@
     max-width: 240px;
   }
 
-  /* ============ Nutrition ============ */
-  .accordion-head {
-    display: flex; justify-content: space-between; align-items: center;
-    cursor: pointer;
+  /* ============ Sleep ============ */
+  .sleep-nav { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+  .sleep-nav-mid { flex: 1; min-width: 0; text-align: center; }
+  .sleep-nav-k { font-size: 10px; color: var(--muted); letter-spacing: 0.5px; margin-bottom: 2px; }
+  .sleep-day { font-size: 15px; color: var(--cream); letter-spacing: 0.2px; }
+  .sleep-arrow {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted-2);
+    background: rgba(245,242,232,0.04);
+    border: 1px solid var(--border-2);
+    font-size: 17px;
+    flex-shrink: 0;
+    transition: transform 80ms ease, opacity 150ms ease;
   }
-  .accordion-head .title {
-    font-size: 14px;
-    color: var(--cream);
-    letter-spacing: 0.3px;
-  }
-  .accordion-head .summary {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 11px;
-    color: var(--muted);
-  }
-  .accordion-head .chev {
-    transition: transform 200ms ease;
-    color: var(--muted);
-  }
-  .accordion.open .accordion-head .chev { transform: rotate(180deg); }
-  .accordion-body {
-    max-height: 0; overflow: hidden;
-    transition: max-height 350ms ease;
-  }
-  .accordion.open .accordion-body { max-height: 2000px; }
-  .acc-inner { padding-top: 14px; }
-
-  .field { margin-bottom: 10px; }
-  .field label {
-    display: block;
-    font-size: 11px;
-    color: var(--muted);
-    margin-bottom: 4px;
-    letter-spacing: 0.5px;
-  }
-  .field input[type=number],
-  .field input[type=date],
-  .field input[type=text] {
+  .sleep-arrow:active { transform: scale(0.92); }
+  .sleep-arrow:disabled { opacity: 0.3; }
+  .sleep-times { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .sleep-time span { display: block; font-size: 10px; color: var(--muted); letter-spacing: 0.5px; text-align: center; margin-bottom: 4px; }
+  .sleep-time input {
     width: 100%;
+    min-height: 46px;
     background: rgba(245,242,232,0.03);
     border: 1px solid var(--border-2);
-    border-radius: 8px;
-    padding: 10px 12px;
-    color: var(--cream);
-    font-size: 16px; /* iOS no-zoom */
-    outline: none;
-    -webkit-appearance: none;
-  }
-  .field input:focus { border-color: rgba(200,48,44,0.4); }
-  .radio-group { display: flex; flex-direction: column; gap: 6px; }
-  .radio-opt {
-    display: flex; align-items: center; gap: 8px;
-    background: rgba(245,242,232,0.03);
-    padding: 9px 12px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    font-size: 13px;
-    color: var(--muted-2);
-    cursor: pointer;
-  }
-  .radio-opt.checked {
-    border-color: rgba(200,48,44,0.4);
-    color: var(--cream);
-    background: rgba(200,48,44,0.06);
-  }
-  .radio-opt input { accent-color: var(--red); }
-  .radio-opt .custom-pct {
-    margin-left: auto;
-    width: 64px;
-    background: rgba(245,242,232,0.05);
-    border: 1px solid var(--border-2);
-    border-radius: 6px;
-    padding: 4px 8px;
-    color: var(--cream);
-    font-size: 16px; /* iOS no-zoom */
-    text-align: center;
-    outline: none;
-    -webkit-appearance: none;
-  }
-  .calc-results {
-    margin-top: 14px;
-    padding-top: 14px;
-    border-top: 1px solid var(--border);
-    font-size: 13px;
-  }
-  .calc-row {
-    display: flex; justify-content: space-between;
-    padding: 4px 0;
-    color: var(--muted-2);
-  }
-  .calc-row .v { color: var(--cream); font-weight: 500; }
-  .calc-divider { height: 1px; background: var(--border); margin: 8px 0; }
-
-  .live-dot {
-    width: 7px; height: 7px;
-    background: var(--green);
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 6px;
-    animation: pulse 1.6s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.6; transform: scale(0.85); }
-  }
-
-  .baza-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-    margin-bottom: 10px;
-  }
-  .baza-card {
-    background: rgba(245,242,232,0.03);
     border-radius: 10px;
-    padding: 12px;
-    border: 1px solid var(--border);
-  }
-  .baza-card .lbl { font-size: 10px; color: var(--muted); letter-spacing: 0.7px; margin-bottom: 4px; }
-  .baza-card .v { font-size: 16px; color: var(--cream); font-weight: 500; }
-  .baza-card .target { font-size: 10px; color: var(--muted); margin-top: 3px; }
-  .baza-full { grid-column: 1 / -1; }
-  .macro-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
-  .tag {
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 11px;
-    letter-spacing: 0.3px;
-  }
-  .tag-blue { background: rgba(74,158,255,0.12); color: #4a9eff; }
-  .tag-amber { background: rgba(245,158,11,0.12); color: #f59e0b; }
-  .tag-green { background: rgba(74,222,128,0.12); color: #4ade80; }
-  .strategy-list {
-    display: flex; flex-direction: column; gap: 8px;
-    font-size: 12px;
-    color: var(--muted-2);
-    line-height: 1.5;
-    margin-top: 10px;
-  }
-  .strategy-list div { padding-left: 4px; }
-
-  .meal-row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 9px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-  }
-  .meal-row:last-child { border-bottom: none; }
-  .meal-row .l { color: var(--cream); }
-  .meal-row .r { color: var(--muted-2); font-weight: 500; }
-  .meal-total {
-    display: flex; justify-content: space-between;
-    margin-top: 8px; padding-top: 10px;
-    border-top: 2px solid var(--border-2);
-    font-size: 14px;
     color: var(--cream);
-    font-weight: 500;
+    font-size: 20px;
+    text-align: center;
+    padding: 0 8px;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    color-scheme: dark;
+    font-variant-numeric: tabular-nums;
   }
-  /* ============ Body ============ */
-  .weight-head {
-    display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px;
+  .sleep-time input:focus { border-color: rgba(200,48,44,0.4); }
+  .sleep-dur { text-align: center; margin: 14px 0; font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--cream); }
+  .sleep-dur.warn { font-family: var(--sans); font-style: normal; font-size: 12px; color: var(--muted-2); }
+  .sleep-hint { text-align: center; font-size: 11px; color: var(--muted); letter-spacing: 0.3px; margin-top: 8px; min-height: 14px; }
+  .sleep-avg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; }
+  .sleep-avg .k { font-size: 10px; color: var(--muted); letter-spacing: 0.5px; margin-bottom: 3px; }
+  .sleep-avg .v { font-size: 18px; color: var(--cream); font-weight: 500; font-variant-numeric: tabular-nums; }
+  .sleep-avg-foot { font-size: 11px; color: var(--muted); text-align: center; margin-top: 8px; }
+  .sleep-list-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+  .sleep-list-head .label { margin-bottom: 0; }
+  .sleep-cols, .sleep-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 14px;
+    align-items: center;
+    font-variant-numeric: tabular-nums;
   }
-  .weight-head .num { font-size: 22px; font-weight: 500; }
-  .weight-head .delta { font-size: 12px; }
-  .weight-head .delta.up { color: var(--green); }
-  .weight-head .delta.down { color: var(--red); }
-  .weight-head .delta.neutral { color: var(--muted); }
+  .sleep-cols { font-size: 10px; color: var(--muted); letter-spacing: 0.5px; padding: 6px 0; }
+  .sleep-row { width: 100%; padding: 10px 0; border-top: 1px solid var(--border); text-align: left; font-size: 13px; }
+  .sleep-row .d { color: var(--muted-2); }
+  .sleep-row .t { color: var(--cream); }
+  .sleep-cols .dur, .sleep-row .dur { min-width: 76px; text-align: right; }
+  .sleep-row .dur { color: var(--cream); font-weight: 500; }
+  .sleep-empty { font-size: 12px; color: var(--muted); text-align: center; padding: 14px 0; grid-column: 1 / -1; }
   .mini-toggle {
     margin-left: auto;
     display: flex;
@@ -1116,59 +1006,6 @@
     letter-spacing: 0.3px;
   }
   .mini-toggle button.active { background: var(--red); color: var(--cream); }
-  .chart-wrap { width: 100%; }
-  .chart-wrap svg { width: 100%; height: auto; display: block; }
-  .meas-list-row {
-    display: flex; align-items: center;
-    padding: 9px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-    gap: 12px;
-  }
-  .meas-list-row:last-child { border-bottom: none; }
-  .meas-list-row .d { color: var(--muted); flex: 1; }
-  .meas-list-row .w { color: var(--cream); font-weight: 500; }
-  .meas-list-row .arr { width: 18px; text-align: center; font-size: 13px; }
-  .meas-list-row .arr.up { color: var(--green); }
-  .meas-list-row .arr.down { color: var(--red); }
-  .meas-list-row .arr.flat { color: var(--muted); }
-  .meas-list-row .trash {
-    color: var(--muted);
-    padding: 4px;
-    font-size: 16px;
-  }
-  .last-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px;
-  }
-  .last-pair {
-    display: flex; justify-content: space-between;
-    padding: 6px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-  }
-  .last-pair .l { color: var(--muted); }
-  .last-pair .v { color: var(--cream); font-weight: 500; }
-  .more-link {
-    margin-top: 12px;
-    text-align: center;
-    font-size: 12px;
-    color: var(--muted);
-    padding: 8px;
-    cursor: pointer;
-    letter-spacing: 0.3px;
-  }
-  .add-btn-wrap { padding: 4px 18px 0; }
-  .add-meas-btn {
-    width: 100%;
-    background: var(--red);
-    color: var(--cream);
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 18px;
-    padding: 14px;
-    border-radius: 12px;
-    letter-spacing: 0.3px;
-  }
 
   /* ============ Modal ============ */
   .modal-backdrop {
@@ -1213,8 +1050,6 @@
     font-size: 22px;
     padding: 4px;
   }
-  .modal-form .field { margin-bottom: 8px; }
-  .modal-row-btns { display: flex; gap: 8px; margin-top: 14px; }
 
   /* ============ Timer ============ */
   .timer-screen {
@@ -1557,19 +1392,6 @@
       </div>
     </div>
 
-    <div class="stats-grid">
-      <div class="card">
-        <div class="label">текущий вес</div>
-        <div class="big-num" id="homeWeight">—</div>
-        <div class="sub" id="homeWeightDelta"></div>
-      </div>
-      <div class="card">
-        <div class="label">калории · треня</div>
-        <div class="big-num" id="homeKcal">—</div>
-        <div class="sub" id="homeMacros"></div>
-      </div>
-    </div>
-
     <div class="card vol-card" id="volumeCard">
       <div class="label">объём в неделю · подходов на мышцу</div>
       <div id="volumeTable"></div>
@@ -1611,135 +1433,48 @@
     </div>
   </section>
 
-  <!-- NUTRITION -->
-  <section class="page" id="page-nutrition">
-    <div class="section-label">nutrition</div>
-    <div class="section-h1">питание и калькулятор</div>
-
-    <!-- Calculator -->
-    <div class="card accordion" id="calcAcc">
-      <div class="accordion-head" id="calcHead">
-        <div class="title">diet calculator</div>
-        <div class="summary">
-          <span id="calcSummary">rest: — | training: —</span>
-          <i class="ti ti-chevron-down chev"></i>
-        </div>
-      </div>
-      <div class="accordion-body">
-        <div class="acc-inner">
-          <div class="field">
-            <label>weight (kg)</label>
-            <input type="text" inputmode="none" readonly id="cWeight" value="66.7">
-          </div>
-          <div class="field">
-            <label>body fat %</label>
-            <input type="text" inputmode="none" readonly id="cBf" value="11">
-          </div>
-          <div class="field">
-            <label>steps per day</label>
-            <input type="text" inputmode="none" readonly id="cSteps" value="6000">
-          </div>
-          <div class="field">
-            <label>training minutes</label>
-            <input type="text" inputmode="none" readonly id="cMinutes" value="60">
-          </div>
-          <div class="field">
-            <label>surplus level</label>
-            <div class="radio-group" id="surplusGroup">
-              <label class="radio-opt"><input type="radio" name="surp" value="beginner"> beginner (+10-15%)</label>
-              <label class="radio-opt checked"><input type="radio" name="surp" value="mid" checked> mid (+2-7%)</label>
-              <label class="radio-opt"><input type="radio" name="surp" value="advanced"> advanced (+1-3%)</label>
-              <label class="radio-opt"><input type="radio" name="surp" value="custom"> custom %
-                <input type="text" inputmode="none" readonly class="custom-pct" id="cCustom" value="5">
-              </label>
-            </div>
-          </div>
-          <div class="calc-results">
-            <div class="calc-row"><span>rest day tdee:</span><span class="v"><span id="rRest">—</span> kcal</span></div>
-            <div class="calc-row"><span>training day tdee:</span><span class="v"><span id="rTrain">—</span> kcal</span></div>
-            <div class="calc-divider"></div>
-            <div class="calc-row" style="color:var(--muted)"><span>macros (per day avg)</span><span></span></div>
-            <div class="calc-row"><span>protein:</span><span class="v"><span id="rP">—</span> g</span></div>
-            <div class="calc-row"><span>fat:</span><span class="v"><span id="rF">—</span> g</span></div>
-            <div class="calc-row"><span>carbs:</span><span class="v"><span id="rC">—</span> g</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Baza -->
-    <div class="card">
-      <div class="label"><span class="live-dot"></span>baza · live data</div>
-      <div class="baza-grid">
-        <div class="baza-card">
-          <div class="lbl">текущий вес</div>
-          <div class="v" id="bazaWeight">—</div>
-          <div class="target">цель: +0.3–0.6 кг/нед</div>
-        </div>
-        <div class="baza-card">
-          <div class="lbl">норма (отдых / треня)</div>
-          <div class="v"><span id="bazaRest">—</span> / <span id="bazaTrain">—</span> ккал</div>
-        </div>
-        <div class="baza-card baza-full">
-          <div class="lbl">макросы (среднее/день)</div>
-          <div class="macro-tags">
-            <span class="tag tag-blue" id="bazaP">Б: —г</span>
-            <span class="tag tag-amber" id="bazaF">Ж: —г (цель 50-70г)</span>
-            <span class="tag tag-green" id="bazaC">У: —г</span>
-          </div>
-        </div>
-      </div>
-      <div class="strategy-list">
-        <div>🏋️ тренировки: push/pull 4 раза в неделю. rir 1-2.</div>
-        <div>🧠 психология: слушай голод. не штрафуй себя.</div>
-        <div>💧 вода: 3л+ (обязательно под креатин).</div>
-        <div>📈 прогресс: вес встал — добавь калории. силовые встали — проверь сон.</div>
-      </div>
-    </div>
-
-    <!-- Meal control -->
-    <div class="card">
-      <div class="label">контроль питания (рск)</div>
-      <div class="toggle-bar" style="margin:0 0 12px; padding:3px;">
-        <div class="toggle-seg active" data-meal="training" id="mealTrain">🏋️ треня · <span id="mealTrainKcal">—</span> ккал</div>
-        <div class="toggle-seg" data-meal="rest" id="mealRest">😴 отдых · <span id="mealRestKcal">—</span> ккал</div>
-      </div>
-      <div id="mealRows"></div>
-    </div>
-  </section>
-
-  <!-- BODY -->
-  <section class="page" id="page-body">
-    <div class="section-label">body</div>
-    <div class="section-h1">замеры тела</div>
-
-    <div class="card">
-      <div class="label">вес · последние 12 нед</div>
-      <div class="weight-head">
-        <span class="num" id="bWeight">—</span>
-        <span class="delta" id="bDelta"></span>
-        <div class="mini-toggle" id="weightView">
-          <button class="active" data-v="chart">график</button>
-          <button data-v="list">список</button>
-        </div>
-      </div>
-      <div id="weightChart" class="chart-wrap"></div>
-      <div id="weightList" style="display:none"></div>
+  <!-- SLEEP -->
+  <section class="page" id="page-sleep">
+    <div class="section-label">sleep</div>
+    <div class="train-head">
+      <div class="section-h1">сон</div>
+      <button type="button" class="copy-prog-btn" id="sleepCopyBtn" title="скопировать записи сна за выбранный период"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><span>копировать</span></button>
     </div>
 
     <div class="card">
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px;">
-        <div class="label" id="lastDateLabel" style="margin-bottom:0">последний замер · —</div>
-        <button id="lastDelBtn" style="display:none; align-items:center; gap:4px; color:var(--muted); font-size:11px; padding:4px 8px; border-radius:6px; background:rgba(245,242,232,0.04); border:1px solid var(--border);">
-          <i class="ti ti-trash" style="font-size:14px"></i>удалить
-        </button>
+      <div class="sleep-nav">
+        <button type="button" class="sleep-arrow" id="sleepPrev" aria-label="предыдущая ночь"><i class="ti ti-chevron-left"></i></button>
+        <div class="sleep-nav-mid">
+          <div class="sleep-nav-k">ночь · дата пробуждения</div>
+          <div class="sleep-day" id="sleepDay">—</div>
+        </div>
+        <button type="button" class="sleep-arrow" id="sleepNext" aria-label="следующая ночь"><i class="ti ti-chevron-right"></i></button>
       </div>
-      <div class="last-grid" id="lastGrid"></div>
-      <div class="more-link" id="moreLink" style="display:none">ещё <span id="moreN">0</span> замеров →</div>
+      <div class="sleep-times">
+        <label class="sleep-time"><span>лёг</span><input type="time" id="sleepBed"></label>
+        <label class="sleep-time"><span>встал</span><input type="time" id="sleepWake"></label>
+      </div>
+      <div class="sleep-dur" id="sleepDur">—</div>
+      <button type="button" class="btn btn-red btn-full" id="sleepSave">сохранить</button>
+      <div class="sleep-hint" id="sleepHint"></div>
     </div>
 
-    <div class="add-btn-wrap">
-      <button class="add-meas-btn" id="addMeasBtn">+ новый замер</button>
+    <div class="card">
+      <div class="label">среднее за 7 дней</div>
+      <div class="sleep-avg" id="sleepAvg"></div>
+      <div class="sleep-avg-foot" id="sleepAvgFoot"></div>
+    </div>
+
+    <div class="card">
+      <div class="sleep-list-head">
+        <div class="label">записи</div>
+        <div class="mini-toggle" id="sleepPeriod">
+          <button type="button" data-p="7" class="active">7 дн</button>
+          <button type="button" data-p="30">30 дн</button>
+          <button type="button" data-p="all">всё</button>
+        </div>
+      </div>
+      <div id="sleepList"></div>
     </div>
   </section>
 
@@ -1788,8 +1523,7 @@
 <nav class="tab-bar">
   <button class="tab-btn active" data-tab="home"><i class="ti ti-home"></i><span>home</span></button>
   <button class="tab-btn" data-tab="training"><i class="ti ti-barbell"></i><span>training</span></button>
-  <button class="tab-btn" data-tab="nutrition"><i class="ti ti-apple"></i><span>nutrition</span></button>
-  <button class="tab-btn" data-tab="body"><i class="ti ti-ruler"></i><span>body</span></button>
+  <button class="tab-btn" data-tab="sleep"><i class="ti ti-moon"></i><span>сон</span></button>
   <button class="tab-btn" data-tab="timer"><i class="ti ti-clock"></i><span>timer</span></button>
 </nav>
 
@@ -1984,18 +1718,6 @@ const DAYS_RU =['воскресенье','понедельник','вторни�
 // Пн A · Вт B · Ср C · Чт A · Пт B · Сб C · Вс отдых
 const SCHEDULE = ['rest','A','B','C','A','B','C'];
 
-const MEAS_FIELDS = [
-  { key: 'weight', label: 'вес', unit: 'кг' },
-  { key: 'biceps', label: 'бицепс', unit: 'см' },
-  { key: 'chest', label: 'грудь', unit: 'см' },
-  { key: 'waist', label: 'талия', unit: 'см' },
-  { key: 'hip', label: 'бедро', unit: 'см' },
-  { key: 'calf', label: 'икра', unit: 'см' },
-  { key: 'shoulders', label: 'плечи', unit: 'см' },
-  { key: 'neck', label: 'шея', unit: 'см' },
-  { key: 'forearm', label: 'предплечье', unit: 'см' },
-  { key: 'bodyfat', label: '% жира', unit: '%' }
-];
 
 // ================= STORAGE =================
 const LS = {
@@ -2057,8 +1779,7 @@ function switchTab(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
   if (name === 'home') renderHome();
   if (name === 'training') renderTraining();
-  if (name === 'nutrition') renderNutrition();
-  if (name === 'body') renderBody();
+  if (name === 'sleep') renderSleep();
   if (name === 'timer') resyncTimer();
   // Update sliding pill indicators on newly visible toggle bars
   if (typeof updateToggleIndicator === 'function') {
@@ -2086,50 +1807,6 @@ function renderHome() {
   document.getElementById('todayNext').innerHTML = nextTrainingHtml();
   renderVolume();
 
-  // Weight
-  const meas = LS.get('levshub_measurements', []) || [];
-  const sorted = meas.slice().sort((a,b) => b.date.localeCompare(a.date));
-  const latest = sorted.find(m => typeof m.weight === 'number');
-  if (latest) {
-    document.getElementById('homeWeight').textContent = latest.weight + ' кг';
-    // Week delta
-    const latestDate = new Date(latest.date);
-    let best = null, bestDiff = Infinity;
-    for (const m of sorted) {
-      if (m === latest || typeof m.weight !== 'number') continue;
-      const md = new Date(m.date);
-      const days = Math.abs((latestDate - md) / 86400000);
-      if (days >= 5 && days <= 10) {
-        const diff = Math.abs(days - 7);
-        if (diff < bestDiff) { bestDiff = diff; best = m; }
-      }
-    }
-    const dEl = document.getElementById('homeWeightDelta');
-    if (best) {
-      const delta = latest.weight - best.weight;
-      const sign = delta >= 0 ? '+' : '';
-      dEl.textContent = sign + delta.toFixed(1) + ' за неделю';
-      dEl.className = 'sub ' + (delta >= 0 ? 'green' : '');
-      if (delta < 0) dEl.style.color = 'var(--red)';
-      else dEl.style.color = '';
-    } else {
-      dEl.textContent = '';
-    }
-  } else {
-    document.getElementById('homeWeight').textContent = '—';
-    document.getElementById('homeWeightDelta').textContent = '';
-  }
-
-  // Kcal/macros
-  const diet = LS.get('levshub_diet', null);
-  if (diet) {
-    const res = computeDiet(diet);
-    document.getElementById('homeKcal').textContent = res.trainingFinal;
-    document.getElementById('homeMacros').textContent = `Б${res.protein} · Ж${res.fat} · У${res.carbs}`;
-  } else {
-    document.getElementById('homeKcal').textContent = '—';
-    document.getElementById('homeMacros').textContent = '';
-  }
 }
 
 document.getElementById('startTrainBtn').addEventListener('click', () => {
@@ -3709,375 +3386,237 @@ function openYouTube(url) {
   }
 }
 
-// ================= NUTRITION =================
-let dietState = LS.get('levshub_diet', {
-  weight: 66.7, bf: 11, steps: 6000, minutes: 60, surplus: 'mid', customPercent: 5
-});
+// ================= SLEEP =================
+// Запись = одна ночь, ключ — дата ПРОБУЖДЕНИЯ:
+//   levshub_sleep = { 'YYYY-MM-DD': { bed: 'HH:MM', wake: 'HH:MM', prev: [...] } }
+// Ничего не удаляется: при правке прежние значения уходят в prev этой же записи.
+// Калькулятор и замеры убраны из приложения 02.10.2026. Их данные (levshub_diet,
+// levshub_measurements, levshub_meal_mode) остаются в памяти как архив — код их не читает и не удаляет.
+const SLEEP_KEY = 'levshub_sleep';
+const WD_SHORT = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
+let sleepDate = null;    // ночь в форме (дата пробуждения)
+let sleepPeriod = '7';   // период списка и копирования: '7' | '30' | 'all'
 
-function applyDietToInputs() {
-  document.getElementById('cWeight').value = dietState.weight;
-  document.getElementById('cBf').value = dietState.bf;
-  document.getElementById('cSteps').value = dietState.steps;
-  document.getElementById('cMinutes').value = dietState.minutes;
-  document.getElementById('cCustom').value = dietState.customPercent;
-  document.querySelectorAll('input[name="surp"]').forEach(r => {
-    r.checked = r.value === dietState.surplus;
-  });
-  document.querySelectorAll('#surplusGroup .radio-opt').forEach(o => {
-    const inp = o.querySelector('input');
-    o.classList.toggle('checked', inp.checked);
-  });
+function getSleepData() {
+  const d = LS.get(SLEEP_KEY, {});
+  return (d && typeof d === 'object' && !Array.isArray(d)) ? d : {};
+}
+function isoAddDays(iso, n) {
+  const p = iso.split('-').map(Number);
+  const d = new Date(p[0], p[1] - 1, p[2] + n);
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+function isoWeekday(iso) { const p = iso.split('-').map(Number); return WD_SHORT[new Date(p[0], p[1] - 1, p[2]).getDay()]; }
+function fmtDayShort(iso) { return isoWeekday(iso) + ' ' + iso.slice(8, 10) + '.' + iso.slice(5, 7); }
+function fmtDayFull(iso) { return iso.slice(8, 10) + '.' + iso.slice(5, 7) + '.' + iso.slice(0, 4); }
+function timeToMin(t) {
+  const m = /^(\d{1,2}):(\d{2})/.exec(t || '');
+  if (!m) return null;
+  const h = +m[1], mi = +m[2];
+  return (h > 23 || mi > 59) ? null : h * 60 + mi;
+}
+function minToTime(m) {
+  if (m === null || m === undefined) return '—';
+  m = ((Math.round(m) % 1440) + 1440) % 1440;
+  return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+}
+// Длительность через полночь: лёг 01:30, встал 10:00 → 510 мин; лёг 23:30, встал 07:30 → 480 мин
+function sleepMinutes(bed, wake) {
+  const b = timeToMin(bed), w = timeToMin(wake);
+  if (b === null || w === null) return null;
+  return ((w - b) % 1440 + 1440) % 1440;
+}
+function fmtDur(min) {
+  if (min === null || min === undefined) return '—';
+  min = Math.round(min);
+  const h = Math.floor(min / 60), m = min % 60;
+  if (!h) return m + ' мин';
+  return m ? h + ' ч ' + m + ' мин' : h + ' ч';
+}
+// Среднее время по кругу суток: 23:30 и 01:30 → 00:30 (а не 12:30)
+function circMeanTime(mins) {
+  if (!mins.length) return null;
+  let sn = 0, cs = 0;
+  mins.forEach(m => { const a = m / 1440 * 2 * Math.PI; sn += Math.sin(a); cs += Math.cos(a); });
+  if (Math.abs(sn) < 1e-9 && Math.abs(cs) < 1e-9) return null;
+  let a = Math.atan2(sn, cs);
+  if (a < 0) a += 2 * Math.PI;
+  return Math.round(a / (2 * Math.PI) * 1440) % 1440;
+}
+// Записи между датами (включительно; null — без границы), новые сверху
+function sleepEntries(fromIso, toIso) {
+  const data = getSleepData();
+  return Object.keys(data)
+    .filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d) && (!fromIso || d >= fromIso) && (!toIso || d <= toIso))
+    .filter(d => data[d] && sleepMinutes(data[d].bed, data[d].wake) !== null)
+    .sort((a, b) => b.localeCompare(a))
+    .map(d => ({ date: d, bed: data[d].bed, wake: data[d].wake, dur: sleepMinutes(data[d].bed, data[d].wake) }));
+}
+function sleepAverages(list) {
+  if (!list.length) return null;
+  return {
+    n: list.length,
+    bed: circMeanTime(list.map(e => timeToMin(e.bed))),
+    wake: circMeanTime(list.map(e => timeToMin(e.wake))),
+    dur: list.reduce((acc, e) => acc + e.dur, 0) / list.length
+  };
+}
+function sleepPeriodRange() {
+  const today = todayISO();
+  if (sleepPeriod === 'all') return { from: null, to: null, text: 'все записи' };
+  const n = +sleepPeriod;
+  return { from: isoAddDays(today, -(n - 1)), to: today, text: 'последние ' + n + ' дней' };
+}
+// По умолчанию — значения прошлой записи; если ночь уже записана — её значения
+function sleepDefaultsFor(iso) {
+  const data = getSleepData();
+  const valid = Object.keys(data).filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d) && data[d] && data[d].bed && data[d].wake).sort();
+  if (data[iso] && data[iso].bed && data[iso].wake) return { bed: data[iso].bed, wake: data[iso].wake, existing: true };
+  const before = valid.filter(d => d < iso);
+  const src = before.length ? before[before.length - 1] : valid[valid.length - 1];
+  return src ? { bed: data[src].bed, wake: data[src].wake, existing: false, from: src } : { bed: '', wake: '', existing: false };
 }
 
-function computeDiet(s) {
-  const weight = parseFloat(s.weight) || 66.7;
-  const bf = parseFloat(s.bf) || 11;
-  const steps = parseInt(s.steps) || 6000;
-  const minutes = parseInt(s.minutes) || 60;
-  const lbm = weight * (1 - bf / 100);
-  const bmr = 370 + (21.6 * lbm);
-  const tef = bmr * 1.15;
-  const neat = tef * (1 + steps / 1000 * 0.01);
-  const workoutBurn = 0.1 * weight * minutes;
-  const restTdee = neat;
-  const trainingTdee = neat + workoutBurn;
-  let surplus = 0.125;
-  if (s.surplus === 'beginner') surplus = 0.125;
-  else if (s.surplus === 'mid') surplus = 0.045;
-  else if (s.surplus === 'advanced') surplus = 0.02;
-  else if (s.surplus === 'custom') surplus = (parseFloat(s.customPercent) || 5) / 100;
-  const restFinal = Math.round(restTdee * (1 + surplus));
-  const trainingFinal = Math.round(trainingTdee * (1 + surplus));
-  const avgTdee = (restFinal + trainingFinal) / 2;
-  const protein = Math.round(weight * 1.8);
-  const fat = Math.round((bmr * 0.3) / 9);
-  const carbs = Math.round((avgTdee - protein * 4 - fat * 9) / 4);
-  return { restFinal, trainingFinal, protein, fat, carbs, bmr };
+function renderSleep() {
+  const today = todayISO();
+  if (!sleepDate || sleepDate > today) sleepDate = today;
+  renderSleepForm();
+  renderSleepStats();
+}
+function renderSleepForm() {
+  const today = todayISO();
+  const def = sleepDefaultsFor(sleepDate);
+  document.getElementById('sleepDay').textContent = (sleepDate === today ? 'сегодня · ' : '') + fmtDayShort(sleepDate);
+  document.getElementById('sleepNext').disabled = sleepDate >= today;
+  document.getElementById('sleepBed').value = def.bed || '';
+  document.getElementById('sleepWake').value = def.wake || '';
+  document.getElementById('sleepSave').textContent = def.existing ? 'обновить' : 'сохранить';
+  document.getElementById('sleepHint').textContent = def.existing
+    ? 'эта ночь уже записана — можно поправить'
+    : (def.from ? 'подставлено из записи за ' + fmtDayShort(def.from) : '');
+  updateSleepDur();
+}
+function updateSleepDur() {
+  const el = document.getElementById('sleepDur');
+  const m = sleepMinutes(document.getElementById('sleepBed').value, document.getElementById('sleepWake').value);
+  el.classList.remove('warn');
+  if (m === null) { el.textContent = 'укажи «лёг» и «встал»'; el.classList.add('warn'); return; }
+  if (m === 0) { el.textContent = '«лёг» и «встал» совпадают'; el.classList.add('warn'); return; }
+  el.textContent = fmtDur(m);
+}
+function saveSleep() {
+  const bed = document.getElementById('sleepBed').value;
+  const wake = document.getElementById('sleepWake').value;
+  const m = sleepMinutes(bed, wake);
+  if (m === null || m === 0) { updateSleepDur(); return; }
+  const data = getSleepData();
+  const old = data[sleepDate];
+  const rec = { bed: bed.slice(0, 5), wake: wake.slice(0, 5) };
+  if (old && typeof old === 'object') {
+    const prev = Array.isArray(old.prev) ? old.prev.slice() : [];
+    if (old.bed !== rec.bed || old.wake !== rec.wake) prev.push({ bed: old.bed, wake: old.wake, changed: todayISO() });
+    if (prev.length) rec.prev = prev;
+  }
+  data[sleepDate] = rec;
+  LS.set(SLEEP_KEY, data);
+  // проверяем, что запись реально легла в память
+  const back = getSleepData()[sleepDate];
+  const ok = !!(back && back.bed === rec.bed && back.wake === rec.wake);
+  renderSleep();
+  const btn = document.getElementById('sleepSave');
+  if (!ok) {
+    document.getElementById('sleepHint').textContent = 'не удалось сохранить: память браузера недоступна';
+    return;
+  }
+  btn.textContent = 'сохранено ✓';
+  setTimeout(() => { if (document.getElementById('page-sleep').classList.contains('active')) renderSleepForm(); }, 1400);
+}
+function renderSleepStats() {
+  const today = todayISO();
+  const avg = sleepAverages(sleepEntries(isoAddDays(today, -6), today));
+  document.getElementById('sleepAvg').innerHTML = avg
+    ? `<div><div class="k">лёг</div><div class="v">${minToTime(avg.bed)}</div></div>` +
+      `<div><div class="k">встал</div><div class="v">${minToTime(avg.wake)}</div></div>` +
+      `<div><div class="k">сон</div><div class="v">${fmtDur(avg.dur)}</div></div>`
+    : '<div class="sleep-empty">за последние 7 дней записей нет</div>';
+  document.getElementById('sleepAvgFoot').textContent = avg ? 'ночей с записью: ' + avg.n + ' из 7' : '';
+
+  document.querySelectorAll('#sleepPeriod button').forEach(b => b.classList.toggle('active', b.dataset.p === sleepPeriod));
+  const r = sleepPeriodRange();
+  const list = sleepEntries(r.from, r.to);
+  document.getElementById('sleepList').innerHTML = list.length
+    ? '<div class="sleep-cols"><span>дата</span><span>лёг</span><span>встал</span><span class="dur">сон</span></div>' +
+      list.map(e => `<button type="button" class="sleep-row" data-date="${e.date}"><span class="d">${fmtDayShort(e.date)}</span>` +
+        `<span class="t">${escHtml(e.bed)}</span><span class="t">${escHtml(e.wake)}</span><span class="dur">${fmtDur(e.dur)}</span></button>`).join('')
+    : '<div class="sleep-empty">за этот период записей нет</div>';
 }
 
-function updateDiet() {
-  dietState.weight = parseFloat(document.getElementById('cWeight').value) || 0;
-  dietState.bf = parseFloat(document.getElementById('cBf').value) || 0;
-  dietState.steps = parseInt(document.getElementById('cSteps').value) || 0;
-  dietState.minutes = parseInt(document.getElementById('cMinutes').value) || 0;
-  dietState.customPercent = parseFloat(document.getElementById('cCustom').value) || 0;
-  const sel = document.querySelector('input[name="surp"]:checked');
-  if (sel) dietState.surplus = sel.value;
-  LS.set('levshub_diet', dietState);
-  document.querySelectorAll('#surplusGroup .radio-opt').forEach(o => {
-    const inp = o.querySelector('input');
-    o.classList.toggle('checked', inp.checked);
-  });
-  const r = computeDiet(dietState);
-  document.getElementById('rRest').textContent = r.restFinal;
-  document.getElementById('rTrain').textContent = r.trainingFinal;
-  document.getElementById('rP').textContent = r.protein;
-  document.getElementById('rF').textContent = r.fat;
-  document.getElementById('rC').textContent = r.carbs;
-  document.getElementById('calcSummary').textContent = `rest: ${r.restFinal} | training: ${r.trainingFinal}`;
-  // Baza
-  document.getElementById('bazaWeight').textContent = dietState.weight + ' кг';
-  document.getElementById('bazaRest').textContent = r.restFinal;
-  document.getElementById('bazaTrain').textContent = r.trainingFinal;
-  document.getElementById('bazaP').textContent = 'Б: ' + r.protein + 'г';
-  document.getElementById('bazaF').textContent = 'Ж: ' + r.fat + 'г (цель 50-70г)';
-  document.getElementById('bazaC').textContent = 'У: ' + r.carbs + 'г';
-  // Meal toggle
-  document.getElementById('mealTrainKcal').textContent = r.trainingFinal;
-  document.getElementById('mealRestKcal').textContent = r.restFinal;
-  renderMealRows();
-  // Home dashboard
-  if (document.getElementById('page-home').classList.contains('active')) renderHome();
-}
-
-function renderMealRows() {
-  const mode = LS.getRaw('levshub_meal_mode', 'training');
-  document.querySelectorAll('#page-nutrition [data-meal]').forEach(s => {
-    s.classList.toggle('active', s.dataset.meal === mode);
-  });
-  const r = computeDiet(dietState);
-  const total = mode === 'training' ? r.trainingFinal : r.restFinal;
-  const meals = [
-    { e: '🍳', n: 'завтрак', p: 0.25 },
-    { e: '🍲', n: 'обед', p: 0.35 },
-    { e: '🍏', n: 'перекус', p: 0.15 },
-    { e: '🥩', n: 'ужин', p: 0.25 }
+// Копирование — текстом за выбранный период (как у тренировок)
+function buildSleepExport() {
+  const r = sleepPeriodRange();
+  const list = sleepEntries(r.from, r.to);
+  const avg = sleepAverages(list);
+  let range = '';
+  if (r.from) range = ' (' + fmtDayFull(r.from) + ' – ' + fmtDayFull(r.to) + ')';
+  else if (list.length) range = ' (' + fmtDayFull(list[list.length - 1].date) + ' – ' + fmtDayFull(list[0].date) + ')';
+  const lines = [
+    "LEV'SHUB — сон",
+    'Период: ' + r.text + range,
+    'Выгрузка: ' + fmtDayFull(todayISO()),
+    'Дата — день пробуждения. Длительность считается через полночь.',
+    ''
   ];
-  const wrap = document.getElementById('mealRows');
-  wrap.innerHTML = meals.map(m => `
-    <div class="meal-row">
-      <span class="l">${m.e} ${m.n} (${Math.round(m.p*100)}%)</span>
-      <span class="r">${Math.round(total * m.p)} ккал</span>
-    </div>
-  `).join('') + `
-    <div class="meal-total"><span>итого:</span><span>${total} ккал</span></div>
-  `;
-}
-
-function renderNutrition() {
-  applyDietToInputs();
-  updateDiet();
-}
-
-// Bind nutrition events
-document.getElementById('calcHead').addEventListener('click', () => {
-  document.getElementById('calcAcc').classList.toggle('open');
-});
-['cWeight','cBf','cSteps','cMinutes','cCustom'].forEach(id => {
-  document.getElementById(id).addEventListener('input', updateDiet);
-});
-document.querySelectorAll('input[name="surp"]').forEach(r => {
-  r.addEventListener('change', updateDiet);
-});
-document.querySelectorAll('#page-nutrition [data-meal]').forEach(s => {
-  s.addEventListener('click', () => {
-    LS.setRaw('levshub_meal_mode', s.dataset.meal);
-    renderMealRows();
-  });
-});
-// ================= BODY =================
-let weightViewMode = 'chart';
-
-function renderBody() {
-  const all = (LS.get('levshub_measurements', []) || []).slice()
-    .sort((a,b) => b.date.localeCompare(a.date));
-  const weighted = all.filter(m => typeof m.weight === 'number');
-
-  // Header
-  if (weighted.length) {
-    const latest = weighted[0];
-    document.getElementById('bWeight').textContent = latest.weight + ' кг';
-    const dEl = document.getElementById('bDelta');
-    if (weighted.length >= 2) {
-      const prev = weighted[1];
-      const d = latest.weight - prev.weight;
-      const sign = d > 0 ? '+' : '';
-      dEl.textContent = sign + d.toFixed(1);
-      dEl.className = 'delta ' + (d > 0 ? 'up' : d < 0 ? 'down' : 'neutral');
-    } else {
-      dEl.textContent = '';
-    }
+  if (avg) {
+    lines.push('Среднее за период (записей: ' + avg.n + '): лёг ' + minToTime(avg.bed) + ' · встал ' + minToTime(avg.wake) + ' · сон ' + fmtDur(avg.dur));
+    lines.push('');
+    list.forEach(e => lines.push(isoWeekday(e.date) + ' ' + fmtDayFull(e.date) + ' · лёг ' + e.bed + ' · встал ' + e.wake + ' · ' + fmtDur(e.dur)));
   } else {
-    document.getElementById('bWeight').textContent = '—';
-    document.getElementById('bDelta').textContent = '';
+    lines.push('За период записей нет.');
   }
-
-  // Chart / list
-  const chartWrap = document.getElementById('weightChart');
-  const listWrap = document.getElementById('weightList');
-  if (weightViewMode === 'chart') {
-    chartWrap.style.display = 'block';
-    listWrap.style.display = 'none';
-    chartWrap.innerHTML = renderChart(weighted.slice(0, 12).reverse());
-  } else {
-    chartWrap.style.display = 'none';
-    listWrap.style.display = 'block';
-    listWrap.innerHTML = renderWeightList(weighted.slice(0, 12));
-    listWrap.querySelectorAll('[data-del]').forEach(b => {
-      b.addEventListener('click', () => deleteMeasurement(b.dataset.del));
-    });
-  }
-
-  // Last measurement card
-  const lastGrid = document.getElementById('lastGrid');
-  const lastLabel = document.getElementById('lastDateLabel');
-  const lastDelBtn = document.getElementById('lastDelBtn');
-  if (all.length) {
-    const last = all[0];
-    lastLabel.textContent = 'последний замер · ' + formatDateRu(last.date);
-    lastDelBtn.style.display = 'inline-flex';
-    lastDelBtn.onclick = () => deleteMeasurement(last.date);
-    lastGrid.innerHTML = MEAS_FIELDS.map(f => {
-      const v = last[f.key];
-      const disp = (v !== undefined && v !== null && v !== '') ? (v + ' ' + f.unit) : '—';
-      return `<div class="last-pair"><span class="l">${f.label}</span><span class="v">${disp}</span></div>`;
-    }).join('');
-    const moreLink = document.getElementById('moreLink');
-    if (all.length > 1) {
-      moreLink.style.display = 'block';
-      document.getElementById('moreN').textContent = all.length - 1;
-      moreLink.onclick = openHistory;
-    } else {
-      moreLink.style.display = 'none';
-    }
-  } else {
-    lastLabel.textContent = 'последний замер · —';
-    lastDelBtn.style.display = 'none';
-    lastGrid.innerHTML = '<div class="last-pair" style="grid-column:1/-1"><span class="l">пока пусто</span><span class="v">—</span></div>';
-    document.getElementById('moreLink').style.display = 'none';
-  }
+  return lines.join('\n') + '\n';
 }
-
-function renderChart(arr) {
-  if (arr.length < 2) {
-    return `<div style="text-align:center; color:var(--muted); padding:30px 0; font-size:12px">нужно минимум 2 замера для графика</div>`;
-  }
-  const W = 250, H = 140, pad = 14;
-  const minV = Math.min(...arr.map(m => m.weight));
-  const maxV = Math.max(...arr.map(m => m.weight));
-  const range = Math.max(0.1, maxV - minV);
-  const stepX = (W - pad * 2) / (arr.length - 1);
-  const pts = arr.map((m, i) => {
-    const x = pad + stepX * i;
-    const y = H - pad - ((m.weight - minV) / range) * (H - pad * 2);
-    return { x, y };
-  });
-  const lineD = pts.map((p,i) => (i===0?'M':'L') + p.x.toFixed(1) + ' ' + p.y.toFixed(1)).join(' ');
-  const fillD = lineD + ` L ${pts[pts.length-1].x.toFixed(1)} ${H-pad} L ${pts[0].x.toFixed(1)} ${H-pad} Z`;
-  const dots = pts.map((p,i) => {
-    if (i === pts.length - 1) {
-      return `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="5" fill="#C8302C" stroke="#142540" stroke-width="2"/>`;
-    }
-    return `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2.5" fill="#C8302C"/>`;
-  }).join('');
-  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-    <path d="${fillD}" fill="rgba(200,48,44,0.12)"/>
-    <path d="${lineD}" fill="none" stroke="#C8302C" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-    ${dots}
-  </svg>`;
-}
-
-function renderWeightList(arr) {
-  if (!arr.length) return `<div style="color:var(--muted); font-size:12px; padding:20px 0; text-align:center">пока нет данных</div>`;
-  return arr.map((m, i) => {
-    const next = arr[i + 1];
-    let arr_ = 'flat', sym = '→';
-    if (next) {
-      if (m.weight > next.weight) { arr_ = 'up'; sym = '↑'; }
-      else if (m.weight < next.weight) { arr_ = 'down'; sym = '↓'; }
-    }
-    return `<div class="meas-list-row">
-      <span class="d">${formatDateRuShort(m.date)}</span>
-      <span class="w">${m.weight} кг</span>
-      <span class="arr ${arr_}">${sym}</span>
-      <button class="trash" data-del="${m.date}"><i class="ti ti-trash"></i></button>
-    </div>`;
-  }).join('');
-}
-
-function formatDateRu(iso) {
-  const months = ['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
-  const d = new Date(iso);
-  return d.getDate() + ' ' + months[d.getMonth()];
-}
-function formatDateRuShort(iso) {
-  return formatDateRu(iso);
-}
-
-function deleteMeasurement(date) {
-  appConfirm('удалить замер от ' + formatDateRu(date) + '?', { title: 'удалить замер', yesText: 'удалить' }).then(ok => {
-    if (!ok) return;
-    let arr = LS.get('levshub_measurements', []) || [];
-    arr = arr.filter(m => m.date !== date);
-    LS.set('levshub_measurements', arr);
-    renderBody();
-    renderHome();
+let sleepCopyTimer = null;
+function copySleep() {
+  const btn = document.getElementById('sleepCopyBtn');
+  const label = btn.querySelector('span');
+  const text = buildSleepExport();
+  return copyToClipboard(text).then(ok => {
+    if (!ok) { openManualCopy(text); return false; }
+    btn.classList.add('done');
+    label.textContent = 'скопировано';
+    clearTimeout(sleepCopyTimer);
+    sleepCopyTimer = setTimeout(() => { btn.classList.remove('done'); label.textContent = 'копировать'; }, 2200);
+    return true;
   });
 }
 
-document.getElementById('weightView').querySelectorAll('button').forEach(b => {
-  b.addEventListener('click', () => {
-    weightViewMode = b.dataset.v;
-    document.getElementById('weightView').querySelectorAll('button').forEach(x => x.classList.toggle('active', x === b));
-    renderBody();
-  });
+document.getElementById('sleepPrev').addEventListener('click', () => {
+  sleepDate = isoAddDays(sleepDate || todayISO(), -1);
+  renderSleepForm();
 });
-
-document.getElementById('addMeasBtn').addEventListener('click', openMeasModal);
-
-function openMeasModal() {
-  const fields = MEAS_FIELDS.map(f => `
-    <div class="field">
-      <label>${f.label} (${f.unit})${f.key === 'bodyfat' ? ' <span style="color:var(--muted)">· калипер или визуально</span>' : ''}</label>
-      <input type="text" inputmode="none" readonly data-mk="${f.key}" placeholder="—">
-    </div>
-  `).join('');
-  openModal(`
-    <div class="modal-head">
-      <div class="t">+ новый замер</div>
-      <button class="x" onclick="closeModal()"><i class="ti ti-x"></i></button>
-    </div>
-    <div class="modal-form">
-      <div class="field">
-        <label>дата</label>
-        <input type="date" id="measDate" value="${todayISO()}">
-      </div>
-      ${fields}
-      <div class="modal-row-btns">
-        <button class="btn btn-ghost grow" onclick="closeModal()">отменить</button>
-        <button class="btn btn-red grow" onclick="saveMeasurement()">сохранить</button>
-      </div>
-    </div>
-  `);
-  // Attach custom numeric keypad to measurement inputs
-  document.querySelectorAll('#modalBox [data-mk]').forEach(makeNumeric);
-}
-
-function saveMeasurement() {
-  const date = document.getElementById('measDate').value || todayISO();
-  const obj = { date };
-  let any = false;
-  document.querySelectorAll('[data-mk]').forEach(inp => {
-    const v = parseFloat(inp.value);
-    if (!isNaN(v)) { obj[inp.dataset.mk] = v; any = true; }
-  });
-  if (!any) { appAlert('заполни хотя бы один параметр', { title: 'нужны данные' }); return; }
-  let arr = LS.get('levshub_measurements', []) || [];
-  // Replace if same date exists
-  arr = arr.filter(m => m.date !== date);
-  arr.push(obj);
-  LS.set('levshub_measurements', arr);
-  closeModal();
-  renderBody();
-  renderHome();
-}
-
-function openHistory() {
-  const all = (LS.get('levshub_measurements', []) || []).slice().sort((a,b) => b.date.localeCompare(a.date));
-  const rows = all.map(m => `
-    <div style="background:rgba(245,242,232,0.03); border:1px solid var(--border); border-radius:10px; padding:10px 12px; margin-bottom:8px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-        <span style="font-size:13px; color:var(--cream); font-weight:500;">${formatDateRu(m.date)}</span>
-        <button class="trash" style="color:var(--muted); padding:2px 6px;" onclick="deleteFromHistory('${m.date}')"><i class="ti ti-trash"></i></button>
-      </div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:2px 12px; font-size:11px;">
-        ${MEAS_FIELDS.filter(f => m[f.key] !== undefined).map(f =>
-          `<div style="display:flex; justify-content:space-between;"><span style="color:var(--muted);">${f.label}</span><span style="color:var(--cream);">${m[f.key]} ${f.unit}</span></div>`
-        ).join('')}
-      </div>
-    </div>
-  `).join('');
-  openModal(`
-    <div class="modal-head">
-      <div class="t">история замеров</div>
-      <button class="x" onclick="closeModal()"><i class="ti ti-x"></i></button>
-    </div>
-    <div>${rows || '<div style="color:var(--muted); text-align:center; padding:20px 0;">пусто</div>'}</div>
-    ${all.length ? `<button onclick="clearAllMeasurements()" style="width:100%; margin-top:12px; padding:12px; background:rgba(200,48,44,0.08); border:1px solid rgba(200,48,44,0.25); border-radius:10px; color:var(--red); font-size:13px; letter-spacing:0.3px;">очистить все замеры</button>` : ''}
-  `);
-}
-
-function clearAllMeasurements() {
-  appConfirm('удалить ВСЕ замеры? это действие нельзя отменить.', { title: 'очистить всё', yesText: 'удалить всё' }).then(ok => {
-    if (!ok) return;
-    LS.set('levshub_measurements', []);
-    closeModal();
-    renderBody();
-    renderHome();
-  });
-}
-
-function deleteFromHistory(date) {
-  appConfirm('удалить замер от ' + formatDateRu(date) + '?', { title: 'удалить замер', yesText: 'удалить' }).then(ok => {
-    if (!ok) return;
-    let arr = LS.get('levshub_measurements', []) || [];
-    arr = arr.filter(m => m.date !== date);
-    LS.set('levshub_measurements', arr);
-    closeModal();
-    renderBody();
-    renderHome();
-  });
-}
+document.getElementById('sleepNext').addEventListener('click', () => {
+  const next = isoAddDays(sleepDate || todayISO(), 1);
+  if (next > todayISO()) return;
+  sleepDate = next;
+  renderSleepForm();
+});
+['sleepBed', 'sleepWake'].forEach(id => {
+  document.getElementById(id).addEventListener('input', updateSleepDur);
+  document.getElementById(id).addEventListener('change', updateSleepDur);
+});
+document.getElementById('sleepSave').addEventListener('click', saveSleep);
+document.querySelectorAll('#sleepPeriod button').forEach(b => {
+  b.addEventListener('click', () => { sleepPeriod = b.dataset.p; renderSleepStats(); });
+});
+// Тап по записи — открыть её в форме для правки
+document.getElementById('sleepList').addEventListener('click', (e) => {
+  const row = e.target.closest && e.target.closest('.sleep-row');
+  if (!row) return;
+  sleepDate = row.dataset.date;
+  renderSleepForm();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+document.getElementById('sleepCopyBtn').addEventListener('click', copySleep);
 
 // ================= MODAL =================
 function openModal(html) {
@@ -4403,7 +3942,7 @@ function makeNumeric(input) {
 
 function getInputLabel(input) {
   if (input.dataset.label) return input.dataset.label;
-  // <label> wrapping parent (radio-opt style)
+  // <label> wrapping parent
   const parent = input.parentElement;
   if (parent && parent.tagName === 'LABEL') {
     const clone = parent.cloneNode(true);
@@ -4421,12 +3960,6 @@ function getInputLabel(input) {
     const card = input.closest('.ex-card');
     const title = card && card.querySelector('.ex-title');
     return title ? title.textContent.trim() + ' · ' + part : part;
-  }
-  // Measurement modal inputs: look up field label
-  const mk = input.dataset.mk;
-  if (mk) {
-    const map = {weight:'вес (кг)',biceps:'бицепс (см)',chest:'грудь (см)',waist:'талия (см)',hip:'бедро (см)',calf:'икра (см)',shoulders:'плечи (см)',neck:'шея (см)',forearm:'предплечье (см)',bodyfat:'% жира'};
-    return map[mk] || 'введи значение';
   }
   return 'введи значение';
 }
@@ -4510,7 +4043,7 @@ document.getElementById('numpadBack').addEventListener('click', (e) => {
 document.getElementById('numpadDone').addEventListener('click', (e) => {
   e.preventDefault(); e.stopPropagation();
   // В сетке подходов «готово» переводит на следующее поле — меньше тапов.
-  // На остальных полях (диета, замеры) поведение прежнее: просто закрыть.
+  // На остальных полях поведение прежнее: просто закрыть.
   if (activeNpInput && activeNpInput.classList.contains('sg-in')) {
     const next = nextSetsInput(activeNpInput);
     if (next) { openNumpad(next); return; }
@@ -4535,7 +4068,7 @@ document.addEventListener('click', (e) => {
 // Mark all existing numeric inputs at startup
 function markAllNumeric() {
   document.querySelectorAll(
-    '.stepper-input, #cWeight, #cBf, #cSteps, #cMinutes, #cCustom, [data-mk]'
+    '.sg-in'
   ).forEach(makeNumeric);
 }
 
@@ -4588,8 +4121,6 @@ const initialPreset = loadTimerPreset();
 applyTimerPreset(initialPreset, { silent: true });
 loadTimer();
 renderHome();
-// Pre-render others lightly so cached values exist
-renderNutrition();
 updateTimerDisplay(getRemaining());
 markAllNumeric();
 // Init toggle indicators after layout settles
