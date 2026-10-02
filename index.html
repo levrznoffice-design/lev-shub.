@@ -494,6 +494,27 @@
   .sets-dual { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 
   /* session bar */
+  /* шапка тренировок + кнопка «копировать A+B» */
+  .train-head { display: flex; align-items: center; gap: 10px; padding-right: 18px; }
+  .train-head .section-h1 { flex: 1; min-width: 0; }
+  .copy-prog-btn {
+    flex-shrink: 0;
+    margin-bottom: 12px;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 11px;
+    border-radius: 9px;
+    background: rgba(245,242,232,0.04);
+    border: 1px solid var(--border-2);
+    color: var(--muted-2);
+    font-size: 12px;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    transition: transform 100ms ease, color 150ms ease, border-color 150ms ease, background 150ms ease;
+  }
+  .copy-prog-btn svg { width: 14px; height: 14px; display: block; }
+  .copy-prog-btn:active { transform: scale(0.95); }
+  .copy-prog-btn.done { color: var(--green); border-color: rgba(93,202,165,0.45); background: rgba(93,202,165,0.08); }
+
   .session-bar {
     display: flex; align-items: center; gap: 10px;
     margin: 0 18px 12px;
@@ -1514,7 +1535,10 @@
   <!-- TRAINING -->
   <section class="page" id="page-training">
     <div class="section-label">training</div>
-    <div class="section-h1" id="trainHeader">a · push</div>
+    <div class="train-head">
+      <div class="section-h1" id="trainHeader">a · push</div>
+      <button type="button" class="copy-prog-btn" id="copyProgramBtn" title="скопировать тренировки A и B с рекордами и заметками"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><span>копировать A+B</span></button>
+    </div>
 
     <div class="toggle-bar" id="trainToggle">
       <div class="toggle-seg active" data-mode="A">a · push</div>
@@ -1813,7 +1837,7 @@ const TECH_LOW_ROW = `
   <ul>
     <li>Между руками — ноль, сразу переходишь на вторую.</li>
     <li>Между кругами — 2:00.</li>
-    <li>Каждая рука по факту отдыхает (пока работает вторая + сама пауза), так что полноценный отдых сохраняется.</li>
+    <li>Каждая рука по факту отдыхает около 2:45 (пока работает вторая + сама пауза), так что полноценный отдых сохраняется.</li>
   </ul>
 `;
 const TECH_STANDING_CABLE_CRUNCH = `
@@ -1859,7 +1883,7 @@ const trainingB = [
   { id: 'seated_leg_curl', num: 2, name: 'сгибание ног сидя', sub: 'Seated Leg Curl', sets: '3×10-15', rest: 90, tech: TECH_SEATED_LEG_CURL, url: 'https://www.youtube.com/shorts/xdbEG3xGLI8?feature=share' },
   // С 14.09.2026 одной рукой (3+3): тот же тренажёр и тот же id. Подходы двумя руками
   // не пересчитаны — перенесены как есть в history этой же записи (migrateLowRowSingleArm).
-  { id: 'low_row', num: 3, name: 'горизонтальная тяга одной рукой', sub: 'Single-Arm Low Row', sets: '3+3×10-15', rest: 150, unilateral: true, tech: TECH_LOW_ROW, url: 'https://www.youtube.com/shorts/j3k4DsTAgx8?feature=share' },
+  { id: 'low_row', num: 3, name: 'горизонтальная тяга одной рукой', sub: 'Single-Arm Low Row', sets: '3+3×10-15', rest: 120, unilateral: true, tech: TECH_LOW_ROW, url: 'https://www.youtube.com/shorts/bLVeOunB-c0?feature=share' },
   { id: 'calf_raise', num: 4, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, unilateral: true, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
   { id: 'reverse_pec_deck', num: 5, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '3×12-15', rest: 90, url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
   { id: 'arm_curl', num: 6, name: 'сгибание рук в тренажёре', sub: 'Arm Curl Machine', sets: '3×10-12', rest: 90, url: 'https://youtube.com/shorts/IWDHXA1ZcT8?is=9QgKqBX6kU9lXxLr' },
@@ -3276,6 +3300,152 @@ function openUrlEditor(id) {
   });
   setTimeout(() => { try { input.focus(); input.select(); } catch (e) {} }, 80);
 }
+
+// ----- Копирование тренировок A и B в буфер обмена -----
+// Для разборов (в том числе с ИИ): программа, рекорды, подходы и заметки одним текстом.
+// Только читает данные из памяти — ничего не записывает и не меняет.
+const EXPORT_DAYS = [
+  { key: 'A', title: 'Тренировка A · PUSH', focus: 'грудь, плечи, трицепс, квадрицепс' },
+  { key: 'B', title: 'Тренировка B · PULL', focus: 'спина, задние дельты, бицепс, задняя цепь' }
+];
+
+function exportHas(v) { return !(v === null || v === undefined || v === ''); }
+function capFirst(s) { s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }
+
+// Один подход: «60 кг × 12 повт», одностороннее — «55 кг × 14 лев / 12 прав»
+function exportSetText(set, uni) {
+  if (!set) return null;
+  const w = exportHas(set.w) ? set.w + ' кг' : null;
+  let reps = null;
+  if (uni) {
+    const l = exportHas(set.rl) ? set.rl : null;
+    const r = exportHas(set.rr) ? set.rr : null;
+    if (l !== null || r !== null) reps = (l !== null ? l : '—') + ' лев / ' + (r !== null ? r : '—') + ' прав';
+  } else if (exportHas(set.r)) {
+    reps = set.r + ' повт';
+  }
+  if (w === null && reps === null) return null;
+  return [w, reps].filter(Boolean).join(' × ');
+}
+
+// Подпись + текст; многострочный текст уходит под подпись с отступом
+function exportBlock(label, text, indent) {
+  const lines = String(text).replace(/\r\n?/g, '\n').trim().split('\n');
+  if (lines.length === 1) return indent + label + ': ' + lines[0];
+  return indent + label + ':\n' + lines.map(l => (l.trim() ? indent + '  ' + l : '')).join('\n');
+}
+
+function exportExercise(ex) {
+  const uni = !!ex.unilateral;
+  const saved = getExSaved(ex.id);
+  const sets = getExSets(ex.id);
+  const I = '   ';
+  const out = [];
+  out.push(ex.num + '. ' + capFirst(ex.name) + ' (' + ex.sub + ')');
+  out.push(I + 'Схема: ' + ex.sets + (uni ? ' — по 3 подхода на каждую сторону' : '') + ', отдых ' + formatRest(ex.rest));
+  const rec = exportSetText(sets[0], uni);
+  out.push(I + 'Рекорд: ' + (rec || 'не записан'));
+  for (let i = 1; i < sets.length; i++) {
+    const t = exportSetText(sets[i], uni);
+    if (t) out.push(I + 'Подход ' + (i + 1) + ': ' + t);
+  }
+  if (typeof saved.n === 'string' && saved.n.trim()) out.push(exportBlock('Заметка', saved.n, I));
+  // прежний формат того же упражнения (например, тяга двумя руками) — как записано
+  (Array.isArray(saved.history) ? saved.history : []).forEach(h => {
+    if (!h || typeof h !== 'object') return;
+    const hs = (Array.isArray(h.sets) ? h.sets : [])
+      .map(st => exportSetText(st, !!(st && ('rl' in st || 'rr' in st))))
+      .filter(Boolean);
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(h.until || '');
+    const when = (h.label || 'раньше') + (m ? ', до ' + m[3] + '.' + m[2] + '.' + m[1] : '');
+    if (hs.length) out.push(I + 'Раньше (' + when + '): ' + hs.join(' · '));
+    if (typeof h.n === 'string' && h.n.trim()) out.push(exportBlock('Заметка того периода', h.n, I));
+  });
+  return out.join('\n');
+}
+
+function buildProgramExport() {
+  const t = todayISO();
+  const date = t.slice(8, 10) + '.' + t.slice(5, 7) + '.' + t.slice(0, 4);
+  let anyUnknown = false;
+  EXPORT_DAYS.forEach(d => (d.key === 'A' ? trainingA : trainingB).forEach(ex => {
+    getExSets(ex.id).forEach(st => {
+      if (st && ['w', 'r', 'rl', 'rr'].some(k => st[k] === '?')) anyUnknown = true;
+    });
+  }));
+  const legend = [
+    'Как читать:',
+    '- «Рекорд» — подход 1, мой лучший рабочий результат (веду вручную в приложении).',
+    '- «Подход 2», «Подход 3» — остальные записанные подходы, если есть.',
+    '- 3+3 — упражнение на одну сторону: 3 подхода левой + 3 правой, повторы указаны «лев / прав».',
+    '- Просадки, изменения и детали — в заметках.'
+  ];
+  if (anyUnknown) legend.push('- «?» — значение в приложении отмечено как неизвестное.');
+  const body = EXPORT_DAYS.map(d => {
+    const program = d.key === 'A' ? trainingA : trainingB;
+    return '## ' + d.title + ' (' + d.focus + ')\n\n' + program.map(exportExercise).join('\n\n');
+  }).join('\n\n');
+  return "LEV'SHUB — тренировки A и B\nВыгрузка: " + date + '\n\n' + legend.join('\n') + '\n\n' + body + '\n';
+}
+
+// Копирование: Clipboard API, запасной путь через выделение, а если браузер
+// не дал ни то ни другое — окно с текстом для ручного копирования.
+function copyToClipboard(text) {
+  const legacy = () => {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none;';
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, text.length);
+      const ok = document.execCommand('copy');
+      ta.remove();
+      return !!ok;
+    } catch (e) { return false; }
+  };
+  if (navigator.clipboard && window.isSecureContext) {
+    return navigator.clipboard.writeText(text).then(() => true, () => legacy());
+  }
+  return Promise.resolve(legacy());
+}
+
+function openManualCopy(text) {
+  openModal(`
+    <div class="modal-head">
+      <div class="t">скопируй вручную</div>
+      <button class="x" onclick="closeModal()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="note-ex">браузер не дал скопировать автоматически — выдели текст и скопируй</div>
+    <textarea class="note-full" id="exportText" readonly></textarea>
+  `);
+  document.getElementById('modalBox').classList.add('note-sheet');
+  const ta = document.getElementById('exportText');
+  ta.value = text;
+  setTimeout(() => { try { ta.focus(); ta.select(); } catch (e) {} }, 80);
+}
+
+let copyBtnTimer = null;
+function copyProgram() {
+  const btn = document.getElementById('copyProgramBtn');
+  const label = btn && btn.querySelector('span');
+  const text = buildProgramExport();
+  return copyToClipboard(text).then(ok => {
+    if (!ok) { openManualCopy(text); return false; }
+    if (btn && label) {
+      btn.classList.add('done');
+      label.textContent = 'скопировано';
+      clearTimeout(copyBtnTimer);
+      copyBtnTimer = setTimeout(() => {
+        btn.classList.remove('done');
+        label.textContent = 'копировать A+B';
+      }, 2200);
+    }
+    return true;
+  });
+}
+document.getElementById('copyProgramBtn').addEventListener('click', copyProgram);
 
 function openYouTube(url) {
   const m = url.match(/shorts\/([a-zA-Z0-9_-]+)/);
