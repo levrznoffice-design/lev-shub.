@@ -544,7 +544,6 @@
   .vol-table td { padding: 8px 0; border-top: 1px solid var(--border); vertical-align: top; }
   .vol-table td.m { color: var(--cream); padding-right: 8px; line-height: 1.4; }
   .vol-table td.n { text-align: right; color: var(--cream); font-weight: 500; white-space: nowrap; }
-  .vol-table td.was { text-align: right; color: var(--muted); white-space: nowrap; padding-left: 10px; font-size: 11px; }
   .vol-day { font-size: 10px; color: var(--muted); letter-spacing: 0.3px; margin-top: 2px; }
   .vol-foot { font-size: 10px; color: var(--muted); margin-top: 8px; line-height: 1.5; letter-spacing: 0.2px; }
 
@@ -3176,10 +3175,10 @@ function volumeRows() {
 function renderVolume() {
   const box = document.getElementById('volumeTable');
   if (!box) return;
-  box.innerHTML = '<table class="vol-table"><thead><tr><th>мышца</th><th class="r">в неделю</th><th class="r">было</th></tr></thead><tbody>' +
+  box.innerHTML = '<table class="vol-table"><thead><tr><th>мышца</th><th class="r">в неделю</th></tr></thead><tbody>' +
     volumeRows().map(r =>
       `<tr><td class="m">${escHtml(r.label)}<div class="vol-day">${escHtml(r.dayText)}${r.rest ? ' · отдых ' + escHtml(r.rest) : ''}</div></td>` +
-      `<td class="n">${escHtml(r.nums)}</td><td class="was">${escHtml(r.was || '—')}</td></tr>`
+      `<td class="n">${escHtml(r.nums)}</td></tr>`
     ).join('') + '</tbody></table>';
 }
 
