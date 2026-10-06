@@ -653,28 +653,6 @@
   .sg-in::placeholder { color: rgba(245,242,232,0.25); }
   /* предзаполненный вес (зеркалит подход 1) — приглушён, пока его не правили */
   .sg-in[data-auto="1"] { color: var(--muted-2); }
-  .sg-retention {
-    margin-top: 9px;
-    font-size: 11px;
-    color: var(--muted-2);
-    letter-spacing: 0.3px;
-  }
-  .sg-retention b { color: var(--green); font-weight: 600; }
-  .sg-retention .sg-warn { color: var(--muted); }
-  /* прежние подходы в другом формате (например, двумя руками) — только просмотр */
-  .sg-history {
-    margin-top: 10px;
-    padding-top: 9px;
-    border-top: 1px dashed var(--border-2);
-  }
-  .sg-hist-row { font-size: 11px; line-height: 1.55; color: var(--muted-2); letter-spacing: 0.2px; }
-  .sg-hist-label { color: var(--muted); }
-  .sg-hist-note {
-    font-size: 11px; line-height: 1.5;
-    color: var(--muted); font-style: italic;
-    margin-top: 2px;
-    white-space: pre-wrap; overflow-wrap: anywhere;
-  }
   .note-area {
     margin-top: 6px;
   }
@@ -1415,7 +1393,7 @@
     </div>
 
     <div class="prog-reminder" id="progReminder">
-      rir 1-2 · дошёл до 15 повторений → ↑ вес → вернись к 12
+      отказ в каждом подходе · дошёл до верха диапазона → ↑ вес → вернись к низу
     </div>
 
     <div class="session-bar" id="sessionBar" hidden>
@@ -1495,7 +1473,7 @@
       <div class="timer-presets" id="timerPresets" role="tablist" aria-label="пресеты отдыха">
         <button class="preset-chip" data-secs="60">
           <span class="chip-time">60 сек</span>
-          <span class="chip-hint">икры/пресс</span>
+          <span class="chip-hint">икры/махи</span>
         </button>
         <button class="preset-chip active" data-secs="90">
           <span class="chip-time">90 сек</span>
@@ -1650,10 +1628,12 @@ const trainingA = [
   { id: 'chest_press', num: 1, name: 'жим от груди', sub: 'Chest Press', sets: '3×8-12', rest: 180, work: { chest: 1, front_delts: 0.5, triceps: 0.5 }, url: 'https://youtube.com/shorts/EC1Yf3M0im8?is=bdAV9DSniv4fxSXm' },
   { id: 'shoulder_press', num: 2, name: 'жим плеч', sub: 'Shoulder Press', sets: '3×8-12', rest: 180, work: { front_delts: 1, mid_delts: 0.5, triceps: 0.5 }, url: 'https://youtube.com/shorts/lC9uiTqYH84?is=_g4ItfNvBMRiUnXt' },
   { id: 'pec_fly', num: 3, name: 'сведение рук', sub: 'Pectoral', sets: '3×10-12', rest: 90, work: { chest: 1 }, url: 'https://youtube.com/shorts/tByJiJj9n0U?is=U_ARILKFH2tixe2S' },
-  { id: 'delts_machine', num: 4, name: 'дельты в тренажёре', sub: 'Delts Machine', sets: '3×12-20', rest: 90, hint: 'в лог — только чистые', work: { mid_delts: 1 }, url: 'https://youtube.com/shorts/78hk4Fy_kDA?is=unzsenWO7tAKGqns' },
+  { id: 'delts_machine', num: 4, name: 'дельты в тренажёре', sub: 'Delts Machine', sets: '3×8-12', rest: 90, hint: 'считать только чистые повторы — руки до уровня плеч, без рывка корпусом', work: { mid_delts: 1 }, url: 'https://youtube.com/shorts/78hk4Fy_kDA?is=unzsenWO7tAKGqns' },
   { id: 'triceps_pushdown', num: 5, name: 'трицепс на блоке', sub: 'Triceps Pushdown', sets: '3×10-12', rest: 90, work: { triceps: 1 }, url: 'https://youtube.com/shorts/NMY70SP-OHY?si=4jPio5STfDrrKV8_' },
   { id: 'cable_lateral_raise', num: 6, name: 'махи в стороны на блоке одной рукой', sub: 'Single-Arm Cable Lateral Raise', sets: '3+3×12-20', rest: 60, unilateral: true, work: { mid_delts: 1 }, url: '' },
-  { id: 'overhead_cable_extension', num: 7, name: 'разгибание из-за головы на блоке', sub: 'Overhead Cable Extension', sets: '3×10-12', rest: 90, tech: TECH_OVERHEAD_EXT, work: { triceps: 1 }, url: 'https://www.youtube.com/shorts/0IM1J_GmQ34?feature=share' }
+  { id: 'overhead_cable_extension', num: 7, name: 'разгибание из-за головы на блоке', sub: 'Overhead Cable Extension', sets: '3×10-12', rest: 90, tech: TECH_OVERHEAD_EXT, work: { triceps: 1 }, url: 'https://www.youtube.com/shorts/0IM1J_GmQ34?feature=share' },
+  // Икры в Push (с кофеином) — отдельная карточка со своей историей; икры в Legs — calf_raise
+  { id: 'calf_raise_push', num: 8, name: 'подъёмы на икры · push', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, unilateral: true, work: { calves: 1 }, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' }
 ];
 const trainingB = [
   { id: 'lat_pulldown', num: 1, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×10-12', rest: 180, work: { back: 1, rear_delts: 0.5, biceps: 0.5 }, url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
@@ -1662,9 +1642,9 @@ const trainingB = [
   // не пересчитаны — перенесены как есть в history этой же записи (migrateLowRowSingleArm).
   { id: 'low_row', num: 3, name: 'горизонтальная тяга одной рукой', sub: 'Single-Arm Low Row', sets: '3+3×10-15', rest: 120, unilateral: true, tech: TECH_LOW_ROW, work: { back: 1, rear_delts: 0.5, biceps: 0.5 }, url: 'https://www.youtube.com/shorts/bLVeOunB-c0?feature=share' },
   { id: 'arm_curl', num: 4, name: 'сгибание рук в тренажёре', sub: 'Arm Curl Machine', sets: '3×10-12', rest: 90, work: { biceps: 1 }, url: 'https://youtube.com/shorts/IWDHXA1ZcT8?is=9QgKqBX6kU9lXxLr' },
-  { id: 'weighted_leg_raise', num: 5, name: 'подъёмы ног с гантелей', sub: 'Weighted Leg Raise', sets: '4×10-15', rest: 60, tech: TECH_WEIGHTED_LEG_RAISE, work: { abs: 1 }, url: 'https://youtube.com/shorts/RQDKs_EBNPY?si=BESSkagxInn_gHsV' },
+  { id: 'weighted_leg_raise', num: 5, name: 'подъёмы ног с гантелей', sub: 'Weighted Leg Raise', sets: '3×10-15', rest: 90, tech: TECH_WEIGHTED_LEG_RAISE, work: { abs: 1 }, url: 'https://youtube.com/shorts/RQDKs_EBNPY?si=BESSkagxInn_gHsV' },
   { id: 'incline_db_curl', num: 6, name: 'наклонный подъём гантелей', sub: 'Incline DB Curl', sets: '3×8-12', rest: 90, work: { biceps: 1 }, url: 'https://youtube.com/shorts/uCUaRFlA9vE?si=_q-PSgOpB3iQviPn' },
-  { id: 'wrist_curl', num: 7, name: 'сгибание запястий', sub: 'Wrist Curl', sets: '3×15-20', rest: 60, work: { forearms: 1 }, url: 'https://youtu.be/qMtmHwaCmYI?t=16' },
+  { id: 'wrist_curl', num: 7, name: 'сгибание запястий', sub: 'Wrist Curl', sets: '3×15-20', rest: 90, work: { forearms: 1 }, url: 'https://youtu.be/qMtmHwaCmYI?t=16' },
   { id: 'reverse_cable_curl', num: 8, name: 'обратный подъём на блоке', sub: 'Reverse Cable Curl', sets: '3×12-15', rest: 90, work: { forearms: 1, biceps: 0.5 }, url: 'https://www.youtube.com/shorts/KY_c3LkPZa8?feature=share' }
 ];
 const trainingC = [
@@ -1672,17 +1652,22 @@ const trainingC = [
   { id: 'seated_leg_curl', num: 2, name: 'сгибание ног сидя', sub: 'Seated Leg Curl', sets: '3×10-15', rest: 90, tech: TECH_SEATED_LEG_CURL, work: { hamstrings: 1 }, url: 'https://www.youtube.com/shorts/xdbEG3xGLI8?feature=share' },
   { id: 'leg_extension', num: 3, name: 'разгибание ног', sub: 'Leg Extension', sets: '3+3×12-15', rest: 90, unilateral: true, work: { quads: 1 }, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
   { id: 'hip_adduction', num: 4, name: 'аддуктор (сведение ног)', sub: 'Hip Adduction', sets: '3×10-15', rest: 90, work: { adductors: 1 }, url: '' },
-  { id: 'calf_raise', num: 5, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '4+4×10-15', rest: 60, unilateral: true, work: { calves: 1 }, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
-  { id: 'hip_abduction', num: 6, name: 'абдуктор (разведение ног)', sub: 'Hip Abduction', sets: '3×12-20', rest: 90, work: { glute_med: 1 }, url: '' }
+  // Вернулось из архива 07.10.2026 (тот же id): прежний рекорд перенесён в history
+  // этой же записи как «архив» (migrateProneCurlV61), текущий рекорд начинается с нуля.
+  { id: 'prone_leg_curl', num: 5, name: 'сгибание ног лёжа', sub: 'Prone Leg Curl', sets: '3×10-15', rest: 90, work: { hamstrings: 1 }, url: 'https://youtube.com/shorts/FMCq0hT3KRU?si=cbbo1yN9xsXNqdqe' },
+  { id: 'calf_raise', num: 6, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, unilateral: true, work: { calves: 1 }, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
+  { id: 'hip_abduction', num: 7, name: 'абдуктор (разведение ног)', sub: 'Hip Abduction', sets: '3×12-20', rest: 90, work: { glute_med: 1 }, url: '' },
+  // Подъёмы ног в Legs (без кофеина) — отдельная карточка со своей историей; в Pull — weighted_leg_raise
+  { id: 'weighted_leg_raise_legs', num: 8, name: 'подъёмы ног с гантелей · legs', sub: 'Weighted Leg Raise', sets: '3×10-15', rest: 90, tech: TECH_WEIGHTED_LEG_RAISE, work: { abs: 1 }, url: 'https://youtube.com/shorts/RQDKs_EBNPY?si=BESSkagxInn_gHsV' }
 ];
 
-// ----- Дни программы v6 (с 03.10.2026) -----
+// ----- Дни программы v6.1 (с 07.10.2026) -----
 // caffeine — план по умолчанию: A и B с кофеином, C без. Отметку на сегодня
 // можно поменять в самой тренировке (хранится по дате).
 const DAYS = {
-  A: { short: 'a · push', title: 'A · PUSH', focus: 'грудь · плечи · трицепс', duration: '~70–75 мин', caffeine: true },
+  A: { short: 'a · push', title: 'A · PUSH', focus: 'грудь · плечи · трицепс · икры', duration: '~75–80 мин', caffeine: true },
   B: { short: 'b · pull', title: 'B · PULL', focus: 'спина · задние дельты · бицепс · пресс', duration: '~75 мин', caffeine: true },
-  C: { short: 'c · legs', title: 'C · LEGS', focus: 'квадрицепс · бицепс бедра · икры · приводящие', duration: '~70 мин', caffeine: false }
+  C: { short: 'c · legs', title: 'C · LEGS', focus: 'квадрицепс · бицепс бедра · икры · пресс', duration: '~75–80 мин', caffeine: false }
 };
 const TRAINING_DAYS = ['A', 'B', 'C'];
 function getProgram(day) {
@@ -1691,16 +1676,16 @@ function getProgram(day) {
 
 // ----- Объём в неделю: строки таблицы -----
 // Числа считаются из программы (поле work у упражнений: 1 — основная мышца,
-// 0.5 — помогает), «было» — объём программы v5 для сравнения.
+// 0.5 — помогает), «было» — объём программы v6 (до 07.10.2026) для сравнения.
 const MUSCLE_ROWS = [
   { label: 'Грудь · передние дельты · трицепс', muscles: ['chest', 'front_delts', 'triceps'], was: 'так же' },
-  { label: 'Средние дельты', muscles: ['mid_delts'], was: '9' },
+  { label: 'Средние дельты', muscles: ['mid_delts'], was: 'так же' },
   { label: 'Спина · задние дельты', muscles: ['back', 'rear_delts'], was: 'так же' },
-  { label: 'Бицепс · предплечья', muscles: ['biceps', 'forearms'], was: '' },
-  { label: 'Пресс', muscles: ['abs'], was: '12' },
-  { label: 'Квадрицепс · бицепс бедра', muscles: ['quads', 'hamstrings'], was: 'так же' },
-  { label: 'Икры', muscles: ['calves'], was: '12' },
-  { label: 'Приводящие · средняя ягодичная', muscles: ['adductors', 'glute_med'], was: 'новое' }
+  { label: 'Бицепс · предплечья', muscles: ['biceps', 'forearms'], was: 'так же' },
+  { label: 'Пресс', muscles: ['abs'], was: '8' },
+  { label: 'Квадрицепс · бицепс бедра', muscles: ['quads', 'hamstrings'], was: '12 · 6' },
+  { label: 'Икры', muscles: ['calves'], was: '8' },
+  { label: 'Приводящие · средняя ягодичная', muscles: ['adductors', 'glute_med'], was: 'так же' }
 ];
 
 // ----- Архив -----
@@ -1708,15 +1693,14 @@ const MUSCLE_ROWS = [
 // записи в levshub_workout лежат под теми же id, история видна в архиве.
 const ARCHIVE = [
   { id: 'arm_extension', name: 'разгибание рук в тренажёре', sub: 'Arm Extension Machine', sets: '3×10-12', url: 'https://youtube.com/shorts/tVNSmck6hnE?is=wEnysnqCti6nnDQ3' },
-  { id: 'prone_leg_curl', name: 'сгибание ног лёжа', sub: 'Prone Leg Curl', sets: '3×12-20', url: 'https://youtube.com/shorts/FMCq0hT3KRU?si=cbbo1yN9xsXNqdqe' },
   { id: 'total_abs', name: 'скручивания в тренажёре', sub: 'Abdominal Crunch', sets: '3×10-15', url: 'https://www.youtube.com/shorts/DVCmFYlNFRg?feature=share' },
   { id: 'kneeling_cable_crunch', name: 'скручивания на блоке стоя', sub: 'Standing Cable Crunch', sets: '3×10-15', tech: TECH_STANDING_CABLE_CRUNCH, url: 'https://vt.tiktok.com/ZSqAY7peS/' }
 ];
 
 const DAYS_RU =['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
-// Расписание v6 по дням недели (getDay: 0=Вс … 6=Сб):
-// Пн A · Вт B · Ср C · Чт A · Пт B · Сб C · Вс отдых
-const SCHEDULE = ['rest','A','B','C','A','B','C'];
+// Расписание по дням недели (getDay: 0=Вс … 6=Сб):
+// Пн C · Вт A · Ср B · Чт C · Пт A · Сб B · Вс отдых
+const SCHEDULE = ['rest','C','A','B','C','A','B'];
 
 
 // ================= STORAGE =================
@@ -1907,37 +1891,6 @@ function saveExSets(id, sets) {
   LS.set('levshub_workout', data);
 }
 
-// Повторы подхода. Для одностороннего — среднее из сторон.
-function setReps(set, uni) {
-  if (!set) return null;
-  if (uni) {
-    const a = numOrNull(set.rl), b = numOrNull(set.rr);
-    if (a === null && b === null) return null;
-    if (a === null) return b;
-    if (b === null) return a;
-    return (a + b) / 2;
-  }
-  return numOrNull(set.r);
-}
-
-// Удержание повторов = последний подход / подход 1 × 100 (целые проценты):
-// при 3 подходах это 3-й / 1-й, при 4 подходах — 4-й / 1-й.
-// Считается только когда заполнены оба. Разный вес — считаем, но помечаем.
-function computeRetention(id) {
-  const uni = isUnilateralId(id);
-  const sets = getExSets(id);
-  const last = setsCountFor(id) - 1;
-  const r1 = setReps(sets[0], uni);
-  const r3 = setReps(sets[last], uni);
-  if (r1 === null || r3 === null || r1 <= 0) return null;
-  const w1 = numOrNull(sets[0] && sets[0].w);
-  const w3 = numOrNull(sets[last] && sets[last].w);
-  return {
-    pct: Math.round((r3 / r1) * 100),
-    weightChanged: (w1 !== null && w3 !== null && w1 !== w3)
-  };
-}
-
 // Один подход строкой: «45кг × 12», для одностороннего «250кг × 30/28»
 function formatSetData(set, uni) {
   if (!set) return null;
@@ -2098,30 +2051,6 @@ function getSetsRemaining(ex) {
   return Math.max(0, total - done);
 }
 
-// Прежние подходы в другом формате (например, двумя руками до перехода на одну руку).
-// Только просмотр: значения показываются как записаны, без пересчёта.
-function buildHistoryHtml(id) {
-  const rec = getExSaved(id);
-  const hist = rec.history;
-  const curNote = typeof rec.n === 'string' ? rec.n.trim() : '';
-  if (!Array.isArray(hist) || !hist.length) return '';
-  const rows = hist.map(h => {
-    if (!h || typeof h !== 'object') return '';
-    const sets = Array.isArray(h.sets) ? h.sets : [];
-    const uni = sets.some(st => st && ('rl' in st || 'rr' in st));
-    const parts = sets.map(st => formatSetData(st, uni)).filter(Boolean)
-      .map(d => escHtml(d.replace('кг', ' кг')));
-    const note = (typeof h.n === 'string' && h.n.trim() && h.n.trim() !== curNote)
-      ? `<div class="sg-hist-note">${escHtml(h.n)}</div>` : '';
-    if (!parts.length && !note) return '';
-    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(h.until || '');
-    const until = m ? ` (до ${m[3]}.${m[2]}.${m[1]})` : '';
-    return `<div class="sg-hist-row"><span class="sg-hist-label">${escHtml(h.label || 'раньше')}${until}:</span>` +
-      (parts.length ? ' ' + parts.join(' · ') : '') + `</div>${note}`;
-  }).join('');
-  return rows ? `<div class="sg-history">${rows}</div>` : '';
-}
-
 // ----- Сетка ввода подходов 1/2/3 -----
 function buildSetsBlock(ex) {
   const uni = !!ex.unilateral;
@@ -2150,8 +2079,6 @@ function buildSetsBlock(ex) {
     (uni ? `<span>лев</span><span>прав</span>` : `<span>повт</span>`) + `</div>`;
   return `<div class="sets-block">
         <div class="sets-grid${uni ? ' uni' : ''}">${head}${rows}</div>
-        <div class="sg-retention" hidden></div>
-        ${buildHistoryHtml(ex.id)}
       </div>`;
 }
 
@@ -2187,18 +2114,6 @@ function commitSets(card) {
   const stored = getExSaved(id).sets || [];
   for (let i = sets.length; i < stored.length; i++) sets.push(stored[i] || null);
   saveExSets(id, sets);
-  renderRetention(card);
-}
-
-// Удержание повторов — только внутри карточки упражнения
-function renderRetention(card) {
-  const box = card.querySelector('.sg-retention');
-  if (!box) return;
-  const res = computeRetention(card.dataset.id);
-  if (!res) { box.hidden = true; box.innerHTML = ''; return; }
-  box.hidden = false;
-  box.innerHTML = `удержание повторов <b>${res.pct}%</b>` +
-    (res.weightChanged ? ` <span class="sg-warn">· вес менялся</span>` : '');
 }
 
 // ----- Render -----
@@ -2412,7 +2327,6 @@ function bindSetsGrid(card) {
       commitSets(card);
     });
   });
-  renderRetention(card);
 }
 
 // Следующее поле ввода подходов в этой же карточке (для «готово» на клавиатуре)
@@ -3114,13 +3028,13 @@ function exportExercise(ex) {
   if (ex.hint) out.push(I + 'Важно: ' + ex.hint);
   const rec = exportSetText(sets[0], uni);
   out.push(I + 'Рекорд: ' + (rec || 'не записан'));
-  for (let i = 1; i < sets.length; i++) {
+  for (let i = 1; i < count; i++) {
     const t = exportSetText(sets[i], uni);
     if (t) out.push(I + 'Подход ' + (i + 1) + ': ' + t);
   }
   const curNote = typeof saved.n === 'string' ? saved.n.trim() : '';
   if (curNote) out.push(exportBlock('Заметка', saved.n, I));
-  const curSets = sets.map(st => exportSetText(st, uni)).filter(Boolean).join(' · ');
+  const curSets = sets.slice(0, count).map(st => exportSetText(st, uni)).filter(Boolean).join(' · ');
   // архив того же упражнения (двумя руками, v5…) — как записано; совпадающее с текущим не дублируем
   (Array.isArray(saved.history) ? saved.history : []).forEach(h => {
     if (!h || typeof h !== 'object') return;
@@ -3129,7 +3043,7 @@ function exportExercise(ex) {
       .filter(Boolean).join(' · ');
     const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(h.until || '');
     const when = (h.label || 'раньше') + (m ? ' (до ' + m[3] + '.' + m[2] + '.' + m[1] + ')' : '');
-    if (hs && hs !== curSets) out.push(I + 'Архив ' + when + ': ' + hs);
+    if (hs && hs !== curSets) out.push(I + (h.label === 'архив' ? capFirst(when) : 'Архив ' + when) + ': ' + hs);
     const hn = typeof h.n === 'string' ? h.n.trim() : '';
     if (hn && hn !== curNote) out.push(exportBlock('Заметка ' + when, h.n, I));
   });
@@ -3152,9 +3066,10 @@ function buildProgramExport() {
     'Как читать:',
     '- «Рекорд» — подход 1, мой лучший рабочий результат (веду вручную в приложении).',
     '- «Подход 2», «Подход 3»… — остальные записанные подходы, если есть.',
-    '- 3+3 и 4+4 — упражнение на одну сторону: столько подходов левой + столько же правой, повторы «лев / прав». В объёме это 3 (4) подхода на мышцу.',
+    '- 3+3 — упражнение на одну сторону: 3 подхода левой + 3 правой, повторы «лев / прав». В объёме это 3 подхода на мышцу.',
+    '- Одно упражнение в разных днях (икры, подъёмы ног) — отдельные карточки со своими рекордами: с кофеином и без цифры не смешиваются.',
     '- Кофеин — отметка на сегодня; если не отмечал, стоит план: A и B с кофеином, C без.',
-    '- «v5 (до 03.10.2026)» — архив рекордов и заметок прошлой программы; показан, только если отличается от текущего.',
+    '- «Архив …» — прошлые записи этого же упражнения (v5 до 03.10.2026, тяга двумя руками, сгибание лёжа до 07.10.2026); показаны, только если отличаются от текущих.',
     '- Просадки, изменения и детали — в заметках.'
   ];
   if (anyUnknown) legend.push('- «?» — значение в приложении отмечено как неизвестное.');
@@ -3170,7 +3085,7 @@ function buildProgramExport() {
     'Основное упражнение = 1 подход, помогающее = ½; 3+3 = 3. Каждый день по расписанию стоит в неделе дважды.\n\n' +
     volumeRows().map(r => '- ' + r.label + ': ' + r.nums + ' (' + r.dayText +
       (r.rest ? ', отдых ' + r.rest : '') + (r.was ? '; было: ' + r.was : '') + ')').join('\n');
-  return "LEV'SHUB — программа v6: A · PUSH, B · PULL, C · LEGS\nВыгрузка: " + date +
+  return "LEV'SHUB — программа v6.1: A · PUSH, B · PULL, C · LEGS\nВыгрузка: " + date +
     '\nРасписание: ' + sched + '\n\n' + legend.join('\n') + '\n\n' + body + '\n\n' + vol + '\n';
 }
 
@@ -3222,9 +3137,9 @@ function nextTrainingHtml() {
 // ----- Объём в неделю -----
 function dayTimesPerWeek(day) { return SCHEDULE.filter(d => d === day).length; }
 // Отдых между одинаковыми днями по расписанию (по кругу недели), в часах
-function dayRestText(day) {
+function dayRestText(days) {
   const idx = [];
-  SCHEDULE.forEach((d, i) => { if (d === day) idx.push(i); });
+  SCHEDULE.forEach((d, i) => { if (days.indexOf(d) >= 0) idx.push(i); });
   if (!idx.length) return '';
   const gaps = idx.map((v, k) => (((idx[(k + 1) % idx.length] - v + 7) % 7) || 7) * 24);
   const lo = Math.min.apply(null, gaps), hi = Math.max.apply(null, gaps);
@@ -3252,7 +3167,7 @@ function volumeRows() {
     return {
       label: row.label,
       dayText: days.map(d => DAYS[d].short).join(', '),
-      rest: days.length === 1 ? dayRestText(days[0]) : '',
+      rest: days.length ? dayRestText(days) : '',
       nums: row.muscles.map(m => fmtVol(c.vol[m] || 0)).join(' · '),
       was: row.was
     };
@@ -3266,6 +3181,44 @@ function renderVolume() {
       `<tr><td class="m">${escHtml(r.label)}<div class="vol-day">${escHtml(r.dayText)}${r.rest ? ' · отдых ' + escHtml(r.rest) : ''}</div></td>` +
       `<td class="n">${escHtml(r.nums)}</td><td class="was">${escHtml(r.was || '—')}</td></tr>`
     ).join('') + '</tbody></table>';
+}
+
+// ----- v6.1 (с 07.10.2026): сгибание ног лёжа вернулось в день C -----
+// Прежний рекорд (пока упражнение было в архиве) КОПИРУЕТСЯ в history этой же записи
+// с пометкой «архив», текущие подходы начинаются с нуля. Заметка не трогается.
+// Перед записью — бэкап базы; повторно не запускается (отметка + проверка по записи).
+function migrateProneCurlV61() {
+  if (LS.getRaw('levshub_mig_v61_prone')) return;
+  const raw = localStorage.getItem('levshub_workout');
+  let data;
+  try { data = JSON.parse(raw || '{}'); } catch (e) { return; }
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return;
+  const rec = data.prone_leg_curl;
+  let moved = null;
+  if (rec && typeof rec === 'object') {
+    const sets = Array.isArray(rec.sets) ? rec.sets : [];
+    const hist = Array.isArray(rec.history) ? rec.history : [];
+    if (sets.some(Boolean) && !hist.some(h => h && h.label === 'архив')) {
+      moved = JSON.parse(JSON.stringify(sets));
+      rec.history = hist.concat([{ label: 'архив', until: '2026-10-07', sets: moved, n: '' }]);
+      rec.sets = [null, null, null];
+    }
+  }
+  try {
+    if (moved) {
+      // сверка до записи: в архиве ровно прежние подходы
+      const h = rec.history[rec.history.length - 1];
+      if (JSON.stringify(h.sets) !== JSON.stringify(JSON.parse(raw).prone_leg_curl.sets)) {
+        console.error('[levshub] перенос «лёжа» в архив отменён: копия не сошлась');
+        return;
+      }
+      localStorage.setItem('levshub_workout_backup_pre_v61', raw);
+      localStorage.setItem('levshub_workout', JSON.stringify(data));
+    }
+    localStorage.setItem('levshub_mig_v61_prone', todayISO());
+  } catch (e) {
+    console.error('[levshub] перенос «лёжа» в архив не записан', e);
+  }
 }
 
 // ----- Разовый архив v5 перед программой v6 (A·PUSH, B·PULL, C·LEGS) -----
@@ -4116,6 +4069,7 @@ migrateWorkoutData(); // one-time migration from levshub_workout_A/B → levshub
 migrateLowRowSingleArm(); // разовый перевод тяги на одну руку; подходы двумя руками → history
 migrateWorkoutToSets(); // one-time migration {w,r} → sets[0]; старые записи сохраняются
 migrateArchiveV5(); // разовый архив v5 перед программой v6: копия рекордов и заметок в history
+migrateProneCurlV61(); // v6.1: прежний рекорд «сгибание ног лёжа» → архив этой же записи
 runSplash();
 const initialPreset = loadTimerPreset();
 applyTimerPreset(initialPreset, { silent: true });
