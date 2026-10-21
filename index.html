@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="lev'shub.">
-<meta name="theme-color" content="#0A1628">
+<meta name="theme-color" content="#F3F0E8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1A15" media="(prefers-color-scheme: dark)">
 <link rel="apple-touch-icon" href="logo.levshub.jpg">
 <link rel="icon" type="image/jpeg" href="logo.levshub.jpg">
 <title>lev'shub.</title>
@@ -16,18 +17,63 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
 <style>
   :root {
-    --navy: #0A1628;
-    --surface: #142540;
-    --surface-2: #0F1F3D;
-    --cream: #F5F2E8;
-    --red: #C8302C;
-    --green: #5DCAA5;
-    --muted: rgba(245,242,232,0.4);
-    --muted-2: rgba(245,242,232,0.6);
-    --border: rgba(245,242,232,0.06);
-    --border-2: rgba(245,242,232,0.1);
+    color-scheme: light dark;
+    /* Палитра «лес + молоко». Имена переменных прежние (чтобы не трогать вёрстку),
+       значения новые: --navy = фон, --surface = карточки, --cream = текст,
+       --red = основной (лесной) акцент, --green = успех / рост. */
+    --navy: #F3F0E8;
+    --surface: #FBF9F4;
+    --surface-2: #F6F3EB;
+    --cream: #1E2A24;
+    --red: #0F3D2E;
+    --green: #3E7C59;
+    --warn: #B5473A;          /* предупреждение / просадка — приглушённый красный */
+    --accent: #C8A15A;        /* латунь: рекорды и важное (заливки, рамки) */
+    --accent-text: #8C6A2F;   /* латунь для текста на светлом фоне — иначе низкий контраст */
+    --sage: #8FA98F;          /* шалфей: вторичный */
+    --on-red: #FBF9F4;        /* текст на основном акценте */
+    --muted: #5F6E64;         /* второстепенный текст (чуть темнее #6B7A70 ради контраста мелких подписей) */
+    --muted-2: #47554C;
+    --text-soft: #2E3B33;
+    --border: rgba(30,42,36,0.09);
+    --border-2: rgba(30,42,36,0.15);
+    --track: #E4DFD3;
+    --ink-rgb: 30,42,36;
+    --bg-rgb: 243,240,232;
+    --card-rgb: 251,249,244;
+    --red-rgb: 15,61,46;
+    --green-rgb: 62,124,89;
+    --warn-rgb: 181,71,58;
+    --accent-rgb: 200,161,90;
+    --sage-rgb: 143,169,143;
     --serif: 'Cormorant Garamond', Georgia, serif;
     --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  }
+  /* Тёмная тема — включается сама вместе с тёмной темой телефона */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --navy: #0E1A15;
+      --surface: #16261F;
+      --surface-2: #12201A;
+      --cream: #F3F0E8;
+      --red: #6FA58A;
+      --green: #79B48F;
+      --warn: #D8806F;
+      --accent-text: #C8A15A;
+      --on-red: #0E1A15;
+      --muted: rgba(243,240,232,0.56);
+      --muted-2: rgba(243,240,232,0.74);
+      --text-soft: rgba(243,240,232,0.84);
+      --border: rgba(243,240,232,0.07);
+      --border-2: rgba(243,240,232,0.12);
+      --track: #1F3329;
+      --ink-rgb: 243,240,232;
+      --bg-rgb: 14,26,21;
+      --card-rgb: 22,38,31;
+      --red-rgb: 111,165,138;
+      --green-rgb: 121,180,143;
+      --warn-rgb: 216,128,111;
+    }
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   [hidden] { display: none !important; }
@@ -148,7 +194,7 @@
   .tab-bar {
     position: fixed; left: 0; right: 0; bottom: 0;
     display: flex;
-    background: rgba(10,22,40,0.95);
+    background: rgba(var(--bg-rgb),0.95);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-top: 1px solid var(--border);
@@ -233,13 +279,13 @@
   .btn:active { transform: scale(0.96); }
   .btn-red {
     background: var(--red);
-    color: var(--cream);
+    color: var(--on-red);
     font-family: var(--serif);
     font-style: italic;
     font-size: 16px;
   }
   .btn-ghost {
-    background: rgba(245,242,232,0.04);
+    background: rgba(var(--ink-rgb),0.04);
     color: var(--muted-2);
     border-color: var(--border-2);
   }
@@ -274,7 +320,7 @@
   }
   .toggle-seg.active {
     background: transparent;
-    color: var(--cream);
+    color: var(--on-red);
   }
   .toggle-indicator {
     position: absolute;
@@ -287,11 +333,11 @@
                 opacity 180ms ease;
     z-index: 0;
     pointer-events: none;
-    box-shadow: 0 2px 8px rgba(200,48,44,0.25);
+    box-shadow: 0 2px 8px rgba(var(--red-rgb),0.25);
   }
   .prog-reminder {
-    background: rgba(200,48,44,0.08);
-    border: 1px solid rgba(200,48,44,0.2);
+    background: rgba(var(--sage-rgb),0.16);
+    border: 1px solid rgba(var(--sage-rgb),0.4);
     border-radius: 10px;
     padding: 11px 14px;
     margin: 0 18px 12px;
@@ -317,8 +363,8 @@
   }
   .ex-card.swiping { transition: none; }
   .ex-card.done {
-    border-color: rgba(93,202,165,0.25);
-    background: linear-gradient(180deg, rgba(93,202,165,0.04), rgba(20,37,64,0));
+    border-color: rgba(var(--green-rgb),0.25);
+    background: linear-gradient(180deg, rgba(var(--green-rgb),0.04), rgba(var(--card-rgb),0));
   }
   .ex-card.collapsed {
     padding: 12px 16px;
@@ -340,7 +386,7 @@
   }
   .collapsed-summary .cs-check { color: var(--green); font-size: 14px; flex-shrink: 0; }
   .collapsed-summary .cs-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .collapsed-summary .cs-data { color: var(--cream); font-weight: 500; }
+  .collapsed-summary .cs-data { color: var(--accent-text); font-weight: 500; }
   .collapsed-summary .cs-hint { color: var(--muted); font-size: 10px; flex-shrink: 0; }
 
   .ex-header {
@@ -377,7 +423,7 @@
   }
   .ex-rest i { font-size: 11px; opacity: 0.7; }
   .yt-btn {
-    color: var(--red);
+    color: var(--warn);
     font-size: 22px;
     padding: 4px;
     flex-shrink: 0;
@@ -393,7 +439,7 @@
   .sets-badge {
     width: 38px; height: 38px;
     border-radius: 50%;
-    background: rgba(245,242,232,0.04);
+    background: rgba(var(--ink-rgb),0.04);
     border: 1px solid var(--border-2);
     color: var(--cream);
     font-family: var(--serif); font-style: italic;
@@ -406,21 +452,21 @@
   }
   .sets-badge:active { transform: scale(0.93); }
   .sets-badge.flash {
-    background: rgba(93,202,165,0.18);
+    background: rgba(var(--green-rgb),0.18);
     color: var(--green);
-    border-color: rgba(93,202,165,0.5);
-    box-shadow: 0 0 0 6px rgba(93,202,165,0);
+    border-color: rgba(var(--green-rgb),0.5);
+    box-shadow: 0 0 0 6px rgba(var(--green-rgb),0);
     animation: setsFlash 700ms ease-out;
   }
   @keyframes setsFlash {
-    0% { box-shadow: 0 0 0 0 rgba(93,202,165,0.55); transform: scale(1.18); }
-    60% { box-shadow: 0 0 0 12px rgba(93,202,165,0); transform: scale(0.97); }
-    100% { box-shadow: 0 0 0 0 rgba(93,202,165,0); transform: scale(1); }
+    0% { box-shadow: 0 0 0 0 rgba(var(--green-rgb),0.55); transform: scale(1.18); }
+    60% { box-shadow: 0 0 0 12px rgba(var(--green-rgb),0); transform: scale(0.97); }
+    100% { box-shadow: 0 0 0 0 rgba(var(--green-rgb),0); transform: scale(1); }
   }
   .sets-badge.done {
-    background: rgba(93,202,165,0.18);
+    background: rgba(var(--green-rgb),0.18);
     color: var(--green);
-    border-color: rgba(93,202,165,0.45);
+    border-color: rgba(var(--green-rgb),0.45);
   }
   .sets-badge .badge-num {
     display: inline-block;
@@ -458,15 +504,15 @@
     transition: transform 80ms ease;
   }
   .sets-prompt button:active { transform: scale(0.9); }
-  .sets-prompt .sp-yes { background: rgba(93,202,165,0.16); color: var(--green); }
-  .sets-prompt .sp-no { background: rgba(245,242,232,0.06); color: var(--muted-2); }
+  .sets-prompt .sp-yes { background: rgba(var(--green-rgb),0.16); color: var(--green); }
+  .sets-prompt .sp-no { background: rgba(var(--ink-rgb),0.06); color: var(--muted-2); }
 
   .sets-undo {
     position: absolute;
     top: calc(100% + 8px);
     right: 0;
-    background: rgba(93,202,165,0.12);
-    border: 1px solid rgba(93,202,165,0.35);
+    background: rgba(var(--green-rgb),0.12);
+    border: 1px solid rgba(var(--green-rgb),0.35);
     color: var(--green);
     border-radius: 8px;
     padding: 6px 10px 6px 8px;
@@ -476,7 +522,7 @@
     font-size: 11px;
     letter-spacing: 0.3px;
     white-space: nowrap;
-    box-shadow: 0 4px 14px rgba(93,202,165,0.18);
+    box-shadow: 0 4px 14px rgba(var(--green-rgb),0.18);
     opacity: 0;
     transform: translateY(-4px);
     transition: opacity 200ms ease, transform 200ms ease;
@@ -498,7 +544,7 @@
     display: inline-flex; align-items: center; gap: 6px;
     padding: 7px 11px;
     border-radius: 9px;
-    background: rgba(245,242,232,0.04);
+    background: rgba(var(--ink-rgb),0.04);
     border: 1px solid var(--border-2);
     color: var(--muted-2);
     font-size: 12px;
@@ -508,14 +554,14 @@
   }
   .copy-prog-btn svg { width: 14px; height: 14px; display: block; }
   .copy-prog-btn:active { transform: scale(0.95); }
-  .copy-prog-btn.done { color: var(--green); border-color: rgba(93,202,165,0.45); background: rgba(93,202,165,0.08); }
+  .copy-prog-btn.done { color: var(--green); border-color: rgba(var(--green-rgb),0.45); background: rgba(var(--green-rgb),0.08); }
 
   /* главная: следующая тренировка */
   .today-next { font-size: 12px; color: var(--muted-2); letter-spacing: 0.3px; margin: -6px 0 14px; }
   .today-next b { color: var(--cream); font-weight: 500; }
   /* шапка тренировки: подпись кофеина */
   .h1-caf { font-size: 13px; font-weight: 400; color: var(--muted); letter-spacing: 0.4px; margin-left: 4px; white-space: nowrap; }
-  .h1-caf.on { color: #f59e0b; }
+  .h1-caf.on { color: var(--accent-text); }
   /* переключатель «кофеин да/нет» */
   .caf-btn {
     display: inline-flex; align-items: center; gap: 5px;
@@ -524,16 +570,16 @@
     font-size: 11px;
     letter-spacing: 0.3px;
     color: var(--muted-2);
-    background: rgba(245,242,232,0.04);
+    background: rgba(var(--ink-rgb),0.04);
     border: 1px solid var(--border-2);
     white-space: nowrap;
     transition: transform 80ms ease, color 150ms ease, background 150ms ease, border-color 150ms ease;
   }
   .caf-btn i { font-size: 14px; }
-  .caf-btn.on { color: #f59e0b; background: rgba(245,158,11,0.10); border-color: rgba(245,158,11,0.35); }
+  .caf-btn.on { color: var(--accent-text); background: rgba(var(--accent-rgb),0.10); border-color: rgba(var(--accent-rgb),0.35); }
   .caf-btn:active { transform: scale(0.94); }
   /* подсказка под названием упражнения */
-  .ex-hint { font-size: 11px; color: var(--muted-2); font-style: italic; letter-spacing: 0.2px; margin: -8px 0 10px; }
+  .ex-hint { font-size: 11px; color: var(--accent-text); font-style: italic; letter-spacing: 0.2px; margin: -8px 0 10px; }
   /* у упражнения ещё нет ссылки на видео */
   .yt-btn.no-url { color: var(--muted); opacity: 0.55; }
   /* объём в неделю */
@@ -547,11 +593,98 @@
   .vol-day { font-size: 10px; color: var(--muted); letter-spacing: 0.3px; margin-top: 2px; }
   .vol-foot { font-size: 10px; color: var(--muted); margin-top: 8px; line-height: 1.5; letter-spacing: 0.2px; }
 
+  /* ============ Памятка ============ */
+  .memo-open {
+    margin-left: auto;
+    font-size: 12px;
+    letter-spacing: 0.3px;
+    color: var(--muted-2);
+    padding: 6px 10px;
+    border-radius: 9px;
+    background: rgba(var(--ink-rgb),0.04);
+    border: 1px solid var(--border-2);
+    transition: transform 100ms ease;
+  }
+  .memo-open:active { transform: scale(0.95); }
+  .memo-backdrop {
+    position: fixed; inset: 0;
+    z-index: 350;
+    display: flex; align-items: center; justify-content: center;
+    padding: calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom));
+    background: rgba(var(--bg-rgb),0.72);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 220ms ease;
+  }
+  .memo-backdrop.show { opacity: 1; pointer-events: auto; }
+  .memo-card {
+    position: relative;
+    width: 100%; max-width: 420px; max-height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: var(--surface);
+    border: 1px solid var(--border-2);
+    border-radius: 18px;
+    padding: 20px 18px 16px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.22);
+    transform: translateY(14px) scale(0.98);
+    opacity: 0;
+    transition: transform 280ms cubic-bezier(.2,.85,.3,1), opacity 220ms ease;
+  }
+  .memo-backdrop.show .memo-card { transform: none; opacity: 1; }
+  .memo-x {
+    position: absolute; top: 10px; right: 10px;
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    color: var(--muted);
+    font-size: 20px;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .memo-title { font-family: var(--serif); font-style: italic; font-size: 26px; color: var(--cream); margin-bottom: 12px; padding-right: 40px; }
+  .memo-block { background: rgba(var(--accent-rgb),0.10); border: 1px solid rgba(var(--accent-rgb),0.38); border-radius: 12px; padding: 12px 14px; }
+  .memo-h { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; color: var(--red); margin-bottom: 8px; }
+  .memo-block .memo-h { color: var(--accent-text); }
+  .memo-list { margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.5; color: var(--cream); }
+  .memo-list li { margin-bottom: 6px; }
+  .memo-list li:last-child { margin-bottom: 0; }
+  .memo-list li::marker { color: var(--muted); }
+  .memo-sec { margin-top: 16px; }
+  .memo-more-btn {
+    display: block; width: 100%;
+    margin: 12px 0 10px;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 13px;
+    color: var(--red);
+    background: rgba(var(--red-rgb),0.06);
+    border: 1px solid rgba(var(--red-rgb),0.2);
+  }
+  .memo-more-btn:active { transform: scale(0.98); }
+
+  /* ============ Старые заметки (свёрнутый блок в карточке) ============ */
+  .old-notes { margin: 2px 0 0 30px; }
+  .old-notes summary {
+    font-size: 11px; color: var(--muted); letter-spacing: 0.3px;
+    padding: 4px 0; cursor: pointer; list-style: none;
+  }
+  .old-notes summary::-webkit-details-marker { display: none; }
+  .old-notes summary::before { content: '▸ '; }
+  .old-notes[open] summary::before { content: '▾ '; }
+  .old-body { margin-top: 4px; padding: 6px 10px; border-left: 2px solid var(--border-2); }
+  .old-k { font-size: 10px; color: var(--muted); letter-spacing: 0.4px; margin-top: 8px; }
+  .old-k:first-child { margin-top: 0; }
+  .old-v { font-size: 12px; color: var(--muted-2); line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+  /* подход 1 = рекорд — номер строки латунью */
+  .sets-grid .sg-row:nth-child(2) .sg-n { color: var(--accent-text); }
+
   .session-bar {
     display: flex; align-items: center; gap: 10px;
     margin: 0 18px 12px;
     padding: 8px 14px;
-    background: rgba(245,242,232,0.03);
+    background: rgba(var(--ink-rgb),0.03);
     border: 1px solid var(--border);
     border-radius: 10px;
     font-size: 12px;
@@ -561,7 +694,7 @@
   .session-progress { flex: 1; }
   .session-reset {
     color: var(--muted-2);
-    background: rgba(245,242,232,0.04);
+    background: rgba(var(--ink-rgb),0.04);
     border: 1px solid var(--border-2);
     border-radius: 7px;
     padding: 5px 10px;
@@ -588,11 +721,11 @@
     font-size: 14px;
     font-weight: 600;
   }
-  .stepper-minus { background: rgba(200,48,44,0.12); color: var(--red); }
-  .stepper-plus { background: rgba(93,202,165,0.12); color: var(--green); }
+  .stepper-minus { background: rgba(var(--warn-rgb),0.12); color: var(--warn); }
+  .stepper-plus { background: rgba(var(--green-rgb),0.12); color: var(--green); }
   .stepper-input {
     flex: 1;
-    background: rgba(245,242,232,0.03);
+    background: rgba(var(--ink-rgb),0.03);
     border: none;
     text-align: center;
     color: var(--cream);
@@ -636,7 +769,7 @@
   }
   .sg-in {
     height: 34px;
-    background: rgba(245,242,232,0.03);
+    background: rgba(var(--ink-rgb),0.03);
     border: 1px solid var(--border-2);
     border-radius: 8px;
     text-align: center;
@@ -649,7 +782,7 @@
     -webkit-appearance: none;
     transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
   }
-  .sg-in::placeholder { color: rgba(245,242,232,0.25); }
+  .sg-in::placeholder { color: rgba(var(--ink-rgb),0.25); }
   /* предзаполненный вес (зеркалит подход 1) — приглушён, пока его не правили */
   .sg-in[data-auto="1"] { color: var(--muted-2); }
   .note-area {
@@ -669,7 +802,7 @@
     transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
   }
   .note-trigger:active {
-    background: rgba(245,242,232,0.03);
+    background: rgba(var(--ink-rgb),0.03);
     border-color: var(--border-2);
   }
   .note-trigger .note-icon {
@@ -724,7 +857,7 @@
   .modal.url-sheet { min-height: 72vh; } /* поле повыше — клавиатура его не закроет */
   .url-input {
     width: 100%;
-    background: rgba(245,242,232,0.03);
+    background: rgba(var(--ink-rgb),0.03);
     border: 1px solid var(--border-2);
     border-radius: 10px;
     padding: 12px 14px;
@@ -733,8 +866,8 @@
     outline: none;
     -webkit-appearance: none;
   }
-  .url-input:focus { border-color: rgba(200,48,44,0.4); }
-  .url-input.invalid { border-color: var(--red); }
+  .url-input:focus { border-color: rgba(var(--red-rgb),0.4); }
+  .url-input.invalid { border-color: var(--warn); }
   .url-msg {
     min-height: 16px;
     margin: 8px 2px 14px;
@@ -743,7 +876,7 @@
     color: var(--muted);
     letter-spacing: 0.3px;
   }
-  .url-msg.error { color: var(--red); }
+  .url-msg.error { color: var(--warn); }
   .url-actions { display: flex; gap: 8px; }
   .url-default {
     margin-top: 16px;
@@ -773,7 +906,7 @@
     min-height: 0;
     width: 100%;
     resize: none;
-    background: rgba(245,242,232,0.03);
+    background: rgba(var(--ink-rgb),0.03);
     border: 1px solid var(--border-2);
     border-radius: 10px;
     padding: 12px 14px;
@@ -783,8 +916,8 @@
     line-height: 1.55;
     outline: none;
   }
-  .note-full::placeholder { color: rgba(245,242,232,0.3); }
-  .note-full:focus { border-color: rgba(200,48,44,0.4); }
+  .note-full::placeholder { color: rgba(var(--ink-rgb),0.3); }
+  .note-full:focus { border-color: rgba(var(--red-rgb),0.4); }
 
   /* ============ Technique notes (блокнот) ============ */
   .tech-btn {
@@ -815,7 +948,7 @@
   .tech-body {
     font-size: 14px;
     line-height: 1.65;
-    color: rgba(245,242,232,0.78); /* ярче muted-2: длинный текст читается легче */
+    color: var(--text-soft); /* ярче muted-2: длинный текст читается легче */
     letter-spacing: 0.1px;
   }
   .tech-body h4 {
@@ -854,7 +987,7 @@
     gap: 7px;
     padding: 11px 14px;
     border-radius: 10px;
-    background: rgba(245,242,232,0.03);
+    background: rgba(var(--ink-rgb),0.03);
     border: 1px solid var(--border);
     color: var(--muted);
     font-size: 12px;
@@ -917,7 +1050,7 @@
     border-radius: 9px;
     display: inline-flex; align-items: center; justify-content: center;
     color: var(--muted-2);
-    background: rgba(245,242,232,0.04);
+    background: rgba(var(--ink-rgb),0.04);
     border: 1px solid var(--border-2);
     font-size: 17px;
     flex-shrink: 0;
@@ -930,7 +1063,7 @@
   .sleep-time input {
     width: 100%;
     min-height: 46px;
-    background: rgba(245,242,232,0.03);
+    background: rgba(var(--ink-rgb),0.03);
     border: 1px solid var(--border-2);
     border-radius: 10px;
     color: var(--cream);
@@ -940,10 +1073,9 @@
     outline: none;
     -webkit-appearance: none;
     appearance: none;
-    color-scheme: dark;
     font-variant-numeric: tabular-nums;
   }
-  .sleep-time input:focus { border-color: rgba(200,48,44,0.4); }
+  .sleep-time input:focus { border-color: rgba(var(--red-rgb),0.4); }
   .sleep-dur { text-align: center; margin: 14px 0; font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--cream); }
   .sleep-dur.warn { font-family: var(--sans); font-style: normal; font-size: 12px; color: var(--muted-2); }
   .sleep-hint { text-align: center; font-size: 11px; color: var(--muted); letter-spacing: 0.3px; margin-top: 8px; min-height: 14px; }
@@ -970,7 +1102,7 @@
   .mini-toggle {
     margin-left: auto;
     display: flex;
-    background: rgba(245,242,232,0.04);
+    background: rgba(var(--ink-rgb),0.04);
     border-radius: 8px;
     padding: 3px;
     border: 1px solid var(--border);
@@ -982,12 +1114,12 @@
     border-radius: 6px;
     letter-spacing: 0.3px;
   }
-  .mini-toggle button.active { background: var(--red); color: var(--cream); }
+  .mini-toggle button.active { background: var(--red); color: var(--on-red); }
 
   /* ============ Modal ============ */
   .modal-backdrop {
     position: fixed; inset: 0;
-    background: rgba(10,22,40,0.75);
+    background: rgba(var(--bg-rgb),0.75);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     z-index: 200;
@@ -1049,7 +1181,7 @@
     letter-spacing: 0.5px;
     transition: color 200ms ease;
   }
-  .timer-time.finished { color: var(--red); }
+  .timer-time.finished { color: var(--warn); }
   .timer-presets {
     display: flex;
     gap: 8px;
@@ -1065,17 +1197,17 @@
     gap: 2px;
     padding: 10px 6px;
     border-radius: 12px;
-    background: rgba(245,242,232,0.03);
+    background: rgba(var(--ink-rgb),0.03);
     border: 1px solid var(--border-2);
     color: var(--muted-2);
     transition: transform 100ms ease, background 200ms ease, color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
   }
   .preset-chip:active { transform: scale(0.96); }
   .preset-chip.active {
-    background: rgba(200,48,44,0.12);
-    border-color: rgba(200,48,44,0.4);
+    background: rgba(var(--red-rgb),0.12);
+    border-color: rgba(var(--red-rgb),0.4);
     color: var(--cream);
-    box-shadow: 0 4px 14px rgba(200,48,44,0.18);
+    box-shadow: 0 4px 14px rgba(var(--red-rgb),0.18);
   }
   .preset-chip .chip-time {
     font-family: var(--serif);
@@ -1093,7 +1225,7 @@
   .timer-controls { display: flex; flex-direction: column; align-items: center; gap: 12px; }
   .timer-start {
     background: var(--red);
-    color: var(--cream);
+    color: var(--on-red);
     font-family: var(--serif);
     font-style: italic;
     font-size: 18px;
@@ -1130,13 +1262,13 @@
     font-variant-numeric: tabular-nums;
   }
   .timer-adjust button:active { transform: scale(0.95); }
-  .timer-adjust .adj-minus { background: rgba(200,48,44,0.1); color: var(--red); }
-  .timer-adjust .adj-plus { background: rgba(93,202,165,0.1); color: var(--green); }
+  .timer-adjust .adj-minus { background: rgba(var(--warn-rgb),0.1); color: var(--warn); }
+  .timer-adjust .adj-plus { background: rgba(var(--green-rgb),0.1); color: var(--green); }
 
   /* ============ Choice modal ============ */
   .choice-list { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
   .choice-opt {
-    background: rgba(245,242,232,0.03);
+    background: rgba(var(--ink-rgb),0.03);
     border: 1px solid var(--border-2);
     border-radius: 10px;
     padding: 14px 16px;
@@ -1146,18 +1278,18 @@
     width: 100%;
   }
   .choice-opt .sm { display: block; font-size: 11px; color: var(--muted); margin-top: 3px; }
-  .choice-opt.active { border-color: var(--red); background: rgba(200,48,44,0.08); }
+  .choice-opt.active { border-color: var(--red); background: rgba(var(--red-rgb),0.08); }
 
   /* ============ Numpad (custom numeric keyboard) ============ */
   .np-input.np-active {
-    border-color: rgba(200,48,44,0.5) !important;
-    background: rgba(200,48,44,0.06) !important;
+    border-color: rgba(var(--red-rgb),0.5) !important;
+    background: rgba(var(--red-rgb),0.06) !important;
   }
   .numpad {
     position: fixed;
     left: 0; right: 0; bottom: 0;
     z-index: 250;
-    background: rgba(10, 22, 40, 0.97);
+    background: rgba(var(--bg-rgb),0.97);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-top: 1px solid var(--border-2);
@@ -1206,9 +1338,9 @@
     color: var(--muted);
     font-style: normal;
   }
-  .numpad-value.flash { color: var(--red); }
+  .numpad-value.flash { color: var(--warn); }
   .numpad-back {
-    background: rgba(245,242,232,0.05);
+    background: rgba(var(--ink-rgb),0.05);
     border: 1px solid var(--border-2);
     color: var(--cream);
     border-radius: 9px;
@@ -1218,10 +1350,10 @@
     align-items: center;
     transition: transform 80ms ease, background 100ms ease;
   }
-  .numpad-back:active { transform: scale(0.94); background: rgba(200,48,44,0.18); color: var(--red); }
+  .numpad-back:active { transform: scale(0.94); background: rgba(var(--warn-rgb),0.18); color: var(--warn); }
   .numpad-done {
     background: var(--red);
-    color: var(--cream);
+    color: var(--on-red);
     font-family: var(--serif);
     font-style: italic;
     border-radius: 9px;
@@ -1250,12 +1382,12 @@
   }
   .np-key:active {
     transform: scale(0.93);
-    background: rgba(200,48,44,0.18);
+    background: rgba(var(--red-rgb),0.18);
     color: var(--red);
-    border-color: rgba(200,48,44,0.35);
+    border-color: rgba(var(--red-rgb),0.35);
   }
   .np-key.np-soft {
-    background: rgba(245,242,232,0.035);
+    background: rgba(var(--ink-rgb),0.035);
     color: var(--muted-2);
     font-family: var(--serif);
     font-style: italic;
@@ -1265,7 +1397,7 @@
   /* ============ Confirm / Alert modal ============ */
   .confirm-backdrop {
     position: fixed; inset: 0;
-    background: rgba(10,22,40,0.72);
+    background: rgba(var(--bg-rgb),0.72);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     z-index: 400;
@@ -1323,19 +1455,19 @@
   }
   .confirm-actions button:active { transform: scale(0.96); }
   .confirm-cancel {
-    background: rgba(245,242,232,0.04);
+    background: rgba(var(--ink-rgb),0.04);
     border-color: var(--border-2);
     color: var(--muted-2);
   }
   .confirm-yes {
     background: var(--red);
-    color: var(--cream);
+    color: var(--on-red);
     font-family: var(--serif); font-style: italic;
     font-size: 15px;
-    box-shadow: 0 4px 14px rgba(200,48,44,0.28);
+    box-shadow: 0 4px 14px rgba(var(--red-rgb),0.28);
   }
   .confirm-modal.alert .confirm-actions { justify-content: center; }
-  .confirm-modal.alert .confirm-yes { background: rgba(245,242,232,0.06); color: var(--cream); font-family: var(--sans); font-style: normal; box-shadow: none; border-color: var(--border-2); }
+  .confirm-modal.alert .confirm-yes { background: rgba(var(--ink-rgb),0.06); color: var(--cream); font-family: var(--sans); font-style: normal; box-shadow: none; border-color: var(--border-2); }
 </style>
 </head>
 <body>
@@ -1356,6 +1488,7 @@
     <div class="topbar">
       <div class="topbar-logo"><img src="logo.levshub.removedbg.png" alt=""></div>
       <div class="topbar-brand">lev'shub.</div>
+      <button type="button" class="memo-open" id="memoOpenBtn">📋 Памятка</button>
     </div>
 
     <div class="card" id="todayCard">
@@ -1462,8 +1595,8 @@
     <div class="timer-screen">
       <div class="timer-circle-wrap">
         <svg viewBox="0 0 220 220" width="220" height="220">
-          <circle cx="110" cy="110" r="100" fill="none" stroke="#142540" stroke-width="8"/>
-          <circle id="timerProg" cx="110" cy="110" r="100" fill="none" stroke="#C8302C" stroke-width="8" stroke-linecap="round"
+          <circle cx="110" cy="110" r="100" fill="none" style="stroke:var(--track)" stroke-width="8"/>
+          <circle id="timerProg" cx="110" cy="110" r="100" fill="none" style="stroke:var(--red)" stroke-width="8" stroke-linecap="round"
             stroke-dasharray="628.3" stroke-dashoffset="0"
             transform="rotate(-90 110 110)"/>
         </svg>
@@ -1503,6 +1636,18 @@
   <button class="tab-btn" data-tab="sleep"><i class="ti ti-moon"></i><span>сон</span></button>
   <button class="tab-btn" data-tab="timer"><i class="ti ti-clock"></i><span>timer</span></button>
 </nav>
+
+<!-- ============ ПАМЯТКА ============ -->
+<div class="memo-backdrop" id="memoBackdrop" aria-hidden="true">
+  <div class="memo-card" role="dialog" aria-modal="true" aria-labelledby="memoTitle">
+    <button type="button" class="memo-x" id="memoClose" aria-label="закрыть"><i class="ti ti-x"></i></button>
+    <div class="memo-title" id="memoTitle">Памятка</div>
+    <div class="memo-block"><div class="memo-h">Главное</div><ol class="memo-list" id="memoMain"></ol></div>
+    <div id="memoMore" hidden></div>
+    <button type="button" class="memo-more-btn" id="memoToggle">Подробнее</button>
+    <button type="button" class="btn btn-red btn-full" id="memoOk">Понял 💪</button>
+  </div>
+</div>
 
 <!-- ============ MODALS ============ -->
 <div class="modal-backdrop" id="modalBackdrop">
@@ -1626,41 +1771,42 @@ const TECH_SEATED_LEG_CURL = `
 const trainingA = [
   { id: 'chest_press', num: 1, name: 'жим от груди', sub: 'Chest Press', sets: '3×8-12', rest: 180, work: { chest: 1, front_delts: 0.5, triceps: 0.5 }, url: 'https://youtube.com/shorts/EC1Yf3M0im8?is=bdAV9DSniv4fxSXm' },
   { id: 'shoulder_press', num: 2, name: 'жим плеч', sub: 'Shoulder Press', sets: '3×8-12', rest: 180, work: { front_delts: 1, mid_delts: 0.5, triceps: 0.5 }, url: 'https://youtube.com/shorts/lC9uiTqYH84?is=_g4ItfNvBMRiUnXt' },
-  { id: 'pec_fly', num: 3, name: 'сведение рук', sub: 'Pectoral', sets: '3×10-12', rest: 90, work: { chest: 1 }, url: 'https://youtube.com/shorts/tByJiJj9n0U?is=U_ARILKFH2tixe2S' },
-  { id: 'delts_machine', num: 4, name: 'дельты в тренажёре', sub: 'Delts Machine', sets: '3×8-12', rest: 90, hint: 'считать только чистые повторы — руки до уровня плеч, без рывка корпусом', work: { mid_delts: 1 }, url: 'https://youtube.com/shorts/78hk4Fy_kDA?is=unzsenWO7tAKGqns' },
-  { id: 'triceps_pushdown', num: 5, name: 'трицепс на блоке', sub: 'Triceps Pushdown', sets: '3×10-12', rest: 90, work: { triceps: 1 }, url: 'https://youtube.com/shorts/NMY70SP-OHY?si=4jPio5STfDrrKV8_' },
-  { id: 'cable_lateral_raise', num: 6, name: 'махи в стороны на блоке одной рукой', sub: 'Single-Arm Cable Lateral Raise', sets: '3+3×12-20', rest: 60, unilateral: true, work: { mid_delts: 1 }, url: '' },
+  { id: 'pec_fly', num: 3, name: 'сведение рук', sub: 'Pectoral', sets: '3×10-12', rest: 90, hint: 'по одной руке заканчивать', work: { chest: 1 }, url: 'https://youtube.com/shorts/tByJiJj9n0U?is=U_ARILKFH2tixe2S' },
+  { id: 'delts_machine', num: 4, name: 'дельты в тренажёре', sub: 'Delts Machine', sets: '3×8-12', rest: 90, hint: 'считаю только чистые повторы — руки до уровня плеч, без рывка', work: { mid_delts: 1 }, url: 'https://youtube.com/shorts/78hk4Fy_kDA?is=unzsenWO7tAKGqns' },
+  { id: 'triceps_pushdown', num: 5, name: 'трицепс на блоке', sub: 'Triceps Pushdown', sets: '3×10-12', rest: 90, hint: 'локти неподвижно у корпуса, блок на уровне головы, V-образный гриф', work: { triceps: 1 }, url: 'https://youtube.com/shorts/NMY70SP-OHY?si=4jPio5STfDrrKV8_' },
+  { id: 'cable_lateral_raise', num: 6, name: 'махи в стороны на блоке одной рукой', sub: 'Single-Arm Cable Lateral Raise', sets: '3+3×12-20', rest: 60, unilateral: true, hint: 'Важно: вес легче — минимум 12 чистых повторов', work: { mid_delts: 1 }, url: '' },
   { id: 'overhead_cable_extension', num: 7, name: 'разгибание из-за головы на блоке', sub: 'Overhead Cable Extension', sets: '3×10-12', rest: 90, tech: TECH_OVERHEAD_EXT, work: { triceps: 1 }, url: 'https://www.youtube.com/shorts/0IM1J_GmQ34?feature=share' },
   // Икры в Push (с кофеином) — отдельная карточка со своей историей; икры в Legs — calf_raise
   { id: 'calf_raise_push', num: 8, name: 'подъёмы на икры · push', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, unilateral: true, work: { calves: 1 }, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' }
 ];
 const trainingB = [
-  { id: 'lat_pulldown', num: 1, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×10-12', rest: 180, work: { back: 1, rear_delts: 0.5, biceps: 0.5 }, url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
+  { id: 'lat_pulldown', num: 1, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×10-12', rest: 180, hint: 'вес тот же, прогрессия в амплитуде', work: { back: 1, rear_delts: 0.5, biceps: 0.5 }, url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
   { id: 'reverse_pec_deck', num: 2, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '3×12-15', rest: 90, work: { rear_delts: 1 }, url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
   // С 14.09.2026 одной рукой (3+3): тот же тренажёр и тот же id. Подходы двумя руками
   // не пересчитаны — перенесены как есть в history этой же записи (migrateLowRowSingleArm).
   { id: 'low_row', num: 3, name: 'горизонтальная тяга одной рукой', sub: 'Single-Arm Low Row', sets: '3+3×10-15', rest: 120, unilateral: true, tech: TECH_LOW_ROW, work: { back: 1, rear_delts: 0.5, biceps: 0.5 }, url: 'https://www.youtube.com/shorts/bLVeOunB-c0?feature=share' },
-  { id: 'arm_curl', num: 4, name: 'сгибание рук в тренажёре', sub: 'Arm Curl Machine', sets: '3×10-12', rest: 90, work: { biceps: 1 }, url: 'https://youtube.com/shorts/IWDHXA1ZcT8?is=9QgKqBX6kU9lXxLr' },
+  { id: 'incline_db_curl', num: 4, name: 'наклонный подъём гантелей', sub: 'Incline DB Curl', sets: '3×8-12', rest: 90, work: { biceps: 1 }, url: 'https://youtube.com/shorts/uCUaRFlA9vE?si=_q-PSgOpB3iQviPn' },
   { id: 'weighted_leg_raise', num: 5, name: 'подъёмы ног с гантелей', sub: 'Weighted Leg Raise', sets: '3×10-15', rest: 90, tech: TECH_WEIGHTED_LEG_RAISE, work: { abs: 1 }, url: 'https://youtube.com/shorts/RQDKs_EBNPY?si=BESSkagxInn_gHsV' },
-  { id: 'incline_db_curl', num: 6, name: 'наклонный подъём гантелей', sub: 'Incline DB Curl', sets: '3×8-12', rest: 90, work: { biceps: 1 }, url: 'https://youtube.com/shorts/uCUaRFlA9vE?si=_q-PSgOpB3iQviPn' },
+  // С 21.10.2026: бицепс — сначала наклонные, потом Скотт (сгибание рук в тренажёре → архив)
+  { id: 'preacher_curl', num: 6, name: 'подъём на скамье Скотта', sub: 'Preacher Curl · гантели или EZ-гриф', sets: '3×8-12', rest: 90, hint: 'Полная амплитуда, внизу не бросать руку, негатив под контролем', work: { biceps: 1 }, url: 'https://www.youtube.com/shorts/ExDxpOgCM-w?feature=share' },
   { id: 'wrist_curl', num: 7, name: 'сгибание запястий', sub: 'Wrist Curl', sets: '3×15-20', rest: 90, work: { forearms: 1 }, url: 'https://youtu.be/qMtmHwaCmYI?t=16' },
   { id: 'reverse_cable_curl', num: 8, name: 'обратный подъём на блоке', sub: 'Reverse Cable Curl', sets: '3×12-15', rest: 90, work: { forearms: 1, biceps: 0.5 }, url: 'https://www.youtube.com/shorts/KY_c3LkPZa8?feature=share' }
 ];
 const trainingC = [
-  { id: 'leg_press', num: 1, name: 'жим ногами', sub: 'Leg Press', sets: '3×8-12', rest: 180, work: { quads: 1 }, url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' },
+  { id: 'leg_press', num: 1, name: 'жим ногами', sub: 'Leg Press', sets: '3×8-12', rest: 180, hint: 'полная амплитуда ≠ до упора: стоп там, где таз начинает подворачиваться', work: { quads: 1 }, url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' },
   { id: 'seated_leg_curl', num: 2, name: 'сгибание ног сидя', sub: 'Seated Leg Curl', sets: '3×10-15', rest: 90, tech: TECH_SEATED_LEG_CURL, work: { hamstrings: 1 }, url: 'https://www.youtube.com/shorts/xdbEG3xGLI8?feature=share' },
   { id: 'leg_extension', num: 3, name: 'разгибание ног', sub: 'Leg Extension', sets: '3+3×12-15', rest: 90, unilateral: true, work: { quads: 1 }, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
   { id: 'hip_adduction', num: 4, name: 'аддуктор (сведение ног)', sub: 'Hip Adduction', sets: '3×10-15', rest: 90, work: { adductors: 1 }, url: '' },
   // Вернулось из архива 07.10.2026 (тот же id): прежний рекорд перенесён в history
   // этой же записи как «архив» (migrateProneCurlV61), текущий рекорд начинается с нуля.
   { id: 'prone_leg_curl', num: 5, name: 'сгибание ног лёжа', sub: 'Prone Leg Curl', sets: '3×10-15', rest: 90, work: { hamstrings: 1 }, url: 'https://youtube.com/shorts/FMCq0hT3KRU?si=cbbo1yN9xsXNqdqe' },
-  { id: 'calf_raise', num: 6, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, unilateral: true, work: { calves: 1 }, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
+  { id: 'calf_raise', num: 6, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, unilateral: true, hint: 'паузы 2 сек внизу, 1 сек вверху', work: { calves: 1 }, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
   { id: 'hip_abduction', num: 7, name: 'абдуктор (разведение ног)', sub: 'Hip Abduction', sets: '3×12-20', rest: 90, work: { glute_med: 1 }, url: '' },
   // Подъёмы ног в Legs (без кофеина) — отдельная карточка со своей историей; в Pull — weighted_leg_raise
   { id: 'weighted_leg_raise_legs', num: 8, name: 'подъёмы ног с гантелей · legs', sub: 'Weighted Leg Raise', sets: '3×10-15', rest: 90, tech: TECH_WEIGHTED_LEG_RAISE, work: { abs: 1 }, url: 'https://youtube.com/shorts/RQDKs_EBNPY?si=BESSkagxInn_gHsV' }
 ];
 
-// ----- Дни программы v6.1 (с 07.10.2026) -----
+// ----- Дни программы v6.2 (с 21.10.2026) -----
 // caffeine — план по умолчанию: A и B с кофеином, C без. Отметку на сегодня
 // можно поменять в самой тренировке (хранится по дате).
 const DAYS = {
@@ -1693,7 +1839,8 @@ const MUSCLE_ROWS = [
 const ARCHIVE = [
   { id: 'arm_extension', name: 'разгибание рук в тренажёре', sub: 'Arm Extension Machine', sets: '3×10-12', url: 'https://youtube.com/shorts/tVNSmck6hnE?is=wEnysnqCti6nnDQ3' },
   { id: 'total_abs', name: 'скручивания в тренажёре', sub: 'Abdominal Crunch', sets: '3×10-15', url: 'https://www.youtube.com/shorts/DVCmFYlNFRg?feature=share' },
-  { id: 'kneeling_cable_crunch', name: 'скручивания на блоке стоя', sub: 'Standing Cable Crunch', sets: '3×10-15', tech: TECH_STANDING_CABLE_CRUNCH, url: 'https://vt.tiktok.com/ZSqAY7peS/' }
+  { id: 'kneeling_cable_crunch', name: 'скручивания на блоке стоя', sub: 'Standing Cable Crunch', sets: '3×10-15', tech: TECH_STANDING_CABLE_CRUNCH, url: 'https://vt.tiktok.com/ZSqAY7peS/' },
+  { id: 'arm_curl', name: 'сгибание рук в тренажёре', sub: 'Arm Curl Machine', sets: '3×10-12', url: 'https://youtube.com/shorts/IWDHXA1ZcT8?is=9QgKqBX6kU9lXxLr' }
 ];
 
 const DAYS_RU =['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
@@ -2203,6 +2350,7 @@ function renderTraining() {
           <button type="button" class="url-btn${getUrlOverride(ex.id) ? ' custom' : ''}" aria-label="ссылка на видео" title="ссылка на видео"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11.5 4.5"/><path d="M14 11a5 5 0 0 0-7.07 0L4.1 13.83a5 5 0 0 0 7.07 7.07L12.5 19.5"/></svg></button>
         </div>
         <button type="button" class="note-more" hidden>показать больше</button>
+        ${buildOldNotesHtml(ex.id)}
       </div>
     `;
     exList.appendChild(card);
@@ -3024,7 +3172,7 @@ function exportExercise(ex) {
   // если в названии уже есть скобки — английское название через тире, без двойных скобок
   out.push(ex.num + '. ' + capFirst(ex.name) + (/\)\s*$/.test(ex.name) ? ' — ' + ex.sub : ' (' + ex.sub + ')'));
   out.push(I + 'Схема: ' + ex.sets + (uni ? ' — по ' + count + ' подхода на каждую сторону' : '') + ', отдых ' + formatRest(ex.rest));
-  if (ex.hint) out.push(I + 'Важно: ' + ex.hint);
+  if (ex.hint) out.push(I + (/^важно/i.test(ex.hint) ? ex.hint : 'Важно: ' + ex.hint));
   const rec = exportSetText(sets[0], uni);
   out.push(I + 'Рекорд: ' + (rec || 'не записан'));
   for (let i = 1; i < count; i++) {
@@ -3041,10 +3189,11 @@ function exportExercise(ex) {
       .map(st => exportSetText(st, !!(st && ('rl' in st || 'rr' in st))))
       .filter(Boolean).join(' · ');
     const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(h.until || '');
-    const when = (h.label || 'раньше') + (m ? ' (до ' + m[3] + '.' + m[2] + '.' + m[1] + ')' : '');
+    const when = (h.label || 'раньше') + (m && !/до \d/.test(h.label || '') ? ' (до ' + m[3] + '.' + m[2] + '.' + m[1] + ')' : '');
     if (hs && hs !== curSets) out.push(I + (h.label === 'архив' ? capFirst(when) : 'Архив ' + when) + ': ' + hs);
     const hn = typeof h.n === 'string' ? h.n.trim() : '';
-    if (hn && hn !== curNote) out.push(exportBlock('Заметка ' + when, h.n, I));
+    // старые заметки (v5 и перенесённые 21.10.2026) в текст не идут — они в «старых заметках» карточки
+    if (hn && hn !== curNote && h.label !== 'v5' && h.label !== OLD_NOTES_LABEL) out.push(exportBlock('Заметка ' + when, h.n, I));
   });
   return out.join('\n');
 }
@@ -3068,7 +3217,8 @@ function buildProgramExport() {
     '- 3+3 — упражнение на одну сторону: 3 подхода левой + 3 правой, повторы «лев / прав». В объёме это 3 подхода на мышцу.',
     '- Одно упражнение в разных днях (икры, подъёмы ног) — отдельные карточки со своими рекордами: с кофеином и без цифры не смешиваются.',
     '- Кофеин — отметка на сегодня; если не отмечал, стоит план: A и B с кофеином, C без.',
-    '- «Архив …» — прошлые записи этого же упражнения (v5 до 03.10.2026, тяга двумя руками, сгибание лёжа до 07.10.2026); показаны, только если отличаются от текущих.',
+    '- «Архив …» — прошлые записи этого же упражнения (v5 до 03.10.2026, тяга двумя руками, сгибание лёжа до 07.10.2026, рекорды до 21.10.2026 с частичными повторами); показаны, только если отличаются от текущих.',
+    '- Считаю только чистые повторы с полной амплитудой.',
     '- Просадки, изменения и детали — в заметках.'
   ];
   if (anyUnknown) legend.push('- «?» — значение в приложении отмечено как неизвестное.');
@@ -3084,7 +3234,7 @@ function buildProgramExport() {
     'Основное упражнение = 1 подход, помогающее = ½; 3+3 = 3. Каждый день по расписанию стоит в неделе дважды.\n\n' +
     volumeRows().map(r => '- ' + r.label + ': ' + r.nums + ' (' + r.dayText +
       (r.rest ? ', отдых ' + r.rest : '') + (r.was ? '; было: ' + r.was : '') + ')').join('\n');
-  return "LEV'SHUB — программа v6.1: A · PUSH, B · PULL, C · LEGS\nВыгрузка: " + date +
+  return "LEV'SHUB — программа v6.2: A · PUSH, B · PULL, C · LEGS\nВыгрузка: " + date +
     '\nРасписание: ' + sched + '\n\n' + legend.join('\n') + '\n\n' + body + '\n\n' + vol + '\n';
 }
 
@@ -3180,6 +3330,145 @@ function renderVolume() {
       `<tr><td class="m">${escHtml(r.label)}<div class="vol-day">${escHtml(r.dayText)}${r.rest ? ' · отдых ' + escHtml(r.rest) : ''}</div></td>` +
       `<td class="n">${escHtml(r.nums)}</td></tr>`
     ).join('') + '</tbody></table>';
+}
+
+// ----- v6.2 (21.10.2026): резервная копия, новая точка отсчёта, чистка заметок -----
+// 1) До любых изменений — полная копия всех данных приложения в levshub_backup_2026-10-21.
+//    Не записалась копия — ничего не меняем.
+// 2) Сгибание ног сидя/лёжа, аддуктор, абдуктор, сгибание запястий: текущие подходы
+//    КОПИРУЮТСЯ в history («до 21.10.2026 — с частичными повторами»), поля рекорда очищаются.
+// 3) Заметки упражнений программы: видимой остаётся последняя датированная запись,
+//    полный прежний текст КОПИРУЕТСЯ в history («заметки до 21.10.2026») → «старые заметки».
+// Ключи и структура записей прежние; повторно не запускается (отметка + проверка по записи).
+const V62_BACKUP_KEY = 'levshub_backup_2026-10-21';
+const OLD_NOTES_LABEL = 'заметки до 21.10.2026';
+const PARTIAL_REPS_LABEL = 'до 21.10.2026 — с частичными повторами';
+const PARTIAL_RESET_IDS = ['seated_leg_curl', 'prone_leg_curl', 'hip_adduction', 'hip_abduction', 'wrist_curl'];
+const MONTHS_RU = { 'янв': 1, 'фев': 2, 'мар': 3, 'апр': 4, 'мая': 5, 'май': 5, 'июн': 6, 'июл': 7, 'авг': 8, 'сен': 9, 'окт': 10, 'ноя': 11, 'дек': 12 };
+
+// Дата в начале строки: «18.10», «18.10.2026», «18/10», «18 окт» → ключ ГГГГММДД (иначе null).
+// Месяц — двумя цифрами, чтобы вес вроде «12.5 кг» не принять за дату.
+function noteLineDateKey(line) {
+  const t = String(line).replace(/^[\s\-–—•*]+/, '');
+  let d, mo, y = null, mm;
+  if ((mm = /^(\d{1,2})[.\/](\d{2})(?:[.\/](\d{4}|\d{2}))?(?![\d.,])/.exec(t))) {
+    d = +mm[1]; mo = +mm[2];
+    if (mm[3]) y = mm[3].length === 2 ? 2000 + +mm[3] : +mm[3];
+  } else if ((mm = /^(\d{1,2})\s+(янв|фев|мар|апр|ма[яй]|июн|июл|авг|сен|окт|ноя|дек)/i.exec(t))) {
+    d = +mm[1]; mo = MONTHS_RU[mm[2].toLowerCase()];
+  } else {
+    return null;
+  }
+  if (!(d >= 1 && d <= 31 && mo >= 1 && mo <= 12)) return null;
+  if (y === null) {
+    const now = new Date();
+    y = now.getFullYear();
+    if (mo * 100 + d > (now.getMonth() + 1) * 100 + now.getDate()) y -= 1;
+  }
+  return y * 10000 + mo * 100 + d;
+}
+// Последняя по дате запись: строка с датой и строки под ней до пустой строки или следующей даты
+function lastDatedEntry(text) {
+  const lines = String(text).replace(/\r\n?/g, '\n').split('\n');
+  let best = null, cur = null;
+  lines.forEach(l => {
+    const k = noteLineDateKey(l);
+    if (k !== null) {
+      cur = { key: k, lines: [l.trim()] };
+      if (!best || k >= best.key) best = cur;
+    } else if (cur && l.trim()) {
+      cur.lines.push(l.trim());
+    } else if (!l.trim()) {
+      cur = null;
+    }
+  });
+  return best ? best.lines.join('\n') : null;
+}
+
+function migrateV62() {
+  if (LS.getRaw('levshub_mig_v62')) return;
+  // 1) резервная копия всех данных приложения
+  try {
+    if (localStorage.getItem(V62_BACKUP_KEY) === null) {
+      const all = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.indexOf('levshub_') === 0 && k.indexOf('levshub_backup_') !== 0) all[k] = localStorage.getItem(k);
+      }
+      const json = JSON.stringify({ created: new Date().toISOString(), app: "lev'shub", keys: all });
+      localStorage.setItem(V62_BACKUP_KEY, json);
+      if (localStorage.getItem(V62_BACKUP_KEY) !== json) return;
+    }
+  } catch (e) {
+    console.error('[levshub] резервная копия не записана — изменения v6.2 не применены', e);
+    return;
+  }
+  const raw = localStorage.getItem('levshub_workout');
+  let data, original;
+  try { data = JSON.parse(raw || '{}'); original = JSON.parse(raw || '{}'); } catch (e) { return; }
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return;
+  // 2) новая точка отсчёта рекордов
+  PARTIAL_RESET_IDS.forEach(id => {
+    const rec = data[id];
+    if (!rec || typeof rec !== 'object') return;
+    const hist = Array.isArray(rec.history) ? rec.history : [];
+    const sets = Array.isArray(rec.sets) ? rec.sets : [];
+    if (!sets.some(Boolean) || hist.some(h => h && h.label === PARTIAL_REPS_LABEL)) return;
+    rec.history = hist.concat([{ label: PARTIAL_REPS_LABEL, until: '2026-10-21', sets: JSON.parse(JSON.stringify(sets)), n: '' }]);
+    rec.sets = sets.map(() => null);
+  });
+  // 3) чистка заметок в карточках программы
+  const ids = Array.from(new Set(trainingA.concat(trainingB, trainingC).map(e => e.id)));
+  ids.forEach(id => {
+    const rec = data[id];
+    if (!rec || typeof rec !== 'object' || typeof rec.n !== 'string' || !rec.n.trim()) return;
+    const hist = Array.isArray(rec.history) ? rec.history : [];
+    if (hist.some(h => h && h.label === OLD_NOTES_LABEL)) return;
+    const visible = lastDatedEntry(rec.n) || '';
+    if (visible.trim() === rec.n.trim()) return; // переносить нечего
+    rec.history = hist.concat([{ label: OLD_NOTES_LABEL, until: '2026-10-21', sets: [], n: rec.n }]);
+    rec.n = visible;
+  });
+  // сверка до записи: прежние заметки, рекорды и вся прежняя история — на месте дословно
+  const ok = Object.keys(original).every(id => {
+    const o = original[id], r = data[id];
+    if (!o || typeof o !== 'object') return true;
+    if (!r || typeof r !== 'object') return false;
+    const h = Array.isArray(r.history) ? r.history : [];
+    const noteKept = !(typeof o.n === 'string' && o.n.trim()) || r.n === o.n ||
+      h.some(x => x && x.label === OLD_NOTES_LABEL && x.n === o.n);
+    const setsKept = JSON.stringify(r.sets || null) === JSON.stringify(o.sets || null) ||
+      h.some(x => x && x.label === PARTIAL_REPS_LABEL && JSON.stringify(x.sets) === JSON.stringify(o.sets));
+    const histKept = (Array.isArray(o.history) ? o.history : []).every((x, i) => JSON.stringify(h[i]) === JSON.stringify(x));
+    return noteKept && setsKept && histKept;
+  });
+  if (!ok) { console.error('[levshub] v6.2 отменена: сверка не прошла, данные не тронуты'); return; }
+  try {
+    localStorage.setItem('levshub_workout', JSON.stringify(data));
+    localStorage.setItem('levshub_mig_v62', todayISO());
+  } catch (e) {
+    console.error('[levshub] v6.2 не записана', e);
+  }
+}
+
+// «Старые заметки» — свёрнутый блок в карточке (только просмотр)
+function buildOldNotesHtml(id) {
+  const hist = getExSaved(id).history;
+  if (!Array.isArray(hist)) return '';
+  const items = [];
+  hist.forEach(h => {
+    if (!h || typeof h !== 'object') return;
+    if (h.label === OLD_NOTES_LABEL && typeof h.n === 'string' && h.n.trim()) {
+      items.push(`<div class="old-k">${escHtml(OLD_NOTES_LABEL)}</div><div class="old-v">${escHtml(h.n)}</div>`);
+    } else if (h.label === PARTIAL_REPS_LABEL) {
+      const sets = Array.isArray(h.sets) ? h.sets : [];
+      const uni = sets.some(st => st && ('rl' in st || 'rr' in st));
+      const parts = sets.map(st => formatSetData(st, uni)).filter(Boolean).map(d => d.replace('кг', ' кг'));
+      if (parts.length) items.push(`<div class="old-k">рекорд ${escHtml(PARTIAL_REPS_LABEL)}</div><div class="old-v">${escHtml(parts.join(' · '))}</div>`);
+    }
+  });
+  if (!items.length) return '';
+  return `<details class="old-notes"><summary>старые заметки</summary><div class="old-body">${items.join('')}</div></details>`;
 }
 
 // ----- v6.1 (с 07.10.2026): сгибание ног лёжа вернулось в день C -----
@@ -4063,12 +4352,84 @@ document.addEventListener('click', (e) => {
 });
 window.addEventListener('resize', updateAllToggleIndicators);
 
+// ================= ПАМЯТКА =================
+// Весь текст памятки — здесь. Меняй пункты прямо в этом объекте.
+const MEMO = {
+  main: [
+    'Считаю только чистые повторы.',
+    'Бицепс: сначала наклонные с гантелями, потом Скотт.',
+    'Махи на блоке — вес легче, минимум 12 чистых.',
+    'Сладкое с шоколадом — 1 порция в день. Herbamare — взвешивать.',
+    'Калории, объём и частота — без изменений.'
+  ],
+  sections: [
+    { title: 'Тренировки', items: [
+      'Чистый повтор = полная амплитуда, которую я контролирую. После отказа можно добить 1–3 частичных повтора в растянутой части, но в лог их НЕ записываю.',
+      'Где раньше считал частичные повторы (сгибание ног сидя и лёжа, аддуктор, абдуктор, сгибание запястий) — новая точка отсчёта. Вес может стать ниже — это нормально.',
+      'Бицепс в Pull: наклонный подъём гантелей → подъёмы ног → подъём на скамье Скотта.',
+      'Перед первым подходом на плитных тренажёрах проверяю блины с обеих сторон и на всех штангах.',
+      'Отказ в каждом подходе, судья прогресса — первый подход.'
+    ] },
+    { title: 'Питание', items: [
+      'Калории: 3550 ккал при 6000 шагов. ±100 ккал на каждые ±3000 шагов.',
+      'Белок: ~160–200 г, больше не нужно.',
+      'Жиры: 110–120 г, из них насыщенные не больше 25–30 г (из-за Роаккутана).',
+      'Клетчатка: 30–40 г в день.',
+      'Натрий: 2500 мг в день (в дни сильного пота — до 3000).',
+      'Herbamare: 1 г ≈ 370 мг натрия — взвешивать.',
+      'Каждый день: 30 г семечек подсолнечника, 50 г шпината, 1 киви.',
+      'Вернуть в рацион овсянку и батат.',
+      'Вода 3–3.5 л, последний большой объём за 2 часа до сна.',
+      'Витамин D — добавка. Витамин A в добавках — нельзя.'
+    ] },
+    { title: 'Сон', items: [
+      'Подъём в одно время: 10:30. Два будильника.',
+      'Будильник → ноги на пол → свет → 15 минут на балконе.',
+      'Днём не спать.',
+      'Кофеин — до 14:00.',
+      'Лимит на TikTok после 23:00, вечером чёрно-белый экран.'
+    ] }
+  ]
+};
+
+function renderMemo(expanded) {
+  document.getElementById('memoMain').innerHTML = MEMO.main.map(t => `<li>${escHtml(t)}</li>`).join('');
+  const more = document.getElementById('memoMore');
+  more.innerHTML = MEMO.sections.map(sec =>
+    `<div class="memo-sec"><div class="memo-h">${escHtml(sec.title)}</div>` +
+    `<ul class="memo-list">${sec.items.map(t => `<li>${escHtml(t)}</li>`).join('')}</ul></div>`
+  ).join('');
+  more.hidden = !expanded;
+  document.getElementById('memoToggle').textContent = expanded ? 'Свернуть' : 'Подробнее';
+}
+function openMemo() {
+  renderMemo(false); // по умолчанию видно только «Главное»
+  const bd = document.getElementById('memoBackdrop');
+  bd.setAttribute('aria-hidden', 'false');
+  bd.querySelector('.memo-card').scrollTop = 0;
+  void bd.offsetWidth; // зафиксировать начальное состояние, чтобы появление было плавным
+  bd.classList.add('show');
+}
+function closeMemo() {
+  const bd = document.getElementById('memoBackdrop');
+  bd.classList.remove('show');
+  bd.setAttribute('aria-hidden', 'true');
+}
+document.getElementById('memoClose').addEventListener('click', closeMemo);
+document.getElementById('memoOk').addEventListener('click', closeMemo);
+document.getElementById('memoToggle').addEventListener('click', () => {
+  renderMemo(document.getElementById('memoMore').hidden);
+});
+document.getElementById('memoOpenBtn').addEventListener('click', openMemo);
+document.getElementById('memoBackdrop').addEventListener('click', (e) => { if (e.target.id === 'memoBackdrop') closeMemo(); });
+
 // ================= INIT =================
 migrateWorkoutData(); // one-time migration from levshub_workout_A/B → levshub_workout
 migrateLowRowSingleArm(); // разовый перевод тяги на одну руку; подходы двумя руками → history
 migrateWorkoutToSets(); // one-time migration {w,r} → sets[0]; старые записи сохраняются
 migrateArchiveV5(); // разовый архив v5 перед программой v6: копия рекордов и заметок в history
 migrateProneCurlV61(); // v6.1: прежний рекорд «сгибание ног лёжа» → архив этой же записи
+migrateV62(); // v6.2: резервная копия всех данных, новая точка отсчёта, чистка заметок
 runSplash();
 const initialPreset = loadTimerPreset();
 applyTimerPreset(initialPreset, { silent: true });
@@ -4078,6 +4439,8 @@ updateTimerDisplay(getRemaining());
 markAllNumeric();
 // Init toggle indicators after layout settles
 requestAnimationFrame(() => requestAnimationFrame(updateAllToggleIndicators));
+// Памятка — при каждом открытии приложения (после заставки, если она идёт)
+setTimeout(openMemo, document.getElementById('splash') ? 2150 : 250);
 </script>
 </body>
 </html>
