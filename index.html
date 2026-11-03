@@ -374,7 +374,8 @@
   .ex-card.collapsed > .ex-header,
   .ex-card.collapsed > .ex-grid,
   .ex-card.collapsed > .sets-block,
-  .ex-card.collapsed > .note-area { display: none; }
+  .ex-card.collapsed > .note-area,
+  .ex-card.collapsed > .day-block { display: none; }
   .ex-card .collapsed-summary { display: none; }
   .ex-card.collapsed .collapsed-summary {
     display: flex;
@@ -535,7 +536,7 @@
   .sets-dual { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 
   /* session bar */
-  /* шапка тренировок + кнопка «копировать всё» */
+  /* шапка тренировок + кнопка «копировать» */
   .train-head { display: flex; align-items: center; gap: 10px; padding-right: 18px; }
   .train-head .section-h1 { flex: 1; min-width: 0; }
   .copy-prog-btn {
@@ -642,40 +643,177 @@
     font-size: 20px;
     display: inline-flex; align-items: center; justify-content: center;
   }
-  .memo-title { font-family: var(--serif); font-style: italic; font-size: 26px; color: var(--cream); margin-bottom: 12px; padding-right: 40px; }
-  .memo-block { background: rgba(var(--accent-rgb),0.10); border: 1px solid rgba(var(--accent-rgb),0.38); border-radius: 12px; padding: 12px 14px; }
-  .memo-h { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; color: var(--red); margin-bottom: 8px; }
-  .memo-block .memo-h { color: var(--accent-text); }
-  .memo-list { margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.5; color: var(--cream); }
-  .memo-list li { margin-bottom: 6px; }
+  .memo-title { font-family: var(--serif); font-style: italic; font-size: 26px; color: var(--cream); margin-bottom: 4px; padding-right: 40px; }
+  .memo-sub {
+    display: inline-block;
+    font-size: 11px; letter-spacing: 0.3px;
+    color: var(--accent-text);
+    background: rgba(var(--accent-rgb),0.12);
+    border: 1px solid rgba(var(--accent-rgb),0.38);
+    border-radius: 8px;
+    padding: 3px 8px;
+    margin-bottom: 4px;
+  }
+  .memo-h { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; color: var(--red); margin-bottom: 6px; }
+  .memo-list { margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.45; color: var(--cream); }
+  .memo-list li { margin-bottom: 4px; }
   .memo-list li:last-child { margin-bottom: 0; }
   .memo-list li::marker { color: var(--muted); }
-  .memo-sec { margin-top: 16px; }
-  .memo-more-btn {
-    display: block; width: 100%;
-    margin: 12px 0 10px;
-    padding: 10px;
-    border-radius: 10px;
-    font-size: 13px;
-    color: var(--red);
-    background: rgba(var(--red-rgb),0.06);
-    border: 1px solid rgba(var(--red-rgb),0.2);
-  }
-  .memo-more-btn:active { transform: scale(0.98); }
+  .memo-sec { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .memo-sec:first-child { border-top: 0; padding-top: 4px; }
+  #memoOk { margin-top: 16px; }
 
-  /* ============ Старые заметки (свёрнутый блок в карточке) ============ */
-  .old-notes { margin: 2px 0 0 30px; }
-  .old-notes summary {
-    font-size: 11px; color: var(--muted); letter-spacing: 0.3px;
-    padding: 4px 0; cursor: pointer; list-style: none;
+  /* ============ Журнал по дням: дата, прошлый раз, рекорд ============ */
+  .day-nav { display: flex; align-items: center; gap: 6px; margin: 0 0 6px; }
+  .dn-arrow {
+    width: 36px; height: 30px; flex-shrink: 0;
+    border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted-2);
+    background: rgba(var(--ink-rgb),0.04);
+    border: 1px solid var(--border);
+    font-size: 16px;
+    transition: transform 100ms ease, opacity 150ms ease;
   }
-  .old-notes summary::-webkit-details-marker { display: none; }
-  .old-notes summary::before { content: '▸ '; }
-  .old-notes[open] summary::before { content: '▾ '; }
-  .old-body { margin-top: 4px; padding: 6px 10px; border-left: 2px solid var(--border-2); }
-  .old-k { font-size: 10px; color: var(--muted); letter-spacing: 0.4px; margin-top: 8px; }
-  .old-k:first-child { margin-top: 0; }
-  .old-v { font-size: 12px; color: var(--muted-2); line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .dn-arrow:active { transform: scale(0.88); }
+  .dn-arrow:disabled { opacity: 0.28; }
+  .dn-mid {
+    position: relative; flex: 1; min-width: 0;
+    height: 30px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    border-radius: 8px;
+    font-size: 12px; color: var(--cream); letter-spacing: 0.3px;
+    white-space: nowrap; overflow: hidden;
+    transition: background 200ms ease, color 200ms ease;
+  }
+  .dn-mid i { font-size: 13px; color: var(--muted); }
+  .dn-tag { font-size: 10px; color: var(--muted); }
+  /* прозрачное поле даты поверх подписи — тап открывает системный календарь */
+  .dn-picker { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; border: 0; padding: 0; margin: 0; font-size: 16px; -webkit-appearance: none; }
+  .ex-card.past .dn-mid { background: rgba(var(--accent-rgb),0.13); color: var(--accent-text); }
+  .ex-card.past .dn-mid i, .ex-card.past .dn-tag { color: var(--accent-text); }
+  .day-info { font-size: 11px; color: var(--muted); letter-spacing: 0.2px; line-height: 1.5; margin: 0 0 8px; }
+  .di-line { display: flex; align-items: center; gap: 6px; min-width: 0; min-height: 18px; }
+  .di-t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .di-pr { color: var(--accent-text); transform-origin: left center; }
+  .ex-card.is-pr .di-pr { font-weight: 600; }
+  .di-pr.pop { animation: prPop 900ms cubic-bezier(.2,.9,.3,1.25); }
+  @keyframes prPop {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.07); text-shadow: 0 0 14px rgba(var(--accent-rgb),0.85); }
+    100% { transform: scale(1); text-shadow: none; }
+  }
+  .di-fill {
+    flex-shrink: 0;
+    font-size: 11px; color: var(--red);
+    padding: 2px 8px;
+    border-radius: 7px;
+    border: 1px solid rgba(var(--red-rgb),0.3);
+    background: rgba(var(--red-rgb),0.06);
+    transition: transform 100ms ease;
+  }
+  .di-fill:active { transform: scale(0.94); }
+  .sets-block.slide-l { animation: slideFromL 280ms cubic-bezier(.2,.85,.3,1); }
+  .sets-block.slide-r { animation: slideFromR 280ms cubic-bezier(.2,.85,.3,1); }
+  @keyframes slideFromL { from { opacity: 0; transform: translateX(-18px); } to { opacity: 1; transform: none; } }
+  @keyframes slideFromR { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+  .sg-in.filled-flash { animation: fillFlash 650ms ease; }
+  @keyframes fillFlash { 0% { background: rgba(var(--accent-rgb),0.35); border-color: rgba(var(--accent-rgb),0.7); } }
+
+  /* RIR — колонка в сетке подходов */
+  .sg-rir {
+    height: 34px;
+    border-radius: 8px;
+    border: 1px dashed var(--border-2);
+    font-size: 11px; color: var(--muted);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    line-height: 1.1;
+    transition: background 150ms ease, color 150ms ease, border-color 150ms ease, transform 100ms ease;
+  }
+  .sg-rir:active { transform: scale(0.92); }
+  .sg-rir.set { border-style: solid; border-color: rgba(var(--red-rgb),0.35); background: rgba(var(--red-rgb),0.07); color: var(--red); font-weight: 600; }
+  .sg-rir.fail { border-color: rgba(var(--warn-rgb),0.45); background: rgba(var(--warn-rgb),0.08); color: var(--warn); }
+  .sg-rir small { font-size: 8.5px; font-weight: 400; letter-spacing: 0.1px; color: var(--accent-text); }
+  .sg-rir.bump { animation: rirBump 280ms cubic-bezier(.2,.9,.3,1.4); }
+  @keyframes rirBump { 40% { transform: scale(1.12); } }
+
+  /* RIR в цифровой клавиатуре (видно, когда вводишь повторы) */
+  .np-rir { display: flex; align-items: center; gap: 5px; margin: -2px 0 10px; }
+  .np-rir-k { font-size: 10px; color: var(--muted); letter-spacing: 0.5px; width: 24px; flex-shrink: 0; }
+  .np-rir button {
+    flex: 1; height: 38px;
+    border-radius: 10px;
+    background: rgba(var(--ink-rgb),0.04);
+    border: 1px solid var(--border-2);
+    font-size: 14px; color: var(--cream);
+    transition: transform 70ms ease, background 120ms ease, color 120ms ease, border-color 120ms ease;
+  }
+  .np-rir button:active { transform: scale(0.9); }
+  .np-rir button.on { background: var(--red); color: var(--on-red); border-color: var(--red); }
+  .np-rir button[data-rir="F"] { flex: 1.5; font-size: 12px; }
+  .np-rir button[data-rir="F"].on { background: var(--warn); border-color: var(--warn); color: var(--on-red); }
+  .np-rir .np-part { flex: 2; font-size: 11px; }
+  .np-rir .np-part.on { background: var(--accent); color: #1E2A24; border-color: var(--accent); }
+
+  /* «Убрано · вернуть» после свайпа */
+  .undo-toast {
+    position: fixed; left: 12px; right: 12px;
+    bottom: calc(76px + env(safe-area-inset-bottom));
+    z-index: 200;
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 10px 10px 14px;
+    border-radius: 13px;
+    background: var(--cream); color: var(--navy);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+    font-size: 13px;
+    transform: translateY(150%); opacity: 0;
+    transition: transform 340ms cubic-bezier(.2,.9,.3,1.15), opacity 200ms ease;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .undo-toast.show { transform: none; opacity: 1; pointer-events: auto; }
+  .ut-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ut-btn {
+    flex-shrink: 0;
+    padding: 7px 12px;
+    border-radius: 9px;
+    font-weight: 600;
+    color: var(--navy);
+    background: rgba(var(--bg-rgb),0.16);
+    border: 1px solid rgba(var(--bg-rgb),0.35);
+    transition: transform 100ms ease;
+  }
+  .ut-btn:active { transform: scale(0.94); }
+  .ut-bar { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: var(--accent); transform-origin: left center; }
+  .undo-toast.show .ut-bar { animation: utBar 5s linear forwards; }
+  @keyframes utBar { to { transform: scaleX(0); } }
+  /* карточка прилетает обратно */
+  .ex-card.returning { animation: cardReturn 560ms cubic-bezier(.2,.9,.25,1.2); }
+  @keyframes cardReturn {
+    0% { opacity: 0; transform: translateX(-80px) rotate(-4deg); }
+    60% { opacity: 1; }
+    100% { opacity: 1; transform: none; }
+  }
+
+  /* облако: точка-статус (шапка и карточка «данные») */
+  .cloud-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); opacity: 0.6; flex-shrink: 0; transition: background 200ms ease, opacity 200ms ease; }
+  .cloud-dot.ok { background: var(--green); opacity: 1; }
+  .cloud-dot.pending { background: var(--accent); opacity: 1; }
+  .cloud-dot.busy { background: var(--accent); opacity: 1; animation: cloudPulse 1s ease-in-out infinite; }
+  .cloud-dot.err { background: var(--warn); opacity: 1; }
+  @keyframes cloudPulse { 50% { opacity: 0.3; } }
+  .cloud-status { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--cream); line-height: 1.45; margin-bottom: 10px; }
+  .cloud-status .cloud-dot { margin-top: 5px; }
+  .cloud-sub { display: block; font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .cloud-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .cloud-btns .btn { padding: 9px 12px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; }
+  .cloud-form .url-input { margin-bottom: 8px; }
+  .cloud-form .btn { margin-top: 6px; }
+
+  /* главная: данные и резервная копия */
+  .data-row { display: flex; align-items: center; gap: 10px; }
+  .data-t { flex: 1; min-width: 0; font-size: 12px; color: var(--muted-2); line-height: 1.45; }
+  .data-row .btn { padding: 9px 12px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; }
 
   /* подход 1 = рекорд — номер строки латунью */
   .sets-grid .sg-row:nth-child(2) .sg-n { color: var(--accent-text); }
@@ -748,12 +886,12 @@
   .sets-grid { display: flex; flex-direction: column; gap: 5px; }
   .sg-head, .sg-row {
     display: grid;
-    grid-template-columns: 16px 1fr 1fr;
+    grid-template-columns: 16px 1fr 1fr 46px;
     gap: 6px;
     align-items: center;
   }
   .sets-grid.uni .sg-head,
-  .sets-grid.uni .sg-row { grid-template-columns: 16px 1fr 1fr 1fr; }
+  .sets-grid.uni .sg-row { grid-template-columns: 16px 1fr 1fr 1fr 46px; }
   .sg-head span {
     font-size: 10px;
     color: var(--muted);
@@ -1489,6 +1627,7 @@
       <div class="topbar-logo"><img src="logo.levshub.removedbg.png" alt=""></div>
       <div class="topbar-brand">lev'shub.</div>
       <button type="button" class="memo-open" id="memoOpenBtn">📋 Памятка</button>
+      <span class="cloud-dot" title="облако"></span>
     </div>
 
     <div class="card" id="todayCard">
@@ -1507,6 +1646,16 @@
       <div id="volumeTable"></div>
       <div class="vol-foot">считается из программы и расписания: основное упражнение — 1 подход, помогающее — ½, 3+3 = 3 подхода на мышцу</div>
     </div>
+
+    <div class="card" id="dataCard">
+      <div class="label">данные · облако</div>
+      <div class="cloud-status"><span class="cloud-dot"></span><span id="cloudText">облако не подключено — данные только в телефоне</span></div>
+      <div class="cloud-btns" id="cloudBtns"></div>
+      <div class="data-row">
+        <div class="data-t" id="dataInfo">все записи хранятся в памяти телефона</div>
+        <button type="button" class="btn btn-ghost" id="backupBtn"><i class="ti ti-download"></i>копия</button>
+      </div>
+    </div>
   </section>
 
   <!-- TRAINING -->
@@ -1514,7 +1663,7 @@
     <div class="section-label">training</div>
     <div class="train-head">
       <div class="section-h1" id="trainHeader">a · push</div>
-      <button type="button" class="copy-prog-btn" id="copyProgramBtn" title="скопировать тренировки A, B и C с рекордами, заметками и объёмом"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><span>копировать всё</span></button>
+      <button type="button" class="copy-prog-btn" id="copyProgramBtn" title="скопировать: последняя тренировка, вся история или программа с рекордами"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><span>копировать</span></button>
     </div>
 
     <div class="toggle-bar" id="trainToggle">
@@ -1637,14 +1786,20 @@
   <button class="tab-btn" data-tab="timer"><i class="ti ti-clock"></i><span>timer</span></button>
 </nav>
 
+<!-- ============ «УБРАНО · ВЕРНУТЬ» ============ -->
+<div class="undo-toast" id="undoToast" role="status" aria-live="polite">
+  <span class="ut-text" id="undoToastText"></span>
+  <button type="button" class="ut-btn" id="undoToastBtn">вернуть</button>
+  <span class="ut-bar"></span>
+</div>
+
 <!-- ============ ПАМЯТКА ============ -->
 <div class="memo-backdrop" id="memoBackdrop" aria-hidden="true">
   <div class="memo-card" role="dialog" aria-modal="true" aria-labelledby="memoTitle">
     <button type="button" class="memo-x" id="memoClose" aria-label="закрыть"><i class="ti ti-x"></i></button>
     <div class="memo-title" id="memoTitle">Памятка</div>
-    <div class="memo-block"><div class="memo-h">Главное</div><ol class="memo-list" id="memoMain"></ol></div>
-    <div id="memoMore" hidden></div>
-    <button type="button" class="memo-more-btn" id="memoToggle">Подробнее</button>
+    <div class="memo-sub" id="memoSub"></div>
+    <div id="memoBody"></div>
     <button type="button" class="btn btn-red btn-full" id="memoOk">Понял 💪</button>
   </div>
 </div>
@@ -1663,6 +1818,15 @@
     </div>
     <button class="numpad-back" id="numpadBack" aria-label="стереть"><i class="ti ti-backspace"></i></button>
     <button class="numpad-done" id="numpadDone">готово</button>
+  </div>
+  <div class="np-rir" id="npRir" hidden>
+    <span class="np-rir-k">RIR</span>
+    <button type="button" data-rir="F">отказ</button>
+    <button type="button" data-rir="0">0</button>
+    <button type="button" data-rir="1">1</button>
+    <button type="button" data-rir="2">2</button>
+    <button type="button" data-rir="3">3+</button>
+    <button type="button" class="np-part" id="npPart">+ частичные</button>
   </div>
   <div class="numpad-grid">
     <button class="np-key" data-k="1">1</button>
@@ -1769,50 +1933,52 @@ const TECH_SEATED_LEG_CURL = `
 // unilateral: true → упражнение делается по сторонам: отдельные счётчики
 // подходов (две колонки) и отдельные повторы слева/справа.
 const trainingA = [
-  { id: 'chest_press', num: 1, name: 'жим от груди', sub: 'Chest Press', sets: '3×8-12', rest: 180, work: { chest: 1, front_delts: 0.5, triceps: 0.5 }, url: 'https://youtube.com/shorts/EC1Yf3M0im8?is=bdAV9DSniv4fxSXm' },
-  { id: 'shoulder_press', num: 2, name: 'жим плеч', sub: 'Shoulder Press', sets: '3×8-12', rest: 180, work: { front_delts: 1, mid_delts: 0.5, triceps: 0.5 }, url: 'https://youtube.com/shorts/lC9uiTqYH84?is=_g4ItfNvBMRiUnXt' },
-  { id: 'pec_fly', num: 3, name: 'сведение рук', sub: 'Pectoral', sets: '3×10-12', rest: 90, hint: 'по одной руке заканчивать', work: { chest: 1 }, url: 'https://youtube.com/shorts/tByJiJj9n0U?is=U_ARILKFH2tixe2S' },
-  { id: 'delts_machine', num: 4, name: 'дельты в тренажёре', sub: 'Delts Machine', sets: '3×8-12', rest: 90, hint: 'считаю только чистые повторы — руки до уровня плеч, без рывка', work: { mid_delts: 1 }, url: 'https://youtube.com/shorts/78hk4Fy_kDA?is=unzsenWO7tAKGqns' },
-  { id: 'triceps_pushdown', num: 5, name: 'трицепс на блоке', sub: 'Triceps Pushdown', sets: '3×10-12', rest: 90, hint: 'локти неподвижно у корпуса, блок на уровне головы, V-образный гриф', work: { triceps: 1 }, url: 'https://youtube.com/shorts/NMY70SP-OHY?si=4jPio5STfDrrKV8_' },
-  { id: 'cable_lateral_raise', num: 6, name: 'махи в стороны на блоке одной рукой', sub: 'Single-Arm Cable Lateral Raise', sets: '3+3×12-20', rest: 60, unilateral: true, hint: 'Важно: вес легче — минимум 12 чистых повторов', work: { mid_delts: 1 }, url: '' },
-  { id: 'overhead_cable_extension', num: 7, name: 'разгибание из-за головы на блоке', sub: 'Overhead Cable Extension', sets: '3×10-12', rest: 90, tech: TECH_OVERHEAD_EXT, work: { triceps: 1 }, url: 'https://www.youtube.com/shorts/0IM1J_GmQ34?feature=share' },
+  { id: 'chest_press', num: 1, name: 'жим от груди', sub: 'Chest Press', sets: '3×6-10', rest: 180, work: { chest: 1, front_delts: 0.5, triceps: 0.5 }, url: 'https://youtube.com/shorts/EC1Yf3M0im8?is=bdAV9DSniv4fxSXm' },
+  { id: 'shoulder_press', num: 2, name: 'жим плеч', sub: 'Shoulder Press', sets: '3×6-10', rest: 180, work: { front_delts: 1, mid_delts: 0.5, triceps: 0.5 }, url: 'https://youtube.com/shorts/lC9uiTqYH84?is=_g4ItfNvBMRiUnXt' },
+  { id: 'pec_fly', num: 3, name: 'сведение рук', sub: 'Pectoral', sets: '3×6-10', rest: 90, hint: 'по одной руке заканчивать', work: { chest: 1 }, url: 'https://youtube.com/shorts/tByJiJj9n0U?is=U_ARILKFH2tixe2S' },
+  { id: 'delts_machine', num: 4, name: 'дельты в тренажёре', sub: 'Delts Machine', sets: '3×6-10', rest: 90, hint: 'считаю только чистые повторы — руки до уровня плеч, без рывка', work: { mid_delts: 1 }, url: 'https://youtube.com/shorts/78hk4Fy_kDA?is=unzsenWO7tAKGqns' },
+  { id: 'triceps_pushdown', num: 5, name: 'трицепс на блоке', sub: 'Triceps Pushdown', sets: '3×6-10', rest: 90, hint: 'локти неподвижно у корпуса, блок на уровне головы, V-образный гриф', work: { triceps: 1 }, url: 'https://youtube.com/shorts/NMY70SP-OHY?si=4jPio5STfDrrKV8_' },
+  { id: 'cable_lateral_raise', num: 6, name: 'махи в стороны на блоке одной рукой', sub: 'Single-Arm Cable Lateral Raise', sets: '3+3×6-10', rest: 60, unilateral: true, work: { mid_delts: 1 }, url: '' },
+  { id: 'overhead_cable_extension', num: 7, name: 'разгибание из-за головы на блоке', sub: 'Overhead Cable Extension', sets: '3×6-10', rest: 90, tech: TECH_OVERHEAD_EXT, work: { triceps: 1 }, url: 'https://www.youtube.com/shorts/0IM1J_GmQ34?feature=share' },
   // Икры в Push (с кофеином) — отдельная карточка со своей историей; икры в Legs — calf_raise
-  { id: 'calf_raise_push', num: 8, name: 'подъёмы на икры · push', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, unilateral: true, work: { calves: 1 }, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' }
+  { id: 'calf_raise_push', num: 8, name: 'подъёмы на икры · push', sub: 'Calf Raise', sets: '3+3×6-10', rest: 60, unilateral: true, work: { calves: 1 }, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' }
 ];
 const trainingB = [
   { id: 'lat_pulldown', num: 1, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×10-12', rest: 180, hint: 'вес тот же, прогрессия в амплитуде', work: { back: 1, rear_delts: 0.5, biceps: 0.5 }, url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
-  { id: 'reverse_pec_deck', num: 2, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '3×12-15', rest: 90, work: { rear_delts: 1 }, url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
+  { id: 'reverse_pec_deck', num: 2, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '3×8-12', rest: 90, work: { rear_delts: 1 }, url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
   // С 14.09.2026 одной рукой (3+3): тот же тренажёр и тот же id. Подходы двумя руками
   // не пересчитаны — перенесены как есть в history этой же записи (migrateLowRowSingleArm).
   { id: 'low_row', num: 3, name: 'горизонтальная тяга одной рукой', sub: 'Single-Arm Low Row', sets: '3+3×10-15', rest: 120, unilateral: true, tech: TECH_LOW_ROW, work: { back: 1, rear_delts: 0.5, biceps: 0.5 }, url: 'https://www.youtube.com/shorts/bLVeOunB-c0?feature=share' },
-  { id: 'incline_db_curl', num: 4, name: 'наклонный подъём гантелей', sub: 'Incline DB Curl', sets: '3×8-12', rest: 90, work: { biceps: 1 }, url: 'https://youtube.com/shorts/uCUaRFlA9vE?si=_q-PSgOpB3iQviPn' },
-  { id: 'weighted_leg_raise', num: 5, name: 'подъёмы ног с гантелей', sub: 'Weighted Leg Raise', sets: '3×10-15', rest: 90, tech: TECH_WEIGHTED_LEG_RAISE, work: { abs: 1 }, url: 'https://youtube.com/shorts/RQDKs_EBNPY?si=BESSkagxInn_gHsV' },
+  { id: 'incline_db_curl', num: 4, name: 'наклонный подъём гантелей', sub: 'Incline DB Curl', sets: '3×6-10', rest: 90, work: { biceps: 1 }, url: 'https://youtube.com/shorts/uCUaRFlA9vE?si=_q-PSgOpB3iQviPn' },
+  { id: 'weighted_leg_raise', num: 5, name: 'подъёмы ног с гантелей', sub: 'Weighted Leg Raise', sets: '3×6-12', rest: 90, tech: TECH_WEIGHTED_LEG_RAISE, work: { abs: 1 }, url: 'https://youtube.com/shorts/RQDKs_EBNPY?si=BESSkagxInn_gHsV' },
   // С 21.10.2026: бицепс — сначала наклонные, потом Скотт (сгибание рук в тренажёре → архив)
-  { id: 'preacher_curl', num: 6, name: 'подъём на скамье Скотта', sub: 'Preacher Curl · гантели или EZ-гриф', sets: '3×8-12', rest: 90, hint: 'Полная амплитуда, внизу не бросать руку, негатив под контролем', work: { biceps: 1 }, url: 'https://www.youtube.com/shorts/ExDxpOgCM-w?feature=share' },
-  { id: 'wrist_curl', num: 7, name: 'сгибание запястий', sub: 'Wrist Curl', sets: '3×15-20', rest: 90, work: { forearms: 1 }, url: 'https://youtu.be/qMtmHwaCmYI?t=16' },
-  { id: 'reverse_cable_curl', num: 8, name: 'обратный подъём на блоке', sub: 'Reverse Cable Curl', sets: '3×12-15', rest: 90, work: { forearms: 1, biceps: 0.5 }, url: 'https://www.youtube.com/shorts/KY_c3LkPZa8?feature=share' }
+  { id: 'preacher_curl', num: 6, name: 'подъём на скамье Скотта', sub: 'Preacher Curl · гантели или EZ-гриф', sets: '3×6-10', rest: 90, hint: 'Полная амплитуда, внизу не бросать руку, негатив под контролем', work: { biceps: 1 }, url: 'https://www.youtube.com/shorts/ExDxpOgCM-w?feature=share' },
+  { id: 'wrist_curl', num: 7, name: 'сгибание запястий', sub: 'Wrist Curl', sets: '3×8-12', rest: 90, work: { forearms: 1 }, url: 'https://youtu.be/qMtmHwaCmYI?t=16' },
+  { id: 'reverse_cable_curl', num: 8, name: 'обратный подъём на блоке', sub: 'Reverse Cable Curl', sets: '3×8-12', rest: 90, work: { forearms: 1, biceps: 0.5 }, url: 'https://www.youtube.com/shorts/KY_c3LkPZa8?feature=share' }
 ];
 const trainingC = [
   { id: 'leg_press', num: 1, name: 'жим ногами', sub: 'Leg Press', sets: '3×8-12', rest: 180, hint: 'полная амплитуда ≠ до упора: стоп там, где таз начинает подворачиваться', work: { quads: 1 }, url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' },
-  { id: 'seated_leg_curl', num: 2, name: 'сгибание ног сидя', sub: 'Seated Leg Curl', sets: '3×10-15', rest: 90, tech: TECH_SEATED_LEG_CURL, work: { hamstrings: 1 }, url: 'https://www.youtube.com/shorts/xdbEG3xGLI8?feature=share' },
-  { id: 'leg_extension', num: 3, name: 'разгибание ног', sub: 'Leg Extension', sets: '3+3×12-15', rest: 90, unilateral: true, work: { quads: 1 }, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
-  { id: 'hip_adduction', num: 4, name: 'аддуктор (сведение ног)', sub: 'Hip Adduction', sets: '3×10-15', rest: 90, work: { adductors: 1 }, url: '' },
+  { id: 'seated_leg_curl', num: 2, name: 'сгибание ног сидя', sub: 'Seated Leg Curl', sets: '3×6-10', rest: 90, tech: TECH_SEATED_LEG_CURL, work: { hamstrings: 1 }, url: 'https://www.youtube.com/shorts/xdbEG3xGLI8?feature=share' },
+  { id: 'leg_extension', num: 3, name: 'разгибание ног', sub: 'Leg Extension', sets: '3+3×8-12', rest: 90, unilateral: true, work: { quads: 1 }, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
+  // С 03.11.2026: ягодичный мост — после разгибания ног, перед аддуктором
+  { id: 'hip_thrust', num: 4, name: 'ягодичный мост в тренажёре', sub: 'Hip Thrust', sets: '3×6-10', rest: 120, hint: 'Выдох на подъёме, без задержки дыхания', work: { glutes: 1 }, url: '' },
+  { id: 'hip_adduction', num: 5, name: 'аддуктор (сведение ног)', sub: 'Hip Adduction', sets: '3×6-10', rest: 90, work: { adductors: 1 }, url: '' },
   // Вернулось из архива 07.10.2026 (тот же id): прежний рекорд перенесён в history
   // этой же записи как «архив» (migrateProneCurlV61), текущий рекорд начинается с нуля.
-  { id: 'prone_leg_curl', num: 5, name: 'сгибание ног лёжа', sub: 'Prone Leg Curl', sets: '3×10-15', rest: 90, work: { hamstrings: 1 }, url: 'https://youtube.com/shorts/FMCq0hT3KRU?si=cbbo1yN9xsXNqdqe' },
-  { id: 'calf_raise', num: 6, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×10-15', rest: 60, unilateral: true, hint: 'паузы 2 сек внизу, 1 сек вверху', work: { calves: 1 }, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
-  { id: 'hip_abduction', num: 7, name: 'абдуктор (разведение ног)', sub: 'Hip Abduction', sets: '3×12-20', rest: 90, work: { glute_med: 1 }, url: '' },
+  { id: 'prone_leg_curl', num: 6, name: 'сгибание ног лёжа', sub: 'Prone Leg Curl', sets: '3×6-10', rest: 90, work: { hamstrings: 1 }, url: 'https://youtube.com/shorts/FMCq0hT3KRU?si=cbbo1yN9xsXNqdqe' },
+  { id: 'calf_raise', num: 7, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×6-10', rest: 60, unilateral: true, hint: 'паузы 2 сек внизу, 1 сек вверху', work: { calves: 1 }, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
+  { id: 'hip_abduction', num: 8, name: 'абдуктор (разведение ног)', sub: 'Hip Abduction', sets: '3×8-12', rest: 90, work: { glute_med: 1 }, url: '' },
   // Подъёмы ног в Legs (без кофеина) — отдельная карточка со своей историей; в Pull — weighted_leg_raise
-  { id: 'weighted_leg_raise_legs', num: 8, name: 'подъёмы ног с гантелей · legs', sub: 'Weighted Leg Raise', sets: '3×10-15', rest: 90, tech: TECH_WEIGHTED_LEG_RAISE, work: { abs: 1 }, url: 'https://youtube.com/shorts/RQDKs_EBNPY?si=BESSkagxInn_gHsV' }
+  { id: 'weighted_leg_raise_legs', num: 9, name: 'подъёмы ног с гантелей · legs', sub: 'Weighted Leg Raise', sets: '3×6-12', rest: 90, tech: TECH_WEIGHTED_LEG_RAISE, work: { abs: 1 }, url: 'https://youtube.com/shorts/RQDKs_EBNPY?si=BESSkagxInn_gHsV' }
 ];
 
-// ----- Дни программы v6.2 (с 21.10.2026) -----
+// ----- Дни программы v7 (с 03.11.2026) -----
 // caffeine — план по умолчанию: A и B с кофеином, C без. Отметку на сегодня
 // можно поменять в самой тренировке (хранится по дате).
 const DAYS = {
   A: { short: 'a · push', title: 'A · PUSH', focus: 'грудь · плечи · трицепс · икры', duration: '~75–80 мин', caffeine: true },
   B: { short: 'b · pull', title: 'B · PULL', focus: 'спина · задние дельты · бицепс · пресс', duration: '~75 мин', caffeine: true },
-  C: { short: 'c · legs', title: 'C · LEGS', focus: 'квадрицепс · бицепс бедра · икры · пресс', duration: '~75–80 мин', caffeine: false }
+  C: { short: 'c · legs', title: 'C · LEGS', focus: 'квадрицепс · бицепс бедра · ягодицы · икры · пресс', duration: '~85–90 мин', caffeine: false }
 };
 const TRAINING_DAYS = ['A', 'B', 'C'];
 function getProgram(day) {
@@ -1829,6 +1995,7 @@ const MUSCLE_ROWS = [
   { label: 'Бицепс · предплечья', muscles: ['biceps', 'forearms'], was: 'так же' },
   { label: 'Пресс', muscles: ['abs'], was: '8' },
   { label: 'Квадрицепс · бицепс бедра', muscles: ['quads', 'hamstrings'], was: '12 · 6' },
+  { label: 'Ягодичные', muscles: ['glutes'], was: '' },
   { label: 'Икры', muscles: ['calves'], was: '8' },
   { label: 'Приводящие · средняя ягодичная', muscles: ['adductors', 'glute_med'], was: 'так же' }
 ];
@@ -1852,9 +2019,9 @@ const SCHEDULE = ['rest','C','A','B','C','A','B'];
 // ================= STORAGE =================
 const LS = {
   get(k, def=null) { try { const v = localStorage.getItem(k); return v === null ? def : JSON.parse(v); } catch(e) { return def; } },
-  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} scheduleSync(); },
   getRaw(k, def=null) { const v = localStorage.getItem(k); return v === null ? def : v; },
-  setRaw(k, v) { localStorage.setItem(k, v); },
+  setRaw(k, v) { localStorage.setItem(k, v); scheduleSync(); },
   remove(k) { localStorage.removeItem(k); }
 };
 
@@ -1936,7 +2103,8 @@ function renderHome() {
   document.getElementById('todaySub').textContent = sub;
   document.getElementById('todayNext').innerHTML = nextTrainingHtml();
   renderVolume();
-
+  renderDataInfo();
+  renderCloud();
 }
 
 document.getElementById('startTrainBtn').addEventListener('click', () => {
@@ -2058,7 +2226,7 @@ function formatSetData(set, uni) {
 
 // Короткая сводка по подходу 1 — для свёрнутой карточки
 function set1Summary(id) {
-  return formatSetData(getSet1(id), isUnilateralId(id));
+  return formatSetData(getEntrySets(id, todayISO())[0], isUnilateralId(id));
 }
 
 // ----- Разовый перевод горизонтальной тяги на одну руку (3+3), 14.09.2026 -----
@@ -2197,15 +2365,23 @@ function getSetsRemaining(ex) {
   return Math.max(0, total - done);
 }
 
-// ----- Сетка ввода подходов 1/2/3 -----
-function buildSetsBlock(ex) {
+// ----- Сетка ввода подходов 1/2/3 (за дату карточки) -----
+// Подсказки в пустых полях — цифры прошлой тренировки. Справа — RIR подхода.
+function buildSetsBlock(ex, date) {
   const uni = !!ex.unilateral;
-  const sets = getExSets(ex.id);
+  const sets = getEntrySets(ex.id, date);
+  const pd = prevEntryDate(ex.id, date);
+  const prev = pd ? getEntrySets(ex.id, pd) : [];
   const s1 = sets[0];
   const s1w = (s1 && s1.w !== null && s1.w !== undefined) ? s1.w : '';
+  const ph = (i, f) => {
+    const src = prev[i] || (f === 'w' ? prev[0] : null);
+    const v = src ? src[f] : null;
+    return exportHas(v) ? String(v) : '—';
+  };
   const cell = (i, f, val, auto) =>
     `<input class="sg-in np-input" type="text" inputmode="none" readonly data-set="${i}" data-f="${f}"` +
-    (auto ? ' data-auto="1"' : '') + ` value="${val === null || val === undefined ? '' : val}" placeholder="—"` +
+    (auto ? ' data-auto="1"' : '') + ` value="${val === null || val === undefined ? '' : val}" placeholder="${escHtml(ph(i, f))}"` +
     ` aria-label="подход ${i + 1} · ${f === 'w' ? 'кг' : f === 'rl' ? 'левая' : f === 'rr' ? 'правая' : 'повторы'}">`;
   let rows = '';
   const count = parseTotalSets(ex.sets);
@@ -2215,14 +2391,17 @@ function buildSetsBlock(ex) {
     // подходы 2 и 3: вес предзаполняется весом подхода 1, пока его не правили
     const auto = i > 0 && (own === null || own === s1w);
     const wVal = i === 0 ? s1w : (auto ? s1w : own);
-    rows += `<div class="sg-row"><span class="sg-n">${i + 1}</span>${cell(i, 'w', wVal, auto)}` +
+    const r = rirValue(s && s.rir);
+    const pp = !!(s && s.p);
+    rows += `<div class="sg-row" data-rir="${r}" data-p="${pp ? '1' : ''}"><span class="sg-n">${i + 1}</span>${cell(i, 'w', wVal, auto)}` +
       (uni
         ? cell(i, 'rl', s ? s.rl : '', false) + cell(i, 'rr', s ? s.rr : '', false)
         : cell(i, 'r', s ? s.r : '', false)) +
+      `<button type="button" class="sg-rir${r === '' ? '' : r === 'F' ? ' set fail' : ' set'}" aria-label="RIR подхода ${i + 1}">${rirInner(r, pp)}</button>` +
       `</div>`;
   }
   const head = `<div class="sg-head"><span></span><span>кг</span>` +
-    (uni ? `<span>лев</span><span>прав</span>` : `<span>повт</span>`) + `</div>`;
+    (uni ? `<span>лев</span><span>прав</span>` : `<span>повт</span>`) + `<span>RIR</span></div>`;
   return `<div class="sets-block">
         <div class="sets-grid${uni ? ' uni' : ''}">${head}${rows}</div>
       </div>`;
@@ -2233,7 +2412,16 @@ function buildSetsBlock(ex) {
 // это предзаполнение из подхода 1, само по себе оно подход не создаёт.
 function commitSets(card) {
   const id = card.dataset.id;
+  const date = card.dataset.date || todayISO();
   const uni = isUnilateralId(id);
+  // RIR и «частичные» живут на строке подхода
+  const withRir = (set, row) => {
+    const r = row.dataset.rir;
+    if (r === 'F') set.rir = 'F';
+    else if (r !== undefined && r !== '' && !isNaN(+r)) set.rir = +r;
+    if (row.dataset.p === '1') set.p = true;
+    return set;
+  };
   const rows = card.querySelectorAll('.sg-row');
   const sets = [];
   let firstW = null;
@@ -2248,21 +2436,496 @@ function commitSets(card) {
     if (uni) {
       const rl = val('rl'), rr = val('rr');
       const has = rl !== null || rr !== null;
-      if (i === 0) sets.push((w === null && !has) ? null : { w: w, rl: rl, rr: rr });
-      else sets.push(has ? { w: w, rl: rl, rr: rr } : null);
+      if (i === 0) sets.push((w === null && !has) ? null : withRir({ w: w, rl: rl, rr: rr }, row));
+      else sets.push(has ? withRir({ w: w, rl: rl, rr: rr }, row) : null);
     } else {
       const r = val('r');
-      if (i === 0) sets.push((w === null && r === null) ? null : { w: w, r: r });
-      else sets.push(r !== null ? { w: w, r: r } : null);
+      if (i === 0) sets.push((w === null && r === null) ? null : withRir({ w: w, r: r }, row));
+      else sets.push(r !== null ? withRir({ w: w, r: r }, row) : null);
     }
   });
   // подходы сверх схемы (если схема когда-то станет короче) не теряем
-  const stored = getExSaved(id).sets || [];
+  const e = getExLog(id)[date];
+  const stored = (e && Array.isArray(e.sets)) ? e.sets : [];
   for (let i = sets.length; i < stored.length; i++) sets.push(stored[i] || null);
-  saveExSets(id, sets);
+  saveEntrySets(id, date, sets);
+  updateCardInfo(card);
 }
 
+// ================= ЖУРНАЛ ПОДХОДОВ ПО ДНЯМ (v7, с 03.11.2026) =================
+// Каждая тренировка упражнения — отдельная запись со своей датой:
+//   levshub_log = { [id]: { 'ГГГГ-ММ-ДД': { sets: [set|null, ...], t: время правки, src?: 'import' } } }
+//   set = { w, r } | { w, rl, rr }, плюс rir: 'F' (отказ) | 0 | 1 | 2 | 3 (3+), p: true — частичные после отказа
+// Записи не удаляются: очищенный день остаётся пустой записью и просто не показывается.
+// levshub_workout (заметки, ссылки, прежние архивы) остаётся как был.
+const LOG_KEY = 'levshub_log';
+const ISO_RE = /^\d{4}-\d{2}-\d{2}$/;
+function getLog() {
+  const d = LS.get(LOG_KEY, {});
+  return (d && typeof d === 'object' && !Array.isArray(d)) ? d : {};
+}
+function getExLog(id) {
+  const l = getLog()[id];
+  return (l && typeof l === 'object' && !Array.isArray(l)) ? l : {};
+}
+function entryHasData(e) { return !!(e && Array.isArray(e.sets) && e.sets.some(Boolean)); }
+// Даты с данными, по возрастанию
+function exLogDates(id) {
+  const l = getExLog(id);
+  return Object.keys(l).filter(d => ISO_RE.test(d) && entryHasData(l[d])).sort();
+}
+function getEntrySets(id, date) {
+  const e = getExLog(id)[date];
+  const arr = (e && Array.isArray(e.sets)) ? e.sets : [];
+  const n = Math.max(setsCountFor(id), arr.length);
+  const out = [];
+  for (let i = 0; i < n; i++) out.push(arr[i] || null);
+  return out;
+}
+function saveEntrySets(id, date, sets) {
+  const log = getLog();
+  if (!log[id] || typeof log[id] !== 'object') log[id] = {};
+  const prev = log[id][date];
+  if (!prev && !sets.some(Boolean)) return; // пустой день не заводим
+  log[id][date] = Object.assign({}, prev || {}, { sets: sets, t: Date.now() });
+  LS.set(LOG_KEY, log);
+  markLogDirty(id, date);
+}
+function prevEntryDate(id, date) {
+  const ds = exLogDates(id).filter(d => d < date);
+  return ds.length ? ds[ds.length - 1] : null;
+}
+function lastEntryDate(id) {
+  const ds = exLogDates(id);
+  return ds.length ? ds[ds.length - 1] : null;
+}
+// Дни журнала (по возрастанию). Перенесённые записи без даты (nodate) — не дни, их не считаем
+function allLogDates() {
+  const log = getLog(), set = new Set();
+  Object.keys(log).forEach(id => {
+    const l = log[id];
+    if (!l || typeof l !== 'object') return;
+    Object.keys(l).forEach(d => { if (ISO_RE.test(d) && entryHasData(l[d]) && !l[d].nodate) set.add(d); });
+  });
+  return Array.from(set).sort();
+}
+function isNoDate(id, date) { const e = getExLog(id)[date]; return !!(e && e.nodate); }
+// Как подписать дату записи: «29.10» / «29.10.2026», для перенесённых без даты — «старая запись»
+function entryWhen(id, date, full) {
+  if (isNoDate(id, date)) return 'старая запись';
+  return full ? fmtDayFull(date) : fmtDM(date);
+}
+
+// ----- Рекорд: лучший первый подход («судья прогресса — первый подход») -----
+// Сравнение по формуле Эпли: вес × (1 + повторы/30) — так видно прогресс и в весе, и в повторах.
+// Для одной стороны (3+3) берутся повторы слабой стороны.
+function setReps(set, uni) {
+  if (!set) return null;
+  if (uni || 'rl' in set || 'rr' in set) {
+    const a = numOrNull(set.rl), b = numOrNull(set.rr);
+    if (a === null && b === null) return null;
+    return a === null ? b : b === null ? a : Math.min(a, b);
+  }
+  return numOrNull(set.r);
+}
+function setScore(set, uni) {
+  const w = numOrNull(set && set.w), r = setReps(set, uni);
+  if (w === null || r === null || r <= 0) return null;
+  return w * (1 + r / 30);
+}
+function exRecord(id, exclude) {
+  const uni = isUnilateralId(id), l = getExLog(id);
+  let best = null;
+  exLogDates(id).forEach(d => {
+    if (d === exclude) return;
+    const st = (l[d].sets || [])[0];
+    const sc = setScore(st, uni);
+    if (sc !== null && (!best || sc > best.score + 1e-9)) best = { date: d, set: st, score: sc };
+  });
+  return best;
+}
+// Первый подход этой даты лучше всех остальных дней
+function isNewRecord(id, date) {
+  const sc = setScore(getEntrySets(id, date)[0], isUnilateralId(id));
+  if (sc === null) return false;
+  const other = exRecord(id, date);
+  return !!other && sc > other.score + 1e-9;
+}
+
+// ----- Подписи RIR -----
+function rirValue(v) { return v === 'F' ? 'F' : (typeof v === 'number' && isFinite(v)) ? v : ''; }
+function rirInner(r, p) {
+  const t = r === 'F' ? 'отказ' : r === '' ? 'RIR' : (r >= 3 ? '3+' : String(r));
+  return t + (p ? '<small>+частич.</small>' : '');
+}
+function paintRir(row) {
+  const chip = row && row.querySelector('.sg-rir');
+  if (!chip) return;
+  const r = row.dataset.rir === 'F' ? 'F' : (row.dataset.rir !== undefined && row.dataset.rir !== '' ? +row.dataset.rir : '');
+  chip.className = 'sg-rir' + (r === '' ? '' : r === 'F' ? ' set fail' : ' set');
+  chip.innerHTML = rirInner(r, row.dataset.p === '1');
+  void chip.offsetWidth;
+  chip.classList.add('bump');
+}
+function rirText(st) {
+  if (!st) return '';
+  const parts = [];
+  if (st.rir === 'F') parts.push('отказ');
+  else if (typeof st.rir === 'number') parts.push('RIR ' + (st.rir >= 3 ? '3+' : st.rir));
+  if (st.p) parts.push('+ частичные');
+  return parts.join(', ');
+}
+
+// ----- Дата, которую показывает карточка (по умолчанию — сегодня) -----
+const cardDates = {};
+function getCardDate(id) {
+  const t = todayISO(), d = cardDates[id];
+  return (d && d <= t) ? d : t;
+}
+function fmtDM(iso) { return iso.slice(8, 10) + '.' + iso.slice(5, 7); }
+// Даты для стрелок: дни с записями + сегодня + показанная сейчас
+function navDates(id, cur) {
+  const t = todayISO();
+  const set = new Set(exLogDates(id));
+  set.add(t); set.add(cur);
+  return Array.from(set).filter(d => d <= t).sort();
+}
+function setsLine(sets, uni) {
+  return sets.map(st => formatSetData(st, uni)).filter(Boolean).map(x => x.replace('кг', ' кг')).join(' · ');
+}
+function dayInfoHtml(ex, date) {
+  const id = ex.id, uni = !!ex.unilateral;
+  const out = [];
+  const pd = prevEntryDate(id, date);
+  if (pd) {
+    const cur = getEntrySets(id, date), prev = getEntrySets(id, pd);
+    const canFill = !cur.some(st => st && exportHas(st.w)) && prev.some(st => st && exportHas(st.w));
+    const when = entryWhen(id, pd, false);
+    out.push(`<div class="di-line"><span class="di-t">прошлый раз · ${when}: ${escHtml(setsLine(prev, uni) || '—')}</span>` +
+      (canFill ? `<button type="button" class="di-fill" data-fill="${pd}">вес как ${isNoDate(id, pd) ? 'раньше' : when}</button>` : '') + `</div>`);
+  }
+  const rec = exRecord(id);
+  if (rec) {
+    const isNew = isNewRecord(id, date);
+    out.push(`<div class="di-line di-pr"><span class="di-t">${isNew ? '🏆 новый рекорд' : 'рекорд'} · ` +
+      `${escHtml((formatSetData(rec.set, uni) || '').replace('кг', ' кг'))} · ${entryWhen(id, rec.date, false)}</span></div>`);
+  }
+  return out.join('');
+}
+function buildDayBlock(ex, date) {
+  const t = todayISO();
+  const ds = navDates(ex.id, date);
+  const i = ds.indexOf(date);
+  const e = getExLog(ex.id)[date];
+  const noDate = !!(e && e.nodate && entryHasData(e));
+  const label = noDate ? 'старая запись' : (date === t ? 'сегодня · ' : '') + fmtDayShort(date);
+  const tag = noDate ? '<span class="dn-tag">дата неизвестна</span>'
+    : (e && e.src === 'import' && entryHasData(e)) ? '<span class="dn-tag">из старых записей</span>'
+    : (date !== t ? '<span class="dn-tag">запись</span>' : '');
+  return `<div class="day-block">
+        <div class="day-nav">
+          <button type="button" class="dn-arrow" data-dn="-1" aria-label="предыдущая тренировка"${i <= 0 ? ' disabled' : ''}><i class="ti ti-chevron-left"></i></button>
+          <div class="dn-mid"><i class="ti ti-calendar"></i><span>${label}</span>${tag}<input type="date" class="dn-picker" value="${date}" max="${t}" aria-label="выбрать дату"></div>
+          <button type="button" class="dn-arrow" data-dn="1" aria-label="следующая тренировка"${i >= ds.length - 1 ? ' disabled' : ''}><i class="ti ti-chevron-right"></i></button>
+        </div>
+        <div class="day-info">${dayInfoHtml(ex, date)}</div>
+      </div>`;
+}
+// Обновляет «прошлый раз / рекорд» без перерисовки полей (клавиатура не закрывается)
+function updateCardInfo(card) {
+  const ex = findExById(card.dataset.id);
+  const box = card.querySelector('.day-info');
+  if (!ex || !box) return;
+  const wasNew = card.classList.contains('is-pr');
+  box.innerHTML = dayInfoHtml(ex, card.dataset.date);
+  const isNew = isNewRecord(ex.id, card.dataset.date);
+  card.classList.toggle('is-pr', isNew);
+  if (isNew && !wasNew) {
+    const pr = box.querySelector('.di-pr');
+    if (pr) pr.classList.add('pop');
+    if (navigator.vibrate) navigator.vibrate([15, 40, 15]);
+  }
+  bindDayInfo(card);
+}
+function bindDayInfo(card) {
+  const btn = card.querySelector('.di-fill');
+  if (btn) btn.addEventListener('click', (e) => { e.stopPropagation(); fillWeightsFrom(card, btn.dataset.fill); });
+}
+// «вес как DD.MM» — подставить веса прошлой тренировки одним нажатием
+function fillWeightsFrom(card, fromDate) {
+  const prev = getEntrySets(card.dataset.id, fromDate);
+  const w0 = prev[0] && exportHas(prev[0].w) ? prev[0].w : null;
+  card.querySelectorAll('.sg-row').forEach((row, i) => {
+    const inp = row.querySelector('[data-f="w"]');
+    if (!inp) return;
+    const v = prev[i] && exportHas(prev[i].w) ? prev[i].w : w0;
+    if (v === null) return;
+    inp.value = v;
+    if (i > 0) inp.dataset.auto = (v === w0) ? '1' : '0';
+    inp.classList.remove('filled-flash'); void inp.offsetWidth; inp.classList.add('filled-flash');
+  });
+  commitSets(card);
+}
+function bindDayNav(card) {
+  const id = card.dataset.id;
+  card.querySelectorAll('.dn-arrow').forEach(b => b.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const ds = navDates(id, card.dataset.date);
+    const i = ds.indexOf(card.dataset.date) + (+b.dataset.dn);
+    if (i < 0 || i >= ds.length) return;
+    showCardDate(id, ds[i], +b.dataset.dn);
+  }));
+  const pk = card.querySelector('.dn-picker');
+  if (pk) pk.addEventListener('change', () => {
+    const v = pk.value;
+    if (!ISO_RE.test(v) || v > todayISO() || v === card.dataset.date) return;
+    showCardDate(id, v, v < card.dataset.date ? -1 : 1);
+  });
+  bindDayInfo(card);
+}
+function showCardDate(id, date, dir) {
+  closeNumpad();
+  cardDates[id] = date;
+  const card = rerenderCard(id);
+  const sb = card && card.querySelector('.sets-block');
+  if (sb) sb.classList.add(dir < 0 ? 'slide-l' : 'slide-r');
+}
+function rerenderCard(id) {
+  const old = document.querySelector(`.ex-card[data-id="${id}"]`);
+  const ex = findExById(id);
+  if (!old || !ex) return null;
+  const card = buildExCard(ex);
+  old.replaceWith(card);
+  bindCardHandlers(card);
+  return card;
+}
+
+// ----- v7 (03.11.2026): журнал по дням -----
+// 1) До любых изменений — полная копия всех данных приложения в levshub_backup_v7.
+//    Не записалась копия — ничего не меняем.
+// 2) Нынешние цифры каждого упражнения КОПИРУЮТСЯ в журнал записью на дату, когда последний
+//    раз отмечались его подходы, с пометкой «из старых записей». Если такой даты нет — на вчера
+//    с пометкой nodate: в карточке и текстах это «старая запись, дата неизвестна».
+//    Сами записи в levshub_workout остаются как были.
+// 3) «Старые заметки» (history с пометкой «заметки до 21.10.2026») убираются — по просьбе,
+//    03.11.2026. Их полный текст остаётся в резервных копиях levshub_backup_2026-10-21 и levshub_backup_v7.
+// Повторно не запускается (отметка + проверка по записи).
+const V7_BACKUP_KEY = 'levshub_backup_v7';
+function collectAllData(withBackups) {
+  const all = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    // вход в облако (levshub_auth) в копии не кладём
+    if (k && k.indexOf('levshub_') === 0 && k !== 'levshub_auth' && (withBackups || k.indexOf('levshub_backup_') !== 0)) all[k] = localStorage.getItem(k);
+  }
+  return all;
+}
+function migrateLogV7() {
+  if (LS.getRaw('levshub_mig_v7')) return;
+  try {
+    if (localStorage.getItem(V7_BACKUP_KEY) === null) {
+      const json = JSON.stringify({ created: new Date().toISOString(), app: "lev'shub", keys: collectAllData(false) });
+      localStorage.setItem(V7_BACKUP_KEY, json);
+      if (localStorage.getItem(V7_BACKUP_KEY) !== json) return;
+    }
+  } catch (e) {
+    console.error('[levshub] резервная копия v7 не записана — перенос не выполнен', e);
+    return;
+  }
+  const raw = localStorage.getItem('levshub_workout');
+  let data, original;
+  try { data = JSON.parse(raw || '{}'); original = JSON.parse(raw || '{}'); } catch (e) { return; }
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return;
+  const log = getLog();
+  // последняя дата, когда у упражнения отмечались подходы
+  const lastSess = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const m = /^levshub_session_(\d{4}-\d{2}-\d{2})$/.exec(localStorage.key(i) || '');
+    if (!m) continue;
+    let sess;
+    try { sess = JSON.parse(localStorage.getItem(m[0]) || '{}'); } catch (e) { continue; }
+    if (!sess || typeof sess !== 'object') continue;
+    Object.keys(sess).forEach(id => {
+      const r = sess[id] || {};
+      if ((r.setsDone || 0) > 0 || (r.setsDoneL || 0) > 0 || (r.setsDoneR || 0) > 0) {
+        if (!lastSess[id] || m[1] > lastSess[id]) lastSess[id] = m[1];
+      }
+    });
+  }
+  const today = todayISO();
+  const imported = [];
+  Object.keys(data).forEach(id => {
+    const rec = data[id];
+    if (!rec || typeof rec !== 'object') return;
+    const sets = Array.isArray(rec.sets) ? rec.sets : [];
+    if (!sets.some(Boolean)) return;
+    const l = log[id];
+    if (l && typeof l === 'object' && Object.keys(l).some(d => entryHasData(l[d]))) return; // уже в журнале
+    const known = !!(lastSess[id] && lastSess[id] <= today);
+    const date = known ? lastSess[id] : isoAddDays(today, -1);
+    log[id] = (l && typeof l === 'object') ? l : {};
+    log[id][date] = { sets: JSON.parse(JSON.stringify(sets)), t: Date.now(), src: 'import' };
+    if (!known) log[id][date].nodate = true; // дата неизвестна — в истории отдельным блоком
+    imported.push([id, date]);
+  });
+  let removed = 0;
+  Object.keys(data).forEach(id => {
+    const rec = data[id];
+    if (!rec || typeof rec !== 'object' || !Array.isArray(rec.history)) return;
+    const n0 = rec.history.length;
+    rec.history = rec.history.filter(h => !(h && h.label === OLD_NOTES_LABEL));
+    removed += n0 - rec.history.length;
+  });
+  // сверка до записи: в журнале ровно прежние подходы; прочие записи и архивы не тронуты
+  const okLog = imported.every(([id, d]) => JSON.stringify(log[id][d].sets) === JSON.stringify(original[id].sets));
+  const okRest = Object.keys(original).every(id => {
+    const o = original[id], r = data[id];
+    if (!o || typeof o !== 'object') return true;
+    if (!r) return false;
+    const oh = (Array.isArray(o.history) ? o.history : []).filter(h => !(h && h.label === OLD_NOTES_LABEL));
+    return JSON.stringify(r.sets) === JSON.stringify(o.sets) && r.n === o.n &&
+      JSON.stringify(r.history || []) === JSON.stringify(oh);
+  });
+  if (!okLog || !okRest) { console.error('[levshub] v7 отменена: сверка не прошла, данные не тронуты'); return; }
+  try {
+    localStorage.setItem(LOG_KEY, JSON.stringify(log));
+    if (removed) localStorage.setItem('levshub_workout', JSON.stringify(data));
+    localStorage.setItem('levshub_mig_v7', today);
+  } catch (e) {
+    console.error('[levshub] v7 не записана', e);
+  }
+}
+
+// ----- Резервная копия файлом (кнопка «копия» на главной) -----
+function downloadBackup() {
+  const name = 'levshub-backup-' + todayISO() + '.json';
+  const json = JSON.stringify({ app: "lev'shub", created: new Date().toISOString(), keys: collectAllData(true) });
+  let file = null;
+  try { file = new File([json], name, { type: 'application/json' }); } catch (e) {}
+  if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+    navigator.share({ files: [file], title: name }).catch(() => {});
+    return;
+  }
+  const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+  const a = document.createElement('a');
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+function renderDataInfo() {
+  const el = document.getElementById('dataInfo');
+  if (!el) return;
+  const n = allLogDates().length;
+  let size = 0;
+  try { Object.values(collectAllData(true)).forEach(v => { size += (v || '').length; }); } catch (e) {}
+  el.textContent = 'дней в журнале: ' + n + ' · занято ~' + Math.max(1, Math.round(size * 2 / 1024)) + ' КБ из ~5 МБ · копия — файл со всеми данными';
+}
+document.getElementById('backupBtn').addEventListener('click', downloadBackup);
+
+// ----- «Убрано · вернуть» после свайпа -----
+let toastTimer = null, toastId = null;
+function showSwipeToast(id) {
+  const ex = findExById(id);
+  const el = document.getElementById('undoToast');
+  document.getElementById('undoToastText').textContent = (ex ? ex.num + '. ' + ex.name : 'упражнение') + ' — убрано';
+  toastId = id;
+  el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(hideSwipeToast, 5000);
+}
+function hideSwipeToast() {
+  clearTimeout(toastTimer);
+  document.getElementById('undoToast').classList.remove('show');
+  toastId = null;
+}
+// Вернуть упражнение как было до свайпа: счётчики подходов и развёрнутая карточка
+function undoSwipe(id) {
+  const before = getExSession(id).swipeUndo;
+  if (!before) return false;
+  setExSession(id, { setsDone: before.setsDone || 0, setsDoneL: before.setsDoneL || 0, setsDoneR: before.setsDoneR || 0, collapsed: false, swipeUndo: null });
+  if (toastId === id) hideSwipeToast();
+  const card = rerenderCard(id);
+  if (card) {
+    card.classList.add('returning');
+    setTimeout(() => card.classList.remove('returning'), 600);
+  }
+  updateSessionBar();
+  return true;
+}
+document.getElementById('undoToastBtn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (toastId) undoSwipe(toastId);
+});
+
 // ----- Render -----
+// Карточка упражнения (за дату карточки: по умолчанию сегодня)
+function buildExCard(ex) {
+
+  const saved = getExSaved(ex.id);
+  const sess = getExSession(ex.id);
+  const total = parseTotalSets(ex.sets);
+  const isLeg = !!ex.unilateral;
+  const done = Math.min(total, sess.setsDone || 0);
+  const remaining = total - done;
+  const isDone = isLeg ? isExComplete(ex) : (remaining === 0);
+  // карточку, развёрнутую вручную (тап / свайп вправо), не сворачиваем снова
+  const isCollapsed = sess.collapsed === false ? false : (!!sess.collapsed || isDone);
+  const date = getCardDate(ex.id);
+  const n = saved.n || '';
+  const badgeContent = (remaining === 0)
+    ? '<i class="ti ti-check"></i>'
+    : `<span class="badge-num">${remaining}</span>`;
+  const setsAreaHTML = isLeg ? buildLegSetsArea(ex) : `
+      <div class="sets-area">
+        <button class="sets-badge${isDone ? ' done' : ''}" data-action="sets-tap" aria-label="подходы">${badgeContent}</button>
+        <div class="sets-prompt" data-id="${ex.id}">
+          <span class="sp-label">−1 подход?</span>
+          <button class="sp-yes" data-action="sets-yes" aria-label="да">✓</button>
+          <button class="sp-no" data-action="sets-no" aria-label="нет">✕</button>
+        </div>
+        <button class="sets-undo" data-action="sets-undo" aria-label="вернуть подход"><span style="font-size:14px;line-height:1">↶</span> вернуть</button>
+      </div>`;
+  const sum1 = set1Summary(ex.id);
+  const summaryData = sum1
+    ? `<span class="cs-data">${sum1}</span>`
+    : '<span class="cs-hint">не записано</span>';
+  const card = document.createElement('div');
+  card.className = 'ex-card' + (isDone ? ' done' : '') + (isCollapsed ? ' collapsed' : '') + (date !== todayISO() ? ' past' : '');
+  card.dataset.id = ex.id;
+  card.dataset.date = date;
+  card.innerHTML = `
+    <div class="collapsed-summary">
+      <span class="cs-check"><i class="ti ti-check"></i></span>
+      <span class="cs-text"><span style="color:var(--cream)">${ex.num}.</span> ${ex.name} · ${summaryData}</span>
+      <span class="cs-hint">вернуть</span>
+    </div>
+    <div class="ex-header">
+      <div class="ex-meta">
+        <div class="ex-title">${ex.num}. ${ex.name}</div>
+        <div class="ex-sub">${ex.sub} · ${ex.sets}${ex.rest ? `<span class="ex-rest"><i class="ti ti-clock"></i>${formatRest(ex.rest)}</span>` : ''}</div>
+        ${ex.hint ? `<div class="ex-hint">${escHtml(ex.hint)}</div>` : ''}
+      </div>
+      ${setsAreaHTML}
+      ${ex.tech ? `<button class="tech-btn" data-tech="${ex.id}" aria-label="заметки по технике" title="заметки по технике"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5h12.5a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H5a1.5 1.5 0 0 1-1.5-1.5v-14A1.5 1.5 0 0 1 5 3.5z"/><path d="M8.5 3.5v17"/><path d="M11.75 8.75h3.75M11.75 12.5h3.75"/></svg></button>` : ''}
+      <button class="yt-btn${getExUrl(ex) ? '' : ' no-url'}" data-yt="${escHtml(getExUrl(ex))}"><i class="ti ti-brand-youtube"></i></button>
+    </div>
+    ${buildDayBlock(ex, date)}
+    ${buildSetsBlock(ex, date)}
+    <div class="note-area">
+      <div class="note-row">
+        <button type="button" class="note-trigger${n ? ' has-note' : ''}">
+          <svg class="note-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          <span class="note-preview"></span>
+        </button>
+        <button type="button" class="url-btn${getUrlOverride(ex.id) ? ' custom' : ''}" aria-label="ссылка на видео" title="ссылка на видео"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11.5 4.5"/><path d="M14 11a5 5 0 0 0-7.07 0L4.1 13.83a5 5 0 0 0 7.07 7.07L12.5 19.5"/></svg></button>
+      </div>
+      <button type="button" class="note-more" hidden>показать больше</button>
+    </div>
+  `;
+  if (isNewRecord(ex.id, date)) card.classList.add('is-pr');
+  return card;
+}
+
 function renderTraining() {
   const view = getTrainingView();
   document.querySelectorAll('#trainToggle .toggle-seg').forEach(s => {
@@ -2294,67 +2957,7 @@ function renderTraining() {
 
   const program = getProgram(view);
   exList.innerHTML = '';
-  program.forEach(ex => {
-    const saved = getExSaved(ex.id);
-    const sess = getExSession(ex.id);
-    const total = parseTotalSets(ex.sets);
-    const isLeg = !!ex.unilateral;
-    const done = Math.min(total, sess.setsDone || 0);
-    const remaining = total - done;
-    const isDone = isLeg ? isExComplete(ex) : (remaining === 0);
-    const isCollapsed = !!sess.collapsed || isDone;
-    const n = saved.n || '';
-    const badgeContent = (remaining === 0)
-      ? '<i class="ti ti-check"></i>'
-      : `<span class="badge-num">${remaining}</span>`;
-    const setsAreaHTML = isLeg ? buildLegSetsArea(ex) : `
-        <div class="sets-area">
-          <button class="sets-badge${isDone ? ' done' : ''}" data-action="sets-tap" aria-label="подходы">${badgeContent}</button>
-          <div class="sets-prompt" data-id="${ex.id}">
-            <span class="sp-label">−1 подход?</span>
-            <button class="sp-yes" data-action="sets-yes" aria-label="да">✓</button>
-            <button class="sp-no" data-action="sets-no" aria-label="нет">✕</button>
-          </div>
-          <button class="sets-undo" data-action="sets-undo" aria-label="вернуть подход"><span style="font-size:14px;line-height:1">↶</span> вернуть</button>
-        </div>`;
-    const sum1 = set1Summary(ex.id);
-    const summaryData = sum1
-      ? `<span class="cs-data">${sum1}</span>`
-      : '<span class="cs-hint">не записано</span>';
-    const card = document.createElement('div');
-    card.className = 'ex-card' + (isDone ? ' done' : '') + (isCollapsed ? ' collapsed' : '');
-    card.dataset.id = ex.id;
-    card.innerHTML = `
-      <div class="collapsed-summary">
-        <span class="cs-check"><i class="ti ti-check"></i></span>
-        <span class="cs-text"><span style="color:var(--cream)">${ex.num}.</span> ${ex.name} · ${summaryData}</span>
-        <span class="cs-hint">вернуть</span>
-      </div>
-      <div class="ex-header">
-        <div class="ex-meta">
-          <div class="ex-title">${ex.num}. ${ex.name}</div>
-          <div class="ex-sub">${ex.sub} · ${ex.sets}${ex.rest ? `<span class="ex-rest"><i class="ti ti-clock"></i>${formatRest(ex.rest)}</span>` : ''}</div>
-          ${ex.hint ? `<div class="ex-hint">${escHtml(ex.hint)}</div>` : ''}
-        </div>
-        ${setsAreaHTML}
-        ${ex.tech ? `<button class="tech-btn" data-tech="${ex.id}" aria-label="заметки по технике" title="заметки по технике"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5h12.5a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H5a1.5 1.5 0 0 1-1.5-1.5v-14A1.5 1.5 0 0 1 5 3.5z"/><path d="M8.5 3.5v17"/><path d="M11.75 8.75h3.75M11.75 12.5h3.75"/></svg></button>` : ''}
-        <button class="yt-btn${getExUrl(ex) ? '' : ' no-url'}" data-yt="${escHtml(getExUrl(ex))}"><i class="ti ti-brand-youtube"></i></button>
-      </div>
-      ${buildSetsBlock(ex)}
-      <div class="note-area">
-        <div class="note-row">
-          <button type="button" class="note-trigger${n ? ' has-note' : ''}">
-            <svg class="note-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-            <span class="note-preview"></span>
-          </button>
-          <button type="button" class="url-btn${getUrlOverride(ex.id) ? ' custom' : ''}" aria-label="ссылка на видео" title="ссылка на видео"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11.5 4.5"/><path d="M14 11a5 5 0 0 0-7.07 0L4.1 13.83a5 5 0 0 0 7.07 7.07L12.5 19.5"/></svg></button>
-        </div>
-        <button type="button" class="note-more" hidden>показать больше</button>
-        ${buildOldNotesHtml(ex.id)}
-      </div>
-    `;
-    exList.appendChild(card);
-  });
+  program.forEach(ex => exList.appendChild(buildExCard(ex)));
 
   // Ссылка на архив — упражнения, выведенные из активных дней
   if (ARCHIVE.length) {
@@ -2421,7 +3024,10 @@ function openArchive() {
 }
 
 function bindTrainingHandlers(exList) {
-  exList.querySelectorAll('.yt-btn').forEach(b => {
+  exList.querySelectorAll('.ex-card').forEach(bindCardHandlers);
+}
+function bindCardHandlers(card) {
+  card.querySelectorAll('.yt-btn').forEach(b => {
     b.addEventListener('click', (e) => {
       e.stopPropagation();
       // ссылку берём в момент нажатия: своя (если сохранена) или исходная из программы
@@ -2433,25 +3039,25 @@ function bindTrainingHandlers(exList) {
       openYouTube(url);
     });
   });
-  exList.querySelectorAll('.url-btn').forEach(b => {
+  card.querySelectorAll('.url-btn').forEach(b => {
     b.addEventListener('click', (e) => { e.stopPropagation(); openUrlEditor(b.closest('.ex-card').dataset.id); });
   });
-  exList.querySelectorAll('.tech-btn').forEach(b => {
+  card.querySelectorAll('.tech-btn').forEach(b => {
     b.addEventListener('click', (e) => { e.stopPropagation(); openTech(b.dataset.tech); });
   });
-  exList.querySelectorAll('.ex-card').forEach(card => {
-    const id = card.dataset.id;
-    // Подходы 1/2/3
-    card.querySelectorAll('.sg-in').forEach(makeNumeric);
-    bindSetsGrid(card);
-    // Sets tracker
-    if (isUnilateralId(id)) bindLegSetsHandlers(card);
-    else bindSetsHandlers(card);
-    // Swipe + collapsed tap
-    bindSwipeHandlers(card);
-    // Note icon-trigger
-    bindNoteHandlers(card);
-  });
+  const id = card.dataset.id;
+  // Подходы 1/2/3
+  card.querySelectorAll('.sg-in').forEach(makeNumeric);
+  bindSetsGrid(card);
+  // Sets tracker
+  if (isUnilateralId(id)) bindLegSetsHandlers(card);
+  else bindSetsHandlers(card);
+  // Swipe + collapsed tap
+  bindSwipeHandlers(card);
+  // Note icon-trigger
+  bindNoteHandlers(card);
+  // Дата: стрелки, календарь, «вес как в прошлый раз»
+  bindDayNav(card);
 }
 
 // ----- Ввод подходов 1/2/3 -----
@@ -2472,6 +3078,15 @@ function bindSetsGrid(card) {
         });
       }
       commitSets(card);
+    });
+  });
+  // RIR: тап по ячейке открывает клавиатуру на повторах этого подхода — там кнопки RIR
+  card.querySelectorAll('.sg-rir').forEach(chip => {
+    chip.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const row = chip.closest('.sg-row');
+      const inp = row && row.querySelector('[data-f="r"], [data-f="rl"]');
+      if (inp) openNumpad(inp);
     });
   });
 }
@@ -2928,9 +3543,13 @@ function bindSwipeHandlers(card) {
         const ex = findExById(id);
         if (ex) {
           const total = parseTotalSets(ex.sets);
-          if (isUnilateralId(id)) setExSession(id, { setsDoneL: total, setsDoneR: total, collapsed: true });
-          else setExSession(id, { setsDone: total, collapsed: true });
+          // как было до свайпа — чтобы можно было вернуть (плашка внизу или свайп вправо)
+          const s0 = getExSession(id);
+          const before = { setsDone: s0.setsDone || 0, setsDoneL: s0.setsDoneL || 0, setsDoneR: s0.setsDoneR || 0 };
+          if (isUnilateralId(id)) setExSession(id, { setsDoneL: total, setsDoneR: total, collapsed: true, swipeUndo: before });
+          else setExSession(id, { setsDone: total, collapsed: true, swipeUndo: before });
           updateSessionBar();
+          showSwipeToast(id);
         }
         setTimeout(() => {
           // Clear inline styles + apply collapsed class; existing .ex-card transition
@@ -2944,9 +3563,12 @@ function bindSwipeHandlers(card) {
         }, 380);
       } else if (isCollapsed && dx > 80) {
         resetCard();
-        setExSession(id, { collapsed: false });
-        collapseCard(id, false);
-        updateSessionBar();
+        // убрана свайпом — возвращаем как было; иначе просто разворачиваем
+        if (!undoSwipe(id)) {
+          setExSession(id, { collapsed: false });
+          collapseCard(id, false);
+          updateSessionBar();
+        }
       } else {
         // Below threshold — spring back smoothly
         card.style.transition = 'transform 240ms cubic-bezier(.22,.85,.32,1.1), opacity 200ms ease-out';
@@ -2971,6 +3593,7 @@ function bindSwipeHandlers(card) {
   card.addEventListener('click', (e) => {
     if (!card.classList.contains('collapsed')) return;
     if (e.target.closest('.sets-area, .yt-btn, .tech-btn, .stepper-btn, .stepper-input, .note-area')) return;
+    if (undoSwipe(id)) return;
     setExSession(id, { collapsed: false });
     collapseCard(id, false);
     updateSessionBar();
@@ -2999,8 +3622,8 @@ document.getElementById('sessionReset').addEventListener('click', () => {
     const program = getProgram(view);
     program.forEach(ex => {
       setExSession(ex.id, ex.unilateral
-        ? { setsDone: 0, setsDoneL: 0, setsDoneR: 0, collapsed: false }
-        : { setsDone: 0, collapsed: false });
+        ? { setsDone: 0, setsDoneL: 0, setsDoneR: 0, collapsed: false, swipeUndo: null }
+        : { setsDone: 0, collapsed: false, swipeUndo: null });
     });
     renderTraining();
   });
@@ -3155,6 +3778,17 @@ function exportSetText(set, uni) {
   return [w, reps].filter(Boolean).join(' × ');
 }
 
+// Подход с RIR: «60 кг × 12 повт (RIR 1)», «… (отказ, + частичные)»
+function exportSetFull(set, uni) {
+  const b = exportSetText(set, uni);
+  if (!b) return null;
+  const r = rirText(set);
+  return r ? b + ' (' + r + ')' : b;
+}
+function entryText(sets, uni) {
+  return sets.map(st => exportSetFull(st, uni || !!(st && ('rl' in st || 'rr' in st)))).filter(Boolean).join(' · ') || '—';
+}
+
 // Подпись + текст; многострочный текст уходит под подпись с отступом
 function exportBlock(label, text, indent) {
   const lines = String(text).replace(/\r\n?/g, '\n').trim().split('\n');
@@ -3165,7 +3799,6 @@ function exportBlock(label, text, indent) {
 function exportExercise(ex) {
   const uni = !!ex.unilateral;
   const saved = getExSaved(ex.id);
-  const sets = getExSets(ex.id);
   const count = parseTotalSets(ex.sets);
   const I = '   ';
   const out = [];
@@ -3173,15 +3806,18 @@ function exportExercise(ex) {
   out.push(ex.num + '. ' + capFirst(ex.name) + (/\)\s*$/.test(ex.name) ? ' — ' + ex.sub : ' (' + ex.sub + ')'));
   out.push(I + 'Схема: ' + ex.sets + (uni ? ' — по ' + count + ' подхода на каждую сторону' : '') + ', отдых ' + formatRest(ex.rest));
   if (ex.hint) out.push(I + (/^важно/i.test(ex.hint) ? ex.hint : 'Важно: ' + ex.hint));
-  const rec = exportSetText(sets[0], uni);
-  out.push(I + 'Рекорд: ' + (rec || 'не записан'));
-  for (let i = 1; i < count; i++) {
-    const t = exportSetText(sets[i], uni);
-    if (t) out.push(I + 'Подход ' + (i + 1) + ': ' + t);
+  const rec = exRecord(ex.id);
+  out.push(I + 'Рекорд: ' + (rec ? exportSetText(rec.set, uni) + ' — ' + entryWhen(ex.id, rec.date, true) : 'не записан'));
+  const ld = lastEntryDate(ex.id);
+  const lastSets = ld ? getEntrySets(ex.id, ld) : [];
+  if (ld) {
+    const imp = getExLog(ex.id)[ld].src === 'import';
+    const when = isNoDate(ex.id, ld) ? 'старая запись, дата неизвестна' : fmtDayFull(ld) + (imp ? ', из старых записей' : '');
+    out.push(I + 'Последний раз (' + when + '): ' + entryText(lastSets, uni));
   }
   const curNote = typeof saved.n === 'string' ? saved.n.trim() : '';
   if (curNote) out.push(exportBlock('Заметка', saved.n, I));
-  const curSets = sets.slice(0, count).map(st => exportSetText(st, uni)).filter(Boolean).join(' · ');
+  const curSets = lastSets.map(st => exportSetText(st, uni)).filter(Boolean).join(' · ');
   // архив того же упражнения (двумя руками, v5…) — как записано; совпадающее с текущим не дублируем
   (Array.isArray(saved.history) ? saved.history : []).forEach(h => {
     if (!h || typeof h !== 'object') return;
@@ -3206,14 +3842,16 @@ function buildProgramExport() {
     .map(i => wd[i] + ' ' + (DAYS[SCHEDULE[i]] ? SCHEDULE[i] : 'отдых')).join(' · ');
   let anyUnknown = false;
   TRAINING_DAYS.forEach(d => getProgram(d).forEach(ex => {
-    getExSets(ex.id).forEach(st => {
+    const ld = lastEntryDate(ex.id);
+    (ld ? getEntrySets(ex.id, ld) : []).forEach(st => {
       if (st && ['w', 'r', 'rl', 'rr'].some(k => st[k] === '?')) anyUnknown = true;
     });
   }));
   const legend = [
     'Как читать:',
-    '- «Рекорд» — подход 1, мой лучший рабочий результат (веду вручную в приложении).',
-    '- «Подход 2», «Подход 3»… — остальные записанные подходы, если есть.',
+    '- «Рекорд» — лучший первый подход за всё время, с датой. Считается сам: вес × (1 + повторы/30); для 3+3 — по слабой стороне.',
+    '- «Последний раз» — все подходы последней тренировки этого упражнения.',
+    RIR_LEGEND,
     '- 3+3 — упражнение на одну сторону: 3 подхода левой + 3 правой, повторы «лев / прав». В объёме это 3 подхода на мышцу.',
     '- Одно упражнение в разных днях (икры, подъёмы ног) — отдельные карточки со своими рекордами: с кофеином и без цифры не смешиваются.',
     '- Кофеин — отметка на сегодня; если не отмечал, стоит план: A и B с кофеином, C без.',
@@ -3234,7 +3872,7 @@ function buildProgramExport() {
     'Основное упражнение = 1 подход, помогающее = ½; 3+3 = 3. Каждый день по расписанию стоит в неделе дважды.\n\n' +
     volumeRows().map(r => '- ' + r.label + ': ' + r.nums + ' (' + r.dayText +
       (r.rest ? ', отдых ' + r.rest : '') + (r.was ? '; было: ' + r.was : '') + ')').join('\n');
-  return "LEV'SHUB — программа v6.2: A · PUSH, B · PULL, C · LEGS\nВыгрузка: " + date +
+  return "LEV'SHUB — программа v7: A · PUSH, B · PULL, C · LEGS\nВыгрузка: " + date +
     '\nРасписание: ' + sched + '\n\n' + legend.join('\n') + '\n\n' + body + '\n\n' + vol + '\n';
 }
 
@@ -3451,26 +4089,6 @@ function migrateV62() {
   }
 }
 
-// «Старые заметки» — свёрнутый блок в карточке (только просмотр)
-function buildOldNotesHtml(id) {
-  const hist = getExSaved(id).history;
-  if (!Array.isArray(hist)) return '';
-  const items = [];
-  hist.forEach(h => {
-    if (!h || typeof h !== 'object') return;
-    if (h.label === OLD_NOTES_LABEL && typeof h.n === 'string' && h.n.trim()) {
-      items.push(`<div class="old-k">${escHtml(OLD_NOTES_LABEL)}</div><div class="old-v">${escHtml(h.n)}</div>`);
-    } else if (h.label === PARTIAL_REPS_LABEL) {
-      const sets = Array.isArray(h.sets) ? h.sets : [];
-      const uni = sets.some(st => st && ('rl' in st || 'rr' in st));
-      const parts = sets.map(st => formatSetData(st, uni)).filter(Boolean).map(d => d.replace('кг', ' кг'));
-      if (parts.length) items.push(`<div class="old-k">рекорд ${escHtml(PARTIAL_REPS_LABEL)}</div><div class="old-v">${escHtml(parts.join(' · '))}</div>`);
-    }
-  });
-  if (!items.length) return '';
-  return `<details class="old-notes"><summary>старые заметки</summary><div class="old-body">${items.join('')}</div></details>`;
-}
-
 // ----- v6.1 (с 07.10.2026): сгибание ног лёжа вернулось в день C -----
 // Прежний рекорд (пока упражнение было в архиве) КОПИРУЕТСЯ в history этой же записи
 // с пометкой «архив», текущие подходы начинаются с нуля. Заметка не трогается.
@@ -3589,11 +4207,83 @@ function openManualCopy(text) {
   setTimeout(() => { try { ta.focus(); ta.select(); } catch (e) {} }, 80);
 }
 
+// ----- Журнал текстом: последняя тренировка и вся история -----
+const RIR_LEGEND = '- RIR — сколько повторов оставалось в запасе; «отказ» — подход до отказа; «+ частичные» — после отказа добивал частичными, в повторы они не входят.';
+// Все упражнения по порядку: дни A, B, C, затем архив
+function allExOrdered() {
+  const seen = new Set(), list = [];
+  const add = ex => { if (!seen.has(ex.id)) { seen.add(ex.id); list.push(ex); } };
+  TRAINING_DAYS.forEach(d => getProgram(d).forEach(add));
+  ARCHIVE.forEach(add);
+  return list;
+}
+function dayExport(date) {
+  const items = allExOrdered().filter(ex => { const e = getExLog(ex.id)[date]; return entryHasData(e) && !e.nodate; });
+  // какой это был день — программа, к которой относится больше упражнений
+  let best = null, bestN = 0;
+  TRAINING_DAYS.forEach(d => {
+    const k = getProgram(d).filter(ex => items.indexOf(ex) >= 0).length;
+    if (k > bestN) { best = d; bestN = k; }
+  });
+  const imp = items.some(ex => getExLog(ex.id)[date].src === 'import');
+  const head = '## ' + fmtDayFull(date) + ' · ' + isoWeekday(date) + (best ? ' · ' + DAYS[best].title : '') +
+    (imp ? ' (из старых записей — дата примерная)' : '');
+  return head + '\n' + items.map(ex =>
+    '- ' + capFirst(ex.name) + ': ' + entryText(getEntrySets(ex.id, date), !!ex.unilateral) +
+    (isNewRecord(ex.id, date) ? ' — новый рекорд' : '')
+  ).join('\n');
+}
+function journalHeader(title) {
+  return "LEV'SHUB — " + title + '\nВыгрузка: ' + fmtDayFull(todayISO()) + '\n\n' +
+    'Как читать:\n- Подходы по порядку: вес × повторы; 3+3 — повторы «лев / прав».\n' + RIR_LEGEND + '\n- Считаю только чистые повторы с полной амплитудой.\n\n';
+}
+// Перенесённые 03.11.2026 цифры, для которых дата тренировки неизвестна
+function noDateExport() {
+  const items = [];
+  allExOrdered().forEach(ex => {
+    const l = getExLog(ex.id);
+    Object.keys(l).forEach(d => {
+      if (l[d] && l[d].nodate && entryHasData(l[d])) items.push('- ' + capFirst(ex.name) + ': ' + entryText(getEntrySets(ex.id, d), !!ex.unilateral));
+    });
+  });
+  return items.length ? '## Старые записи — дата неизвестна (перенесены из прежних полей)\n' + items.join('\n') : '';
+}
+function buildLastWorkoutExport() {
+  const ds = allLogDates();
+  if (!ds.length) return journalHeader('последняя тренировка') + (noDateExport() || 'Записей пока нет.') + '\n';
+  return journalHeader('последняя тренировка') + dayExport(ds[ds.length - 1]) + '\n';
+}
+function buildHistoryExport() {
+  const ds = allLogDates();
+  const parts = ds.slice().reverse().map(dayExport);
+  const old = noDateExport();
+  if (old) parts.push(old);
+  if (!parts.length) return journalHeader('вся история') + 'Записей пока нет.\n';
+  return journalHeader('вся история (новые сверху, дней: ' + ds.length + ')') + parts.join('\n\n') + '\n';
+}
+function openCopyMenu() {
+  const n = allLogDates().length;
+  openModal(`
+    <div class="modal-head">
+      <div class="t">копировать</div>
+      <button class="x" onclick="closeModal()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="choice-list">
+      <button class="choice-opt" data-copy="last">последняя тренировка <span class="sm">все подходы, RIR и рекорды за последний день</span></button>
+      <button class="choice-opt" data-copy="history">вся история <span class="sm">все дни по датам · дней в журнале: ${n}</span></button>
+      <button class="choice-opt" data-copy="program">программа и рекорды <span class="sm">A, B, C: схемы, рекорды, последний раз, заметки, объём</span></button>
+    </div>
+  `);
+  document.querySelectorAll('#modalBox [data-copy]').forEach(b => {
+    b.addEventListener('click', () => { closeModal(); copyProgram(b.dataset.copy); });
+  });
+}
+
 let copyBtnTimer = null;
-function copyProgram() {
+function copyProgram(kind) {
   const btn = document.getElementById('copyProgramBtn');
   const label = btn && btn.querySelector('span');
-  const text = buildProgramExport();
+  const text = kind === 'last' ? buildLastWorkoutExport() : kind === 'history' ? buildHistoryExport() : buildProgramExport();
   return copyToClipboard(text).then(ok => {
     if (!ok) { openManualCopy(text); return false; }
     if (btn && label) {
@@ -3602,13 +4292,13 @@ function copyProgram() {
       clearTimeout(copyBtnTimer);
       copyBtnTimer = setTimeout(() => {
         btn.classList.remove('done');
-        label.textContent = 'копировать всё';
+        label.textContent = 'копировать';
       }, 2200);
     }
     return true;
   });
 }
-document.getElementById('copyProgramBtn').addEventListener('click', copyProgram);
+document.getElementById('copyProgramBtn').addEventListener('click', openCopyMenu);
 document.getElementById('caffeineBtn').addEventListener('click', () => {
   const view = getTrainingView();
   if (!DAYS[view]) return;
@@ -4211,6 +4901,7 @@ function openNumpad(input) {
   input.classList.add('np-active');
   numpadLabelEl.textContent = getInputLabel(input);
   numpadValueEl.textContent = input.value || '';
+  npRirRefresh();
   numpadEl.classList.add('show');
   numpadEl.setAttribute('aria-hidden', 'false');
   // Aggressive scroll: put input in the top 1/4 of visible area above keypad
@@ -4268,6 +4959,41 @@ function npBackspace() {
   npFireInput(activeNpInput);
   npRenderValue();
 }
+
+// RIR и «частичные» — пока вводишь повторы подхода
+const npRirEl = document.getElementById('npRir');
+function npRirRow() {
+  const inp = activeNpInput;
+  return (inp && inp.classList.contains('sg-in') && inp.dataset.f !== 'w') ? inp.closest('.sg-row') : null;
+}
+function npRirRefresh() {
+  const row = npRirRow();
+  npRirEl.hidden = !row;
+  if (!row) return;
+  const r = row.dataset.rir || '';
+  npRirEl.querySelectorAll('[data-rir]').forEach(b => b.classList.toggle('on', b.dataset.rir === r));
+  document.getElementById('npPart').classList.toggle('on', row.dataset.p === '1');
+}
+npRirEl.querySelectorAll('[data-rir]').forEach(b => {
+  b.addEventListener('click', (e) => {
+    e.preventDefault(); e.stopPropagation();
+    const row = npRirRow();
+    if (!row) return;
+    row.dataset.rir = (row.dataset.rir === b.dataset.rir) ? '' : b.dataset.rir;
+    paintRir(row);
+    npRirRefresh();
+    commitSets(row.closest('.ex-card'));
+  });
+});
+document.getElementById('npPart').addEventListener('click', (e) => {
+  e.preventDefault(); e.stopPropagation();
+  const row = npRirRow();
+  if (!row) return;
+  row.dataset.p = row.dataset.p === '1' ? '' : '1';
+  paintRir(row);
+  npRirRefresh();
+  commitSets(row.closest('.ex-card'));
+});
 
 // Wire keypad buttons
 numpadEl.querySelectorAll('.np-key').forEach(btn => {
@@ -4355,55 +5081,51 @@ window.addEventListener('resize', updateAllToggleIndicators);
 // ================= ПАМЯТКА =================
 // Весь текст памятки — здесь. Меняй пункты прямо в этом объекте.
 const MEMO = {
-  main: [
-    'Считаю только чистые повторы.',
-    'Бицепс: сначала наклонные с гантелями, потом Скотт.',
-    'Махи на блоке — вес легче, минимум 12 чистых.',
-    'Сладкое с шоколадом — 1 порция в день. Herbamare — взвешивать.',
-    'Калории, объём и частота — без изменений.'
-  ],
+  sub: 'разбор 02.11 · следующий разбор 15.11',
   sections: [
-    { title: 'Тренировки', items: [
-      'Чистый повтор = полная амплитуда, которую я контролирую. После отказа можно добить 1–3 частичных повтора в растянутой части, но в лог их НЕ записываю.',
-      'Где раньше считал частичные повторы (сгибание ног сидя и лёжа, аддуктор, абдуктор, сгибание запястий) — новая точка отсчёта. Вес может стать ниже — это нормально.',
-      'Бицепс в Pull: наклонный подъём гантелей → подъёмы ног → подъём на скамье Скотта.',
-      'Перед первым подходом на плитных тренажёрах проверяю блины с обеих сторон и на всех штангах.',
-      'Отказ в каждом подходе, судья прогресса — первый подход.'
+    { title: 'Еда', items: [
+      '3450 ккал при 6000 шагов (±100 ккал на каждые ±3000 шагов)',
+      'Белок ~160 г — часть протеиновых продуктов менять на обычные',
+      'Клетчатка 25–30 г',
+      'Натрий до 2500 мг — максимум 1 готовая еда в день',
+      'Есть 3–4 раза в день, а не 2',
+      'Легче добирать: сок, молоко, белый рис, макароны, оливковое масло, орехи'
     ] },
-    { title: 'Питание', items: [
-      'Калории: 3550 ккал при 6000 шагов. ±100 ккал на каждые ±3000 шагов.',
-      'Белок: ~160–200 г, больше не нужно.',
-      'Жиры: 110–120 г, из них насыщенные не больше 25–30 г (из-за Роаккутана).',
-      'Клетчатка: 30–40 г в день.',
-      'Натрий: 2500 мг в день (в дни сильного пота — до 3000).',
-      'Herbamare: 1 г ≈ 370 мг натрия — взвешивать.',
-      'Каждый день: 30 г семечек подсолнечника, 50 г шпината, 1 киви.',
-      'Вернуть в рацион овсянку и батат.',
-      'Вода 3–3.5 л, последний большой объём за 2 часа до сна.',
-      'Витамин D — добавка. Витамин A в добавках — нельзя.'
+    { title: 'Тренировки', items: [
+      '6 тренировок → 1 выходной (выходной в среду)',
+      'Hip thrust в день ног — выдох на подъёме',
+      'Махи: левая рука 6.8 кг',
+      'Предтрен после 17:00 — половина или без'
     ] },
     { title: 'Сон', items: [
-      'Подъём в одно время: 10:30. Два будильника.',
-      'Будильник → ноги на пол → свет → 15 минут на балконе.',
-      'Днём не спать.',
-      'Кофеин — до 14:00.',
-      'Лимит на TikTok после 23:00, вечером чёрно-белый экран.'
+      'Мелатонин 0.5 мг вечером, сразу после подъёма — 20–30 мин на улице',
+      'Вт вечер 23:30 → подъём Ср 11:30',
+      'Ср вечер 23:00 → подъём Чт 11:00',
+      'Чт вечер 22:30 → подъём Пт 10:30',
+      'Пт вечер 22:00 → подъём Сб 10:00',
+      'Сб вечер 21:30 → подъём Вс 9:30',
+      'Вс вечер 21:00 → подъём Пн 9:00',
+      'Сорвался — тот же подъём ещё день, не с начала'
+    ] },
+    { title: 'Замеры', items: [
+      'Утром натощак',
+      'Талия — самая узкая точка (главная цифра)',
+      'Талия по пупку — вторая цифра, сравнивать только саму с собой',
+      'Фото лица — с 1.5 м, не фронталкой',
+      'Сушка — только если талия в самой узкой точке 76+ и пресса не видно'
     ] }
   ]
 };
 
-function renderMemo(expanded) {
-  document.getElementById('memoMain').innerHTML = MEMO.main.map(t => `<li>${escHtml(t)}</li>`).join('');
-  const more = document.getElementById('memoMore');
-  more.innerHTML = MEMO.sections.map(sec =>
+function renderMemo() {
+  document.getElementById('memoSub').textContent = MEMO.sub;
+  document.getElementById('memoBody').innerHTML = MEMO.sections.map(sec =>
     `<div class="memo-sec"><div class="memo-h">${escHtml(sec.title)}</div>` +
     `<ul class="memo-list">${sec.items.map(t => `<li>${escHtml(t)}</li>`).join('')}</ul></div>`
   ).join('');
-  more.hidden = !expanded;
-  document.getElementById('memoToggle').textContent = expanded ? 'Свернуть' : 'Подробнее';
 }
 function openMemo() {
-  renderMemo(false); // по умолчанию видно только «Главное»
+  renderMemo();
   const bd = document.getElementById('memoBackdrop');
   bd.setAttribute('aria-hidden', 'false');
   bd.querySelector('.memo-card').scrollTop = 0;
@@ -4417,19 +5139,516 @@ function closeMemo() {
 }
 document.getElementById('memoClose').addEventListener('click', closeMemo);
 document.getElementById('memoOk').addEventListener('click', closeMemo);
-document.getElementById('memoToggle').addEventListener('click', () => {
-  renderMemo(document.getElementById('memoMore').hidden);
-});
 document.getElementById('memoOpenBtn').addEventListener('click', openMemo);
 document.getElementById('memoBackdrop').addEventListener('click', (e) => { if (e.target.id === 'memoBackdrop') closeMemo(); });
 
+// ================= ОБЛАКО (Supabase) =================
+// Главная копия — память телефона: приложение работает и без интернета.
+// Облако — копия всех данных и синхронизация между устройствами, когда есть интернет:
+//   training_log — журнал подходов, строка = упражнение + день (sets, meta, t)
+//   app_kv       — остальные данные приложения «ключ → значение»: заметки, ссылки, сон, архивы, копии
+// Удалений нет: приложение только добавляет и обновляет строки, права на удаление в базе нет.
+// Новее та версия, у которой больше t (время правки на устройстве); база не даёт старой затереть новую.
+// Публичный (anon) ключ рассчитан на то, чтобы лежать в коде сайта: данные закрыты правилами RLS —
+// каждый видит и меняет только свои строки. Секретный ключ (service_role) в коде не нужен и не нужен никогда.
+// Таблицы и правила создаются один раз скриптом supabase-setup.sql.
+const SB_URL = 'https://pvmdetoukuybxtfehgbx.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2bWRldG91a3V5Ynh0ZmVoZ2J4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI5NTU3NzQsImV4cCI6MjA4ODUzMTc3NH0.9J4AadFYX4PnVMJS5nGSZfaYGX1s1E5yZvQPgpUsb08';
+const CLOUD_LOGINS = { 'lev': 'lev.rzn.office@gmail.com' }; // тот же аккаунт, что в LEV'S HUB
+const AUTH_KEY = 'levshub_auth';
+const SYNC_STATE_KEY = 'levshub_sync_state';
+const SYNC_DIRTY_KEY = 'levshub_sync_dirty';
+// В облако не идут: журнал (у него своя таблица), вход, служебное синхронизации, счётчики подходов за день, таймер
+const KV_SKIP = /^levshub_(log$|auth$|sync_|session_|timer_|training_view$|day_override_)/;
+
+// ----- Вход -----
+function getAuth() {
+  const a = LS.get(AUTH_KEY, null);
+  return (a && a.access_token && a.refresh_token) ? a : null;
+}
+function saveSession(j, prev) {
+  const a = {
+    access_token: j.access_token,
+    refresh_token: j.refresh_token || (prev && prev.refresh_token),
+    expires_at: Date.now() + (j.expires_in || 3600) * 1000,
+    uid: (j.user && j.user.id) || (prev && prev.uid),
+    email: (j.user && j.user.email) || (prev && prev.email)
+  };
+  localStorage.setItem(AUTH_KEY, JSON.stringify(a));
+  return a;
+}
+async function authRequest(path, body) {
+  const r = await fetch(SB_URL + '/auth/v1/' + path, {
+    method: 'POST',
+    headers: { apikey: SB_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw Object.assign(new Error(j.error_description || j.msg || j.message || ('HTTP ' + r.status)), { status: r.status });
+  return j;
+}
+async function cloudLogin(login, password) {
+  const email = CLOUD_LOGINS[login.trim().toLowerCase()] || login.trim();
+  return saveSession(await authRequest('token?grant_type=password', { email: email, password: password }));
+}
+let refreshRun = null;
+function validAuth() {
+  const a = getAuth();
+  if (!a) return Promise.resolve(null);
+  if (a.expires_at - 60000 > Date.now()) return Promise.resolve(a);
+  if (!refreshRun) {
+    refreshRun = authRequest('token?grant_type=refresh_token', { refresh_token: a.refresh_token })
+      .then(j => saveSession(j, a))
+      .catch(e => {
+        // вход отозван или истёк — выходим; записи остаются в телефоне
+        if (e.status === 400 || e.status === 401 || e.status === 403) {
+          localStorage.removeItem(AUTH_KEY);
+          cloudStatus = { s: 'auth', text: '' };
+        }
+        throw e;
+      })
+      .finally(() => { refreshRun = null; });
+  }
+  return refreshRun;
+}
+async function changePassword(pw) {
+  const a = await validAuth();
+  if (!a) throw new Error('нужно войти');
+  const r = await fetch(SB_URL + '/auth/v1/user', {
+    method: 'PUT',
+    headers: { apikey: SB_KEY, Authorization: 'Bearer ' + a.access_token, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password: pw })
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.msg || j.error_description || j.message || ('HTTP ' + r.status));
+}
+
+// ----- Запросы к таблицам -----
+async function sb(path, opts, retried) {
+  const a = await validAuth();
+  if (!a) throw Object.assign(new Error('нужно войти'), { status: 401 });
+  const o = opts || {};
+  const r = await fetch(SB_URL + '/rest/v1/' + path, {
+    method: o.method || 'GET',
+    body: o.body,
+    headers: Object.assign({ apikey: SB_KEY, Authorization: 'Bearer ' + a.access_token, 'Content-Type': 'application/json' }, o.headers || {})
+  });
+  if (r.status === 401 && !retried) {
+    const cur = getAuth();
+    if (cur) { cur.expires_at = 0; localStorage.setItem(AUTH_KEY, JSON.stringify(cur)); }
+    return sb(path, opts, true);
+  }
+  const txt = await r.text();
+  if (!r.ok) throw Object.assign(new Error(txt || ('HTTP ' + r.status)), { status: r.status });
+  return txt ? JSON.parse(txt) : null;
+}
+async function sbAll(path) {
+  const out = [];
+  for (let off = 0; ; off += 1000) {
+    const page = await sb(path + (path.indexOf('?') >= 0 ? '&' : '?') + 'limit=1000&offset=' + off);
+    if (!Array.isArray(page)) break;
+    out.push.apply(out, page);
+    if (page.length < 1000) break;
+  }
+  return out;
+}
+async function upsertRows(table, conflict, rows) {
+  let batch = [], size = 0;
+  const send = async () => {
+    if (!batch.length) return;
+    await sb(table + '?on_conflict=' + conflict, {
+      method: 'POST',
+      headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify(batch)
+    });
+    batch = []; size = 0;
+  };
+  for (const r of rows) {
+    const len = JSON.stringify(r).length;
+    if (batch.length && (size + len > 700000 || batch.length >= 500)) await send();
+    batch.push(r); size += len;
+  }
+  await send();
+}
+
+// ----- Что ещё не отправлено -----
+function getSyncState() { const st = LS.get(SYNC_STATE_KEY, null); return (st && typeof st === 'object') ? st : {}; }
+function saveSyncState(st) { try { localStorage.setItem(SYNC_STATE_KEY, JSON.stringify(st)); } catch (e) {} }
+function getDirty() { const d = LS.get(SYNC_DIRTY_KEY, []); return Array.isArray(d) ? d : []; }
+function setDirty(arr) { try { localStorage.setItem(SYNC_DIRTY_KEY, JSON.stringify(arr)); } catch (e) {} }
+function markLogDirty(id, date) {
+  const d = getDirty(), k = id + '|' + date;
+  if (d.indexOf(k) < 0) { d.push(k); setDirty(d); }
+}
+function markAllLogDirty() {
+  const log = getLog(), d = new Set(getDirty());
+  Object.keys(log).forEach(id => Object.keys(log[id] || {}).forEach(day => { if (ISO_RE.test(day)) d.add(id + '|' + day); }));
+  setDirty(Array.from(d));
+}
+function strHash(str) {
+  let h = 5381;
+  for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0;
+  return (h >>> 0).toString(36) + ':' + str.length;
+}
+// «Пустое» значение: новое устройство, где ещё ничего не записано
+function trivialValue(v) {
+  if (v === null || v === undefined) return true;
+  const t = String(v).trim();
+  return t === '' || t === '{}' || t === '[]' || t === 'null' || /"keys":\{\}\}$/.test(t);
+}
+function kvKeys() {
+  const out = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.indexOf('levshub_') === 0 && !KV_SKIP.test(k)) out.push(k);
+  }
+  return out;
+}
+function syncStamp() {
+  const d = new Date();
+  return todayISO() + '_' + String(d.getHours()).padStart(2, '0') + String(d.getMinutes()).padStart(2, '0') + String(d.getSeconds()).padStart(2, '0');
+}
+
+// ----- Журнал: облако → телефон (новее по t побеждает) -----
+function applyLogRows(rows, st) {
+  if (!rows.length) return 0;
+  const log = getLog(), dirty = new Set(getDirty());
+  let changed = 0;
+  rows.forEach(r => {
+    const id = r.exercise_id, day = String(r.day).slice(0, 10), k = id + '|' + day;
+    if (!id || !ISO_RE.test(day)) return;
+    if (!log[id] || typeof log[id] !== 'object') log[id] = {};
+    const e = log[id][day], rt = Number(r.t) || 0, lt = (e && e.t) || 0;
+    if (!e || rt > lt) {
+      log[id][day] = Object.assign({}, r.meta || {}, { sets: Array.isArray(r.sets) ? r.sets : [], t: rt });
+      dirty.delete(k);
+      changed++;
+    } else if (rt === lt) {
+      dirty.delete(k); // та же версия уже в облаке
+    }
+    if (!st.logPull || r.updated_at > st.logPull) st.logPull = r.updated_at;
+  });
+  localStorage.setItem(LOG_KEY, JSON.stringify(log));
+  setDirty(Array.from(dirty));
+  return changed;
+}
+// ----- Журнал: телефон → облако -----
+async function pushLogDirty(uid) {
+  const dirty = getDirty();
+  if (!dirty.length) return;
+  const log = getLog(), rows = [], sent = {};
+  dirty.forEach(k => {
+    const i = k.lastIndexOf('|'), id = k.slice(0, i), day = k.slice(i + 1);
+    const e = log[id] && log[id][day];
+    if (!e || !ISO_RE.test(day)) return;
+    const meta = {};
+    if (e.src) meta.src = e.src;
+    if (e.nodate) meta.nodate = true;
+    rows.push({ user_id: uid, exercise_id: id, day: day, sets: Array.isArray(e.sets) ? e.sets : [], meta: meta, t: e.t || 1 });
+    sent[k] = e.t;
+  });
+  await upsertRows('training_log', 'user_id,exercise_id,day', rows);
+  // убираем из очереди только то, что не правили, пока шла отправка
+  const now = getLog();
+  setDirty(getDirty().filter(k => {
+    if (!(k in sent)) return true;
+    const i = k.lastIndexOf('|'), e = now[k.slice(0, i)] && now[k.slice(0, i)][k.slice(i + 1)];
+    return !(e && e.t === sent[k]);
+  }));
+}
+// ----- Остальные данные: облако → телефон -----
+// Правили и тут, и там — берём облачную версию, а свою сохраняем отдельной копией (ничего не теряется).
+function applyKvRows(rows, st) {
+  let changed = 0;
+  rows.forEach(r => {
+    const k = r.key;
+    if (!st.kvPull || r.updated_at > st.kvPull) st.kvPull = r.updated_at;
+    if (!k || k.indexOf('levshub_') !== 0 || KV_SKIP.test(k) || r.value === null) return;
+    const v = localStorage.getItem(k), known = st.kv[k];
+    if (v === r.value) { st.kv[k] = { h: strHash(v), t: r.t }; return; }
+    // отметки разовых переносов: годится любая версия, свою не трогаем
+    if (/^levshub_mig_/.test(k) && v !== null) { st.kv[k] = { h: strHash(v), t: r.t }; return; }
+    const localEdited = v !== null && (known ? strHash(v) !== known.h : !trivialValue(v));
+    if (localEdited) localStorage.setItem('levshub_backup_conflict_' + syncStamp() + '_' + k.slice(8), v);
+    localStorage.setItem(k, r.value);
+    st.kv[k] = { h: strHash(r.value), t: r.t };
+    changed++;
+  });
+  return changed;
+}
+// ----- Остальные данные: телефон → облако -----
+async function pushKv(st, uid) {
+  const rows = [], hashes = {};
+  kvKeys().forEach(k => {
+    const v = localStorage.getItem(k);
+    if (v === null) return;
+    const h = strHash(v);
+    if (st.kv[k] && st.kv[k].h === h) return;
+    rows.push({ user_id: uid, key: k, value: v, t: Date.now() });
+    hashes[k] = h;
+  });
+  if (!rows.length) return;
+  await upsertRows('app_kv', 'user_id,key', rows);
+  rows.forEach(r => { st.kv[r.key] = { h: hashes[r.key], t: r.t }; });
+}
+// ----- Проверка переноса: облако совпадает с телефоном -----
+function canonJson(v) {
+  if (Array.isArray(v)) return '[' + v.map(canonJson).join(',') + ']';
+  if (v && typeof v === 'object') return '{' + Object.keys(v).sort().map(k => JSON.stringify(k) + ':' + canonJson(v[k])).join(',') + '}';
+  return JSON.stringify(v === undefined ? null : v);
+}
+async function verifyCloud() {
+  const rows = await sbAll('training_log?select=exercise_id,day,sets&order=exercise_id.asc,day.asc');
+  const remote = new Map(rows.map(r => [r.exercise_id + '|' + String(r.day).slice(0, 10), canonJson(r.sets)]));
+  const log = getLog();
+  let n = 0, bad = 0;
+  Object.keys(log).forEach(id => Object.keys(log[id] || {}).forEach(d => {
+    const e = log[id][d];
+    if (!ISO_RE.test(d) || !entryHasData(e)) return;
+    n++;
+    if (remote.get(id + '|' + d) !== canonJson(e.sets)) bad++;
+  }));
+  const kv = await sbAll('app_kv?select=key,value&order=key.asc');
+  const km = new Map(kv.map(r => [r.key, r.value]));
+  let kn = 0;
+  kvKeys().forEach(k => {
+    if (/^levshub_mig_/.test(k)) return;
+    kn++;
+    if (km.get(k) !== localStorage.getItem(k)) bad++;
+  });
+  return { at: Date.now(), rows: n, keys: kn, bad: bad };
+}
+
+// ----- Синхронизация -----
+let cloudStatus = { s: 'off', text: '' };
+let syncRun = null, syncQueued = false, syncTimer = null;
+function scheduleSync() {
+  if (!window.__cloudReady || !getAuth()) return;
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(syncNow, 4000);
+}
+function syncNow() {
+  clearTimeout(syncTimer);
+  if (syncRun) { syncQueued = true; return syncRun; }
+  syncRun = doSync().finally(() => {
+    syncRun = null;
+    if (syncQueued) { syncQueued = false; syncNow(); }
+  });
+  return syncRun;
+}
+async function doSync() {
+  if (!getAuth()) { renderCloud(); return; }
+  if (navigator.onLine === false) { setCloud('offline'); return; }
+  setCloud('busy');
+  try {
+    const a = await validAuth();
+    if (!a) { setCloud('auth'); return; }
+    let st = getSyncState();
+    if (st.uid !== a.uid) st = { uid: a.uid, kv: {} };
+    if (!st.kv) st.kv = {};
+    if (!st.initDone) markAllLogDirty(); // первый раз на этом устройстве — отправить весь журнал
+    let changed = 0;
+    const since = (v) => v ? '&updated_at=gt.' + encodeURIComponent(v) : '';
+    changed += applyLogRows(await sbAll('training_log?select=exercise_id,day,sets,meta,t,updated_at&order=updated_at.asc' + since(st.logPull)), st);
+    saveSyncState(st);
+    await pushLogDirty(a.uid);
+    changed += applyKvRows(await sbAll('app_kv?select=key,value,t,updated_at&order=updated_at.asc' + since(st.kvPull)), st);
+    saveSyncState(st);
+    await pushKv(st, a.uid);
+    st.initDone = true;
+    st.lastOk = Date.now();
+    saveSyncState(st);
+    if (!st.verified || st.verified.bad) {
+      st.verified = await verifyCloud();
+      saveSyncState(st);
+    }
+    setCloud('ok');
+    if (changed) refreshAfterPull();
+  } catch (e) {
+    console.error('[levshub] синхронизация', e);
+    if (!getAuth()) { setCloud('auth'); return; }
+    const why = cloudErrText(e);
+    setCloud(navigator.onLine === false || why === 'нет связи с облаком' ? 'offline' : 'error', why);
+  }
+}
+// Пришло новое из облака — перерисовать открытый экран (если сейчас ничего не вводишь)
+function refreshAfterPull() {
+  if (numpadEl.classList.contains('show') || document.getElementById('modalBackdrop').classList.contains('show')) return;
+  const page = document.querySelector('.page.active');
+  const id = page && page.id;
+  if (id === 'page-training') renderTraining();
+  else if (id === 'page-home') renderHome();
+  else if (id === 'page-sleep') renderSleep();
+}
+function cloudErrText(e) {
+  const m = String((e && e.message) || e || '');
+  if (/Invalid login credentials/i.test(m)) return 'неверный логин или пароль';
+  if (/Failed to fetch|NetworkError|Load failed|network/i.test(m)) return 'нет связи с облаком';
+  if (/PGRST205|42P01|does not exist|Could not find the table/i.test(m)) return 'в Supabase ещё нет таблиц — нужен шаг с SQL из инструкции';
+  if (/row-level security|42501/i.test(m)) return 'облако не пустило запись (права доступа)';
+  if (/should be different/i.test(m)) return 'новый пароль должен отличаться от старого';
+  if (/at least|weak|short|characters/i.test(m)) return 'пароль слишком короткий или простой';
+  if (/Email not confirmed/i.test(m)) return 'email не подтверждён';
+  return m.slice(0, 140) || 'неизвестная ошибка';
+}
+
+// ----- Статус и кнопки (карточка «данные · облако» и точка в шапке) -----
+function hhmm(ms) { const d = new Date(ms); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }
+function setCloud(s, text) { cloudStatus = { s: s, text: text || '' }; renderCloud(); }
+function renderCloud() {
+  const a = getAuth(), st = getSyncState();
+  let cls, text;
+  if (!a) {
+    cls = cloudStatus.s === 'auth' ? 'err' : '';
+    text = cloudStatus.s === 'auth' ? 'вход истёк — войди снова; всё записанное ждёт в телефоне' : 'облако не подключено — данные только в телефоне';
+  } else if (cloudStatus.s === 'busy') { cls = 'busy'; text = 'синхронизирую…'; }
+  else if (cloudStatus.s === 'offline') { cls = 'pending'; text = 'нет интернета — всё сохранено в телефоне, отправлю, когда появится'; }
+  else if (cloudStatus.s === 'error') { cls = 'err'; text = 'не получилось: ' + cloudStatus.text + ' — повторю позже'; }
+  else if (st.uid === a.uid && st.lastOk) { cls = getDirty().length ? 'pending' : 'ok'; text = 'облако ✓ · синхронизировано в ' + hhmm(st.lastOk); }
+  else { cls = 'pending'; text = 'вход выполнен · готовлю перенос'; }
+  const sub = [];
+  if (a && st.uid === a.uid && st.verified) {
+    sub.push(st.verified.bad ? 'проверка: не совпало ' + st.verified.bad + ' — досинхронизирую'
+      : 'перенос проверен: записей ' + st.verified.rows + ', разделов ' + st.verified.keys + ' — всё совпадает');
+  }
+  const pend = a ? getDirty().length : 0;
+  if (pend && cloudStatus.s !== 'busy') sub.push('ждут отправки: ' + pend);
+  if (a && a.email) sub.push(a.email);
+  document.querySelectorAll('.cloud-dot').forEach(d => { d.className = 'cloud-dot' + (cls ? ' ' + cls : ''); });
+  const t = document.getElementById('cloudText');
+  if (t) t.innerHTML = escHtml(text) + (sub.length ? `<span class="cloud-sub">${escHtml(sub.join(' · '))}</span>` : '');
+  const b = document.getElementById('cloudBtns');
+  if (b) b.innerHTML = a
+    ? '<button type="button" class="btn btn-ghost" data-cloud="sync"><i class="ti ti-refresh"></i>синхронизировать</button>' +
+      '<button type="button" class="btn btn-ghost" data-cloud="pass"><i class="ti ti-key"></i>сменить пароль</button>' +
+      '<button type="button" class="btn btn-ghost" data-cloud="out">выйти</button>'
+    : '<button type="button" class="btn btn-red" data-cloud="in">войти в облако</button>';
+}
+document.getElementById('cloudBtns').addEventListener('click', (e) => {
+  const b = e.target.closest && e.target.closest('[data-cloud]');
+  if (!b) return;
+  const c = b.dataset.cloud;
+  if (c === 'in') openCloudLogin();
+  else if (c === 'sync') syncNow();
+  else if (c === 'pass') openPasswordChange();
+  else if (c === 'out') cloudLogout();
+});
+
+function openCloudLogin() {
+  openModal(`
+    <div class="modal-head">
+      <div class="t">вход в облако</div>
+      <button class="x" onclick="closeModal()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="note-ex">тот же аккаунт, что в LEV'S HUB. Входишь один раз — дальше вход держится сам.</div>
+    <form class="cloud-form" id="cloudForm" autocomplete="on">
+      <input class="url-input" id="cloudLogin" name="username" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="логин или email" value="Lev">
+      <input class="url-input" id="cloudPass" name="password" type="password" autocomplete="current-password" placeholder="пароль">
+      <div class="url-msg" id="cloudMsg"></div>
+      <button type="submit" class="btn btn-red btn-full">войти</button>
+    </form>
+  `);
+  document.getElementById('modalBox').classList.add('url-sheet');
+  const form = document.getElementById('cloudForm');
+  const msg = document.getElementById('cloudMsg');
+  const say = (text, err) => { msg.textContent = text; msg.classList.toggle('error', !!err); };
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const login = document.getElementById('cloudLogin').value.trim();
+    const pw = document.getElementById('cloudPass').value;
+    if (!login || !pw) { say('введи логин и пароль', true); return; }
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    say('вхожу…', false);
+    try {
+      await cloudLogin(login, pw);
+      closeModal();
+      syncNow();
+    } catch (err) {
+      say(cloudErrText(err), true);
+      btn.disabled = false;
+    }
+  });
+  setTimeout(() => { try { document.getElementById('cloudPass').focus(); } catch (e) {} }, 80);
+}
+
+function openPasswordChange() {
+  openModal(`
+    <div class="modal-head">
+      <div class="t">сменить пароль</div>
+      <button class="x" onclick="closeModal()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="note-ex">пароль общий с LEV'S HUB — там тоже будет новый. Минимум 8 символов.</div>
+    <form class="cloud-form" id="passForm" autocomplete="on">
+      <input type="text" name="username" autocomplete="username" value="${escHtml((getAuth() || {}).email || '')}" hidden>
+      <input class="url-input" id="newPass1" type="password" autocomplete="new-password" placeholder="новый пароль">
+      <input class="url-input" id="newPass2" type="password" autocomplete="new-password" placeholder="ещё раз">
+      <div class="url-msg" id="passMsg"></div>
+      <button type="submit" class="btn btn-red btn-full">сменить</button>
+    </form>
+  `);
+  document.getElementById('modalBox').classList.add('url-sheet');
+  const form = document.getElementById('passForm');
+  const msg = document.getElementById('passMsg');
+  const say = (text, err) => { msg.textContent = text; msg.classList.toggle('error', !!err); };
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const p1 = document.getElementById('newPass1').value, p2 = document.getElementById('newPass2').value;
+    if (p1.length < 8) { say('минимум 8 символов', true); return; }
+    if (p1 !== p2) { say('пароли не совпадают', true); return; }
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    say('меняю…', false);
+    try {
+      await changePassword(p1);
+      say('пароль сменён ✓', false);
+      setTimeout(closeModal, 1400);
+    } catch (err) {
+      say(cloudErrText(err), true);
+      btn.disabled = false;
+    }
+  });
+  setTimeout(() => { try { document.getElementById('newPass1').focus(); } catch (e) {} }, 80);
+}
+
+function cloudLogout() {
+  appConfirm('выйти из облака? все записи останутся в телефоне, синхронизация остановится до следующего входа', { title: 'облако', yesText: 'выйти' }).then(ok => {
+    if (!ok) return;
+    const a = getAuth();
+    if (a) fetch(SB_URL + '/auth/v1/logout', { method: 'POST', headers: { apikey: SB_KEY, Authorization: 'Bearer ' + a.access_token } }).catch(() => {});
+    localStorage.removeItem(AUTH_KEY);
+    setCloud('off');
+  });
+}
+
+function initCloud() {
+  window.__cloudReady = true;
+  renderCloud();
+  if (getAuth()) syncNow();
+  window.addEventListener('online', () => { if (getAuth()) syncNow(); });
+  window.addEventListener('offline', () => { if (getAuth()) setCloud('offline'); });
+  // вернулся в приложение — подтянуть; ушёл — успеть отправить
+  document.addEventListener('visibilitychange', () => { if (getAuth()) syncNow(); });
+  setInterval(() => { if (!document.hidden && getAuth()) syncNow(); }, 60000);
+}
+
 // ================= INIT =================
-migrateWorkoutData(); // one-time migration from levshub_workout_A/B → levshub_workout
-migrateLowRowSingleArm(); // разовый перевод тяги на одну руку; подходы двумя руками → history
-migrateWorkoutToSets(); // one-time migration {w,r} → sets[0]; старые записи сохраняются
-migrateArchiveV5(); // разовый архив v5 перед программой v6: копия рекордов и заметок в history
-migrateProneCurlV61(); // v6.1: прежний рекорд «сгибание ног лёжа» → архив этой же записи
-migrateV62(); // v6.2: резервная копия всех данных, новая точка отсчёта, чистка заметок
+// Новое устройство (ещё ничего не записано): разовые переносы старых форматов не нужны —
+// данные придут из облака уже в новом виде. Ставим отметки, чтобы переносы не наплодили пустых записей.
+const FRESH_DEVICE = ['levshub_workout', 'levshub_workout_A', 'levshub_workout_B', LOG_KEY].every(k => localStorage.getItem(k) === null);
+if (FRESH_DEVICE) {
+  ['levshub_mig_v6_archive', 'levshub_mig_v61_prone', 'levshub_mig_v62', 'levshub_mig_v7'].forEach(k => {
+    try { if (localStorage.getItem(k) === null) localStorage.setItem(k, todayISO()); } catch (e) {}
+  });
+} else {
+  migrateWorkoutData(); // one-time migration from levshub_workout_A/B → levshub_workout
+  migrateLowRowSingleArm(); // разовый перевод тяги на одну руку; подходы двумя руками → history
+  migrateWorkoutToSets(); // one-time migration {w,r} → sets[0]; старые записи сохраняются
+  migrateArchiveV5(); // разовый архив v5 перед программой v6: копия рекордов и заметок в history
+  migrateProneCurlV61(); // v6.1: прежний рекорд «сгибание ног лёжа» → архив этой же записи
+  migrateV62(); // v6.2: резервная копия всех данных, новая точка отсчёта, чистка заметок
+  migrateLogV7(); // v7: копия всех данных, журнал по дням из нынешних цифр, «старые заметки» убраны
+}
 runSplash();
 const initialPreset = loadTimerPreset();
 applyTimerPreset(initialPreset, { silent: true });
@@ -4441,6 +5660,7 @@ markAllNumeric();
 requestAnimationFrame(() => requestAnimationFrame(updateAllToggleIndicators));
 // Памятка — при каждом открытии приложения (после заставки, если она идёт)
 setTimeout(openMemo, document.getElementById('splash') ? 2150 : 250);
+initCloud(); // облако: синхронизация, если уже входил
 </script>
 </body>
 </html>
