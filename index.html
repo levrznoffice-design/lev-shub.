@@ -580,7 +580,6 @@
   .caf-btn.on { color: var(--accent-text); background: rgba(var(--accent-rgb),0.10); border-color: rgba(var(--accent-rgb),0.35); }
   .caf-btn:active { transform: scale(0.94); }
   /* подсказка под названием упражнения */
-  .ex-hint { font-size: 11px; color: var(--accent-text); font-style: italic; letter-spacing: 0.2px; margin: -8px 0 10px; }
   /* у упражнения ещё нет ссылки на видео */
   .yt-btn.no-url { color: var(--muted); opacity: 0.55; }
   /* объём в неделю */
@@ -692,33 +691,16 @@
   .dn-picker { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; border: 0; padding: 0; margin: 0; font-size: 16px; -webkit-appearance: none; }
   .ex-card.past .dn-mid { background: rgba(var(--accent-rgb),0.13); color: var(--accent-text); }
   .ex-card.past .dn-mid i, .ex-card.past .dn-tag { color: var(--accent-text); }
-  .day-info { font-size: 11px; color: var(--muted); letter-spacing: 0.2px; line-height: 1.5; margin: 0 0 8px; }
-  .di-line { display: flex; align-items: center; gap: 6px; min-width: 0; min-height: 18px; }
-  .di-t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .di-pr { color: var(--accent-text); transform-origin: left center; }
-  .ex-card.is-pr .di-pr { font-weight: 600; }
-  .di-pr.pop { animation: prPop 900ms cubic-bezier(.2,.9,.3,1.25); }
-  @keyframes prPop {
-    0% { transform: scale(1); }
-    30% { transform: scale(1.07); text-shadow: 0 0 14px rgba(var(--accent-rgb),0.85); }
-    100% { transform: scale(1); text-shadow: none; }
-  }
-  .di-fill {
-    flex-shrink: 0;
-    font-size: 11px; color: var(--red);
-    padding: 2px 8px;
-    border-radius: 7px;
-    border: 1px solid rgba(var(--red-rgb),0.3);
-    background: rgba(var(--red-rgb),0.06);
-    transition: transform 100ms ease;
-  }
-  .di-fill:active { transform: scale(0.94); }
+  .day-block { margin-bottom: 8px; }
   .sets-block.slide-l { animation: slideFromL 280ms cubic-bezier(.2,.85,.3,1); }
   .sets-block.slide-r { animation: slideFromR 280ms cubic-bezier(.2,.85,.3,1); }
   @keyframes slideFromL { from { opacity: 0; transform: translateX(-18px); } to { opacity: 1; transform: none; } }
   @keyframes slideFromR { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
-  .sg-in.filled-flash { animation: fillFlash 650ms ease; }
-  @keyframes fillFlash { 0% { background: rgba(var(--accent-rgb),0.35); border-color: rgba(var(--accent-rgb),0.7); } }
+  /* больше, чем в прошлый раз (вес или повторы) — цифры на полсекунды загораются зелёным */
+  .sg-in.up { animation: upFlash 600ms ease-out; }
+  @keyframes upFlash {
+    0%, 45% { color: var(--green); background: rgba(var(--green-rgb),0.14); border-color: rgba(var(--green-rgb),0.6); }
+  }
 
   /* RIR — колонка в сетке подходов */
   .sg-rir {
@@ -920,7 +902,7 @@
     -webkit-appearance: none;
     transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
   }
-  .sg-in::placeholder { color: rgba(var(--ink-rgb),0.25); }
+  .sg-in::placeholder { color: rgba(var(--ink-rgb),0.3); } /* повторы прошлого раза */
   /* предзаполненный вес (зеркалит подход 1) — приглушён, пока его не правили */
   .sg-in[data-auto="1"] { color: var(--muted-2); }
   .note-area {
@@ -2366,17 +2348,22 @@ function getSetsRemaining(ex) {
 }
 
 // ----- Сетка ввода подходов 1/2/3 (за дату карточки) -----
-// Подсказки в пустых полях — цифры прошлой тренировки. Справа — RIR подхода.
+// Новый день: вес стоит как в прошлый раз (поправишь сам), повторы прошлого раза — полупрозрачной
+// подсказкой в пустых полях. Справа — RIR подхода.
 function buildSetsBlock(ex, date) {
   const uni = !!ex.unilateral;
   const sets = getEntrySets(ex.id, date);
   const pd = prevEntryDate(ex.id, date);
   const prev = pd ? getEntrySets(ex.id, pd) : [];
-  const s1 = sets[0];
-  const s1w = (s1 && s1.w !== null && s1.w !== undefined) ? s1.w : '';
+  // вес подхода: записанный за этот день, а если подход ещё не записан — из прошлой тренировки
+  const wOf = (i) => {
+    const s = sets[i], p = prev[i];
+    if (s && exportHas(s.w)) return s.w;
+    return (p && exportHas(p.w)) ? p.w : null;
+  };
+  const s1w = wOf(0) === null ? '' : wOf(0);
   const ph = (i, f) => {
-    const src = prev[i] || (f === 'w' ? prev[0] : null);
-    const v = src ? src[f] : null;
+    const v = (f !== 'w' && prev[i]) ? prev[i][f] : null;
     return exportHas(v) ? String(v) : '—';
   };
   const cell = (i, f, val, auto) =>
@@ -2387,7 +2374,7 @@ function buildSetsBlock(ex, date) {
   const count = parseTotalSets(ex.sets);
   for (let i = 0; i < count; i++) {
     const s = sets[i];
-    const own = (s && s.w !== null && s.w !== undefined) ? s.w : null;
+    const own = wOf(i);
     // подходы 2 и 3: вес предзаполняется весом подхода 1, пока его не правили
     const auto = i > 0 && (own === null || own === s1w);
     const wVal = i === 0 ? s1w : (auto ? s1w : own);
@@ -2449,7 +2436,6 @@ function commitSets(card) {
   const stored = (e && Array.isArray(e.sets)) ? e.sets : [];
   for (let i = sets.length; i < stored.length; i++) sets.push(stored[i] || null);
   saveEntrySets(id, date, sets);
-  updateCardInfo(card);
 }
 
 // ================= ЖУРНАЛ ПОДХОДОВ ПО ДНЯМ (v7, с 03.11.2026) =================
@@ -2590,28 +2576,6 @@ function navDates(id, cur) {
   set.add(t); set.add(cur);
   return Array.from(set).filter(d => d <= t).sort();
 }
-function setsLine(sets, uni) {
-  return sets.map(st => formatSetData(st, uni)).filter(Boolean).map(x => x.replace('кг', ' кг')).join(' · ');
-}
-function dayInfoHtml(ex, date) {
-  const id = ex.id, uni = !!ex.unilateral;
-  const out = [];
-  const pd = prevEntryDate(id, date);
-  if (pd) {
-    const cur = getEntrySets(id, date), prev = getEntrySets(id, pd);
-    const canFill = !cur.some(st => st && exportHas(st.w)) && prev.some(st => st && exportHas(st.w));
-    const when = entryWhen(id, pd, false);
-    out.push(`<div class="di-line"><span class="di-t">прошлый раз · ${when}: ${escHtml(setsLine(prev, uni) || '—')}</span>` +
-      (canFill ? `<button type="button" class="di-fill" data-fill="${pd}">вес как ${isNoDate(id, pd) ? 'раньше' : when}</button>` : '') + `</div>`);
-  }
-  const rec = exRecord(id);
-  if (rec) {
-    const isNew = isNewRecord(id, date);
-    out.push(`<div class="di-line di-pr"><span class="di-t">${isNew ? '🏆 новый рекорд' : 'рекорд'} · ` +
-      `${escHtml((formatSetData(rec.set, uni) || '').replace('кг', ' кг'))} · ${entryWhen(id, rec.date, false)}</span></div>`);
-  }
-  return out.join('');
-}
 function buildDayBlock(ex, date) {
   const t = todayISO();
   const ds = navDates(ex.id, date);
@@ -2628,43 +2592,19 @@ function buildDayBlock(ex, date) {
           <div class="dn-mid"><i class="ti ti-calendar"></i><span>${label}</span>${tag}<input type="date" class="dn-picker" value="${date}" max="${t}" aria-label="выбрать дату"></div>
           <button type="button" class="dn-arrow" data-dn="1" aria-label="следующая тренировка"${i >= ds.length - 1 ? ' disabled' : ''}><i class="ti ti-chevron-right"></i></button>
         </div>
-        <div class="day-info">${dayInfoHtml(ex, date)}</div>
       </div>`;
 }
-// Обновляет «прошлый раз / рекорд» без перерисовки полей (клавиатура не закрывается)
-function updateCardInfo(card) {
-  const ex = findExById(card.dataset.id);
-  const box = card.querySelector('.day-info');
-  if (!ex || !box) return;
-  const wasNew = card.classList.contains('is-pr');
-  box.innerHTML = dayInfoHtml(ex, card.dataset.date);
-  const isNew = isNewRecord(ex.id, card.dataset.date);
-  card.classList.toggle('is-pr', isNew);
-  if (isNew && !wasNew) {
-    const pr = box.querySelector('.di-pr');
-    if (pr) pr.classList.add('pop');
-    if (navigator.vibrate) navigator.vibrate([15, 40, 15]);
-  }
-  bindDayInfo(card);
-}
-function bindDayInfo(card) {
-  const btn = card.querySelector('.di-fill');
-  if (btn) btn.addEventListener('click', (e) => { e.stopPropagation(); fillWeightsFrom(card, btn.dataset.fill); });
-}
-// «вес как DD.MM» — подставить веса прошлой тренировки одним нажатием
-function fillWeightsFrom(card, fromDate) {
-  const prev = getEntrySets(card.dataset.id, fromDate);
-  const w0 = prev[0] && exportHas(prev[0].w) ? prev[0].w : null;
-  card.querySelectorAll('.sg-row').forEach((row, i) => {
-    const inp = row.querySelector('[data-f="w"]');
-    if (!inp) return;
-    const v = prev[i] && exportHas(prev[i].w) ? prev[i].w : w0;
-    if (v === null) return;
-    inp.value = v;
-    if (i > 0) inp.dataset.auto = (v === w0) ? '1' : '0';
-    inp.classList.remove('filled-flash'); void inp.offsetWidth; inp.classList.add('filled-flash');
-  });
-  commitSets(card);
+// Больше, чем в прошлый раз в этом же подходе (вес или повторы, хоть на 0.5) — цифры вспыхивают зелёным
+function flashIfUp(inp) {
+  const card = inp.closest('.ex-card');
+  if (!card) return;
+  const v = numOrNull(normVal(inp.value.trim()));
+  const pd = prevEntryDate(card.dataset.id, card.dataset.date);
+  if (v === null || !pd) return;
+  const ps = getEntrySets(card.dataset.id, pd)[+inp.dataset.set];
+  const pv = ps ? numOrNull(ps[inp.dataset.f]) : null;
+  if (pv === null || v <= pv) return;
+  inp.classList.remove('up'); void inp.offsetWidth; inp.classList.add('up');
 }
 function bindDayNav(card) {
   const id = card.dataset.id;
@@ -2681,7 +2621,6 @@ function bindDayNav(card) {
     if (!ISO_RE.test(v) || v > todayISO() || v === card.dataset.date) return;
     showCardDate(id, v, v < card.dataset.date ? -1 : 1);
   });
-  bindDayInfo(card);
 }
 function showCardDate(id, date, dir) {
   closeNumpad();
@@ -2903,7 +2842,6 @@ function buildExCard(ex) {
       <div class="ex-meta">
         <div class="ex-title">${ex.num}. ${ex.name}</div>
         <div class="ex-sub">${ex.sub} · ${ex.sets}${ex.rest ? `<span class="ex-rest"><i class="ti ti-clock"></i>${formatRest(ex.rest)}</span>` : ''}</div>
-        ${ex.hint ? `<div class="ex-hint">${escHtml(ex.hint)}</div>` : ''}
       </div>
       ${setsAreaHTML}
       ${ex.tech ? `<button class="tech-btn" data-tech="${ex.id}" aria-label="заметки по технике" title="заметки по технике"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5h12.5a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H5a1.5 1.5 0 0 1-1.5-1.5v-14A1.5 1.5 0 0 1 5 3.5z"/><path d="M8.5 3.5v17"/><path d="M11.75 8.75h3.75M11.75 12.5h3.75"/></svg></button>` : ''}
@@ -2922,7 +2860,6 @@ function buildExCard(ex) {
       <button type="button" class="note-more" hidden>показать больше</button>
     </div>
   `;
-  if (isNewRecord(ex.id, date)) card.classList.add('is-pr');
   return card;
 }
 
@@ -3078,6 +3015,7 @@ function bindSetsGrid(card) {
         });
       }
       commitSets(card);
+      flashIfUp(inp);
     });
   });
   // RIR: тап по ячейке открывает клавиатуру на повторах этого подхода — там кнопки RIR
