@@ -1903,6 +1903,18 @@ const TECH_STANDING_CABLE_CRUNCH = `
     <li>Отказ = позвоночник перестал сгибаться, дальше тянут руки.</li>
   </ul>
 `;
+const TECH_DECLINE_CRUNCH = `
+  <h4>Заметки по технике</h4>
+  <ul>
+    <li>Скамья под наклоном, ноги зафиксированы под валиками.</li>
+    <li>Гиря или гантель на груди, держать двумя руками.</li>
+    <li>Подниматься только до ~45° — лопатки и середина спины отрываются от скамьи. Не до вертикали: выше работают уже сгибатели бедра, а не пресс.</li>
+    <li>Думать «рёбра к тазу», подбородок слегка к груди.</li>
+    <li>Наверху выдох и пауза 1 сек.</li>
+    <li>Вниз медленно, до растяжения пресса.</li>
+    <li>Отказ — когда не можешь докрутиться до ~45° с паузой без рывка.</li>
+  </ul>
+`;
 const TECH_SEATED_LEG_CURL = `
   <h4>Заметки по технике</h4>
   <ul>
@@ -1932,14 +1944,15 @@ const trainingB = [
   // не пересчитаны — перенесены как есть в history этой же записи (migrateLowRowSingleArm).
   { id: 'low_row', num: 3, name: 'горизонтальная тяга одной рукой', sub: 'Single-Arm Low Row', sets: '3+3×10-15', rest: 120, unilateral: true, tech: TECH_LOW_ROW, work: { back: 1, rear_delts: 0.5, biceps: 0.5 }, url: 'https://www.youtube.com/shorts/bLVeOunB-c0?feature=share' },
   { id: 'incline_db_curl', num: 4, name: 'наклонный подъём гантелей', sub: 'Incline DB Curl', sets: '3×6-10', rest: 90, work: { biceps: 1 }, url: 'https://youtube.com/shorts/uCUaRFlA9vE?si=_q-PSgOpB3iQviPn' },
-  { id: 'weighted_leg_raise', num: 5, name: 'подъёмы ног с гантелей', sub: 'Weighted Leg Raise', sets: '3×6-12', rest: 90, tech: TECH_WEIGHTED_LEG_RAISE, work: { abs: 1 }, url: 'https://youtube.com/shorts/RQDKs_EBNPY?si=BESSkagxInn_gHsV' },
+  // С 10.11.2026 пресс — скручивания на наклонной скамье; подъёмы ног — в архиве со своей историей
+  { id: 'decline_crunch', num: 5, name: 'скручивания на наклонной скамье с весом', sub: 'Decline Weighted Crunch', sets: '3×6-12', rest: 60, tech: TECH_DECLINE_CRUNCH, work: { abs: 1 }, url: '' },
   // С 21.10.2026: бицепс — сначала наклонные, потом Скотт (сгибание рук в тренажёре → архив)
   { id: 'preacher_curl', num: 6, name: 'подъём на скамье Скотта', sub: 'Preacher Curl · гантели или EZ-гриф', sets: '3×6-10', rest: 90, hint: 'Полная амплитуда, внизу не бросать руку, негатив под контролем', work: { biceps: 1 }, url: 'https://www.youtube.com/shorts/ExDxpOgCM-w?feature=share' },
   { id: 'wrist_curl', num: 7, name: 'сгибание запястий', sub: 'Wrist Curl', sets: '3×8-12', rest: 90, work: { forearms: 1 }, url: 'https://youtu.be/qMtmHwaCmYI?t=16' },
   { id: 'reverse_cable_curl', num: 8, name: 'обратный подъём на блоке', sub: 'Reverse Cable Curl', sets: '3×8-12', rest: 90, work: { forearms: 1, biceps: 0.5 }, url: 'https://www.youtube.com/shorts/KY_c3LkPZa8?feature=share' }
 ];
 const trainingC = [
-  { id: 'leg_press', num: 1, name: 'жим ногами', sub: 'Leg Press', sets: '3×8-12', rest: 180, hint: 'полная амплитуда ≠ до упора: стоп там, где таз начинает подворачиваться', work: { quads: 1 }, url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' },
+  { id: 'leg_press', num: 1, name: 'жим ногами', sub: 'Leg Press', sets: '3×8-12', rest: 180, hint: 'полная амплитуда ≠ до упора: стоп там, где таз начинает подворачиваться', work: { quads: 1, glutes: 0.5 }, url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' },
   { id: 'seated_leg_curl', num: 2, name: 'сгибание ног сидя', sub: 'Seated Leg Curl', sets: '3×6-10', rest: 90, tech: TECH_SEATED_LEG_CURL, work: { hamstrings: 1 }, url: 'https://www.youtube.com/shorts/xdbEG3xGLI8?feature=share' },
   { id: 'leg_extension', num: 3, name: 'разгибание ног', sub: 'Leg Extension', sets: '3+3×8-12', rest: 90, unilateral: true, work: { quads: 1 }, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
   // С 03.11.2026: ягодичный мост — после разгибания ног, перед аддуктором
@@ -1950,8 +1963,8 @@ const trainingC = [
   { id: 'prone_leg_curl', num: 6, name: 'сгибание ног лёжа', sub: 'Prone Leg Curl', sets: '3×6-10', rest: 90, work: { hamstrings: 1 }, url: 'https://youtube.com/shorts/FMCq0hT3KRU?si=cbbo1yN9xsXNqdqe' },
   { id: 'calf_raise', num: 7, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×6-10', rest: 60, unilateral: true, hint: 'паузы 2 сек внизу, 1 сек вверху', work: { calves: 1 }, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
   { id: 'hip_abduction', num: 8, name: 'абдуктор (разведение ног)', sub: 'Hip Abduction', sets: '3×8-12', rest: 90, work: { glute_med: 1 }, url: '' },
-  // Подъёмы ног в Legs (без кофеина) — отдельная карточка со своей историей; в Pull — weighted_leg_raise
-  { id: 'weighted_leg_raise_legs', num: 9, name: 'подъёмы ног с гантелей · legs', sub: 'Weighted Leg Raise', sets: '3×6-12', rest: 90, tech: TECH_WEIGHTED_LEG_RAISE, work: { abs: 1 }, url: 'https://youtube.com/shorts/RQDKs_EBNPY?si=BESSkagxInn_gHsV' }
+  // Скручивания в Legs (без кофеина) — отдельная карточка со своей историей; в Pull — decline_crunch
+  { id: 'decline_crunch_legs', num: 9, name: 'скручивания на наклонной скамье с весом · legs', sub: 'Decline Weighted Crunch', sets: '3×6-12', rest: 60, tech: TECH_DECLINE_CRUNCH, work: { abs: 1 }, url: '' }
 ];
 
 // ----- Дни программы v7 (с 03.11.2026) -----
@@ -1989,7 +2002,10 @@ const ARCHIVE = [
   { id: 'arm_extension', name: 'разгибание рук в тренажёре', sub: 'Arm Extension Machine', sets: '3×10-12', url: 'https://youtube.com/shorts/tVNSmck6hnE?is=wEnysnqCti6nnDQ3' },
   { id: 'total_abs', name: 'скручивания в тренажёре', sub: 'Abdominal Crunch', sets: '3×10-15', url: 'https://www.youtube.com/shorts/DVCmFYlNFRg?feature=share' },
   { id: 'kneeling_cable_crunch', name: 'скручивания на блоке стоя', sub: 'Standing Cable Crunch', sets: '3×10-15', tech: TECH_STANDING_CABLE_CRUNCH, url: 'https://vt.tiktok.com/ZSqAY7peS/' },
-  { id: 'arm_curl', name: 'сгибание рук в тренажёре', sub: 'Arm Curl Machine', sets: '3×10-12', url: 'https://youtube.com/shorts/IWDHXA1ZcT8?is=9QgKqBX6kU9lXxLr' }
+  { id: 'arm_curl', name: 'сгибание рук в тренажёре', sub: 'Arm Curl Machine', sets: '3×10-12', url: 'https://youtube.com/shorts/IWDHXA1ZcT8?is=9QgKqBX6kU9lXxLr' },
+  // 10.11.2026: пресс → скручивания на наклонной скамье
+  { id: 'weighted_leg_raise', name: 'подъёмы ног с гантелей', sub: 'Weighted Leg Raise', sets: '3×6-12', tech: TECH_WEIGHTED_LEG_RAISE, url: 'https://youtube.com/shorts/RQDKs_EBNPY?si=BESSkagxInn_gHsV' },
+  { id: 'weighted_leg_raise_legs', name: 'подъёмы ног с гантелей · legs', sub: 'Weighted Leg Raise', sets: '3×6-12', tech: TECH_WEIGHTED_LEG_RAISE, url: 'https://youtube.com/shorts/RQDKs_EBNPY?si=BESSkagxInn_gHsV' }
 ];
 
 const DAYS_RU =['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
@@ -2735,6 +2751,24 @@ function migrateLogV7() {
   }
 }
 
+// ----- v8 (10.11.2026): пресс — новые карточки, подъёмы ног — в архив -----
+// Данные не переносятся и не меняются: прежние упражнения остаются под своими id со всей историей
+// и видны в архиве. Перед обновлением — полная копия всех данных (levshub_backup_v8, уходит и в облако).
+const V8_BACKUP_KEY = 'levshub_backup_v8';
+function backupV8() {
+  if (LS.getRaw('levshub_mig_v8')) return;
+  try {
+    if (localStorage.getItem(V8_BACKUP_KEY) === null) {
+      const json = JSON.stringify({ created: new Date().toISOString(), app: "lev'shub", keys: collectAllData(false) });
+      localStorage.setItem(V8_BACKUP_KEY, json);
+      if (localStorage.getItem(V8_BACKUP_KEY) !== json) return;
+    }
+    localStorage.setItem('levshub_mig_v8', todayISO());
+  } catch (e) {
+    console.error('[levshub] резервная копия v8 не записана', e);
+  }
+}
+
 // ----- Резервная копия файлом (кнопка «копия» на главной) -----
 function downloadBackup() {
   const name = 'levshub-backup-' + todayISO() + '.json';
@@ -2930,9 +2964,11 @@ function escHtml(s) {
 function openArchive() {
   const rows = ARCHIVE.map(ex => {
     const saved = getExSaved(ex.id);
-    const sets = getExSets(ex.id);
+    const ld = lastEntryDate(ex.id);
+    const sets = ld ? getEntrySets(ex.id, ld) : getExSets(ex.id);
     // архивных нет в днях, поэтому одностороннее определяем по форме записи
     const uni = sets.some(st => st && ('rl' in st || 'rr' in st));
+    const days = exLogDates(ex.id).length;
     const lines = [];
     sets.forEach((st, i) => {
       const d = formatSetData(st, uni);
@@ -2945,6 +2981,7 @@ function openArchive() {
         <div class="arch-meta">
           <div class="arch-name">${escHtml(ex.name)}</div>
           <div class="arch-sub">${escHtml(ex.sub)}${ex.sets ? ' · ' + escHtml(ex.sets) : ''}</div>
+          ${ld ? `<div class="arch-sub">последняя тренировка: ${escHtml(entryWhen(ex.id, ld, true))} · дней в журнале: ${days}</div>` : ''}
           ${saved.n ? `<div class="arch-note">${escHtml(saved.n)}</div>` : ''}
         </div>
         <div class="arch-data${hasData ? '' : ' empty'}">${data}</div>
@@ -3791,7 +3828,7 @@ function buildProgramExport() {
     '- «Последний раз» — все подходы последней тренировки этого упражнения.',
     RIR_LEGEND,
     '- 3+3 — упражнение на одну сторону: 3 подхода левой + 3 правой, повторы «лев / прав». В объёме это 3 подхода на мышцу.',
-    '- Одно упражнение в разных днях (икры, подъёмы ног) — отдельные карточки со своими рекордами: с кофеином и без цифры не смешиваются.',
+    '- Одно упражнение в разных днях (икры, скручивания) — отдельные карточки со своими рекордами: с кофеином и без цифры не смешиваются.',
     '- Кофеин — отметка на сегодня; если не отмечал, стоит план: A и B с кофеином, C без.',
     '- «Архив …» — прошлые записи этого же упражнения (v5 до 03.10.2026, тяга двумя руками, сгибание лёжа до 07.10.2026, рекорды до 21.10.2026 с частичными повторами); показаны, только если отличаются от текущих.',
     '- Считаю только чистые повторы с полной амплитудой.',
@@ -5019,38 +5056,53 @@ window.addEventListener('resize', updateAllToggleIndicators);
 // ================= ПАМЯТКА =================
 // Весь текст памятки — здесь. Меняй пункты прямо в этом объекте.
 const MEMO = {
-  sub: 'разбор 02.11 · следующий разбор 15.11',
+  sub: 'сушка · старт 04.11 · разбор 15.11',
   sections: [
     { title: 'Еда', items: [
-      '3450 ккал при 6000 шагов (±100 ккал на каждые ±3000 шагов)',
-      'Белок ~160 г — часть протеиновых продуктов менять на обычные',
-      'Клетчатка 25–30 г',
-      'Натрий до 2500 мг — максимум 1 готовая еда в день',
-      'Есть 3–4 раза в день, а не 2',
-      'Легче добирать: сок, молоко, белый рис, макароны, оливковое масло, орехи'
+      '3000 ккал при 6000 шагов (±100 ккал на каждые ±3000 шагов), не ниже 2800',
+      'Белок ~180 г',
+      'Жиры от 60 г (Роаккутан утром — с жиром), насыщенные до 30 г',
+      'Углеводы — остальное, больше вокруг тренировки',
+      'Клетчатка 30+ г',
+      'Натрий до 2500 мг, максимум 1 готовая еда в день',
+      'Натрий: соль с этикетки × 400, чистая соль × 393',
+      'Сок — 1 стакан в день'
+    ] },
+    { title: 'Темп', items: [
+      '−0.35–0.5 кг в неделю по среднему весу',
+      'Медленнее 0.2 две недели подряд → −150 ккал или +3000 шагов',
+      'Быстрее 0.7 → +150 ккал',
+      'Сила падает почти везде 2 недели подряд → сначала отказ только в последнем подходе, потом +200 ккал'
+    ] },
+    { title: 'Финиш', items: [
+      'Вид на ~10–11%: пресс виден утром при ровном свете. Ниже 10% — нет',
+      'Талия — для контроля тренда, не цель',
+      '4–6 недель, примерно до середины декабря'
+    ] },
+    { title: 'После сушки — мейнгейн', items: [
+      'Поддержание (~3400 при 6000 шагов, уточнить по весу за 2 недели)',
+      'Талия в узкой точке +1.5 см от финиша сушки → решаю сам, нужна ли подсушка'
     ] },
     { title: 'Тренировки', items: [
-      '6 тренировок → 1 выходной (выходной в среду)',
-      'Hip thrust в день ног — выдох на подъёме',
+      'Программа, отказ и объём без изменений, кардио не добавлять',
+      '6 тренировок → 1 выходной (воскресенье)',
+      'Hip thrust — выдох на подъёме',
+      'Пресс — скручивания до ~45°, не до вертикали',
       'Махи: левая рука 6.8 кг',
-      'Предтрен после 17:00 — половина или без'
+      'Предтрен после 17:00 — половина или без',
+      'Молдова: нет тренажёра — похожее по движению, цифры в заметку'
     ] },
-    { title: 'Сон', items: [
-      'Мелатонин 0.5 мг вечером, сразу после подъёма — 20–30 мин на улице',
-      'Вт вечер 23:30 → подъём Ср 11:30',
-      'Ср вечер 23:00 → подъём Чт 11:00',
-      'Чт вечер 22:30 → подъём Пт 10:30',
-      'Пт вечер 22:00 → подъём Сб 10:00',
-      'Сб вечер 21:30 → подъём Вс 9:30',
-      'Вс вечер 21:00 → подъём Пн 9:00',
-      'Сорвался — тот же подъём ещё день, не с начала'
+    { title: 'Сон — на сушке сон = мышцы', items: [
+      'Мелатонин 0.5 мг вечером, после подъёма — 20–30 мин на улице',
+      'Будильник в дальнем углу',
+      'Подъём каждый день на 30 мин раньше, мелатонин тоже, цель — 9:00',
+      'Сорвался — тот же подъём ещё день'
     ] },
     { title: 'Замеры', items: [
-      'Утром натощак',
-      'Талия — самая узкая точка (главная цифра)',
-      'Талия по пупку — вторая цифра, сравнивать только саму с собой',
-      'Фото лица — с 1.5 м, не фронталкой',
-      'Сушка — только если талия в самой узкой точке 76+ и пресса не видно'
+      'Утром натощак, в конце обычного выдоха',
+      'Талия — самая узкая точка (главная цифра), по пупку — вторая',
+      'Бедро — всегда на одном расстоянии от колена',
+      'Фото лица — с 1.5 м, не фронталкой'
     ] }
   ]
 };
@@ -5575,7 +5627,7 @@ function initCloud() {
 // данные придут из облака уже в новом виде. Ставим отметки, чтобы переносы не наплодили пустых записей.
 const FRESH_DEVICE = ['levshub_workout', 'levshub_workout_A', 'levshub_workout_B', LOG_KEY].every(k => localStorage.getItem(k) === null);
 if (FRESH_DEVICE) {
-  ['levshub_mig_v6_archive', 'levshub_mig_v61_prone', 'levshub_mig_v62', 'levshub_mig_v7'].forEach(k => {
+  ['levshub_mig_v6_archive', 'levshub_mig_v61_prone', 'levshub_mig_v62', 'levshub_mig_v7', 'levshub_mig_v8'].forEach(k => {
     try { if (localStorage.getItem(k) === null) localStorage.setItem(k, todayISO()); } catch (e) {}
   });
 } else {
@@ -5586,6 +5638,7 @@ if (FRESH_DEVICE) {
   migrateProneCurlV61(); // v6.1: прежний рекорд «сгибание ног лёжа» → архив этой же записи
   migrateV62(); // v6.2: резервная копия всех данных, новая точка отсчёта, чистка заметок
   migrateLogV7(); // v7: копия всех данных, журнал по дням из нынешних цифр, «старые заметки» убраны
+  backupV8(); // v8: копия всех данных перед сменой пресса (подъёмы ног — в архив)
 }
 runSplash();
 const initialPreset = loadTimerPreset();
