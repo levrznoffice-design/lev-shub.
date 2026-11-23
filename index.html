@@ -1987,46 +1987,46 @@ const TECH_SEATED_LEG_CURL = `
 // подходов (две колонки) и отдельные повторы слева/справа.
 const trainingA = [
   // С 24.11.2026 (v8.1): наклонный жим — новая карточка; жим от груди — в архиве со всей историей
-  { id: 'incline_chest_press', num: 1, name: 'наклонный жим', sub: 'Incline Chest Press', sets: '3×6-10', rest: 180, work: { chest: 1, front_delts: 0.5, triceps: 0.5 }, url: '' },
-  { id: 'shoulder_press', num: 2, name: 'жим плеч', sub: 'Shoulder Press', sets: '3×6-10', rest: 180, work: { front_delts: 1, mid_delts: 0.5, triceps: 0.5 }, url: 'https://youtube.com/shorts/lC9uiTqYH84?is=_g4ItfNvBMRiUnXt' },
-  { id: 'pec_fly', num: 3, name: 'сведение рук', sub: 'Pectoral', sets: '3×6-10', rest: 90, hint: 'по одной руке заканчивать', work: { chest: 1 }, url: 'https://youtube.com/shorts/tByJiJj9n0U?is=U_ARILKFH2tixe2S' },
-  { id: 'delts_machine', num: 4, name: 'дельты в тренажёре', sub: 'Delts Machine', sets: '2×6-10', rest: 90, hint: 'считаю только чистые повторы — руки до уровня плеч, без рывка', work: { mid_delts: 1 }, url: 'https://youtube.com/shorts/78hk4Fy_kDA?is=unzsenWO7tAKGqns' },
-  { id: 'triceps_pushdown', num: 5, name: 'трицепс на блоке', sub: 'Triceps Pushdown', sets: '2×6-10', rest: 90, hint: 'локти неподвижно у корпуса, блок на уровне головы, V-образный гриф', work: { triceps: 1 }, url: 'https://youtube.com/shorts/NMY70SP-OHY?si=4jPio5STfDrrKV8_' },
+  { id: 'incline_chest_press', num: 1, name: 'наклонный жим', sub: 'Incline Chest Press', sets: '3×5-9', rest: 180, work: { chest: 1, front_delts: 0.5, triceps: 0.5 }, url: '' },
+  { id: 'shoulder_press', num: 2, name: 'жим плеч', sub: 'Shoulder Press', sets: '3×5-9', rest: 180, work: { front_delts: 1, mid_delts: 0.5, triceps: 0.5 }, url: 'https://youtube.com/shorts/lC9uiTqYH84?is=_g4ItfNvBMRiUnXt' },
+  { id: 'pec_fly', num: 3, name: 'сведение рук', sub: 'Pectoral', sets: '3×5-9', rest: 120, hint: 'по одной руке заканчивать', work: { chest: 1 }, url: 'https://youtube.com/shorts/tByJiJj9n0U?is=U_ARILKFH2tixe2S' },
+  { id: 'delts_machine', num: 4, name: 'дельты в тренажёре', sub: 'Delts Machine', sets: '2×5-9', rest: 120, hint: 'считаю только чистые повторы — руки до уровня плеч, без рывка', work: { mid_delts: 1 }, url: 'https://youtube.com/shorts/78hk4Fy_kDA?is=unzsenWO7tAKGqns' },
+  { id: 'triceps_pushdown', num: 5, name: 'трицепс на блоке', sub: 'Triceps Pushdown', sets: '2×5-9', rest: 120, hint: 'локти неподвижно у корпуса, блок на уровне головы, V-образный гриф', work: { triceps: 1 }, url: 'https://youtube.com/shorts/NMY70SP-OHY?si=4jPio5STfDrrKV8_' },
   { id: 'cable_lateral_raise', num: 6, name: 'махи в стороны на блоке одной рукой', sub: 'Single-Arm Cable Lateral Raise', sets: '3+3×6-10', rest: 60, unilateral: true, work: { mid_delts: 1 }, url: '' },
-  { id: 'overhead_cable_extension', num: 7, name: 'разгибание из-за головы на блоке', sub: 'Overhead Cable Extension', sets: '3×6-10', rest: 90, tech: TECH_OVERHEAD_EXT, work: { triceps: 1 }, url: 'https://www.youtube.com/shorts/0IM1J_GmQ34?feature=share' },
+  { id: 'overhead_cable_extension', num: 7, name: 'разгибание из-за головы на блоке', sub: 'Overhead Cable Extension', sets: '3×5-9', rest: 120, tech: TECH_OVERHEAD_EXT, work: { triceps: 1 }, url: 'https://www.youtube.com/shorts/0IM1J_GmQ34?feature=share' },
   // Икры в Push (с кофеином) — отдельная карточка со своей историей; икры в Legs — calf_raise
   { id: 'calf_raise_push', num: 8, name: 'подъёмы на икры · push', sub: 'Calf Raise', sets: '3+3×6-10', rest: 60, unilateral: true, work: { calves: 1 }, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' }
 ];
 const trainingB = [
-  { id: 'lat_pulldown', num: 1, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×10-12', rest: 180, hint: 'вес тот же, прогрессия в амплитуде', work: { back: 1, rear_delts: 0.5, biceps: 0.5 }, url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
+  { id: 'lat_pulldown', num: 1, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×5-9', rest: 180, work: { back: 1, rear_delts: 0.5, biceps: 0.5 }, url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
   // С 24.11.2026 (v8.1): горизонтальная тяга двумя руками — новая карточка; «одной рукой» — в архиве со всей историей.
   // Прежние подходы двумя руками (архив до сентября 2026) скопированы сюда же (migrateV81).
-  { id: 'seated_cable_row', num: 2, name: 'горизонтальная тяга двумя руками', sub: 'Seated Cable Row', sets: '3×6-10', rest: 150, work: { back: 1, rear_delts: 0.5, biceps: 0.5 }, url: '' },
-  { id: 'reverse_pec_deck', num: 3, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '2×8-12', rest: 90, work: { rear_delts: 1 }, url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
-  { id: 'incline_db_curl', num: 4, name: 'наклонный подъём гантелей', sub: 'Incline DB Curl', sets: '2×6-10', rest: 90, work: { biceps: 1 }, url: 'https://youtube.com/shorts/uCUaRFlA9vE?si=_q-PSgOpB3iQviPn' },
+  { id: 'seated_cable_row', num: 2, name: 'горизонтальная тяга двумя руками', sub: 'Seated Cable Row', sets: '3×5-9', rest: 150, work: { back: 1, rear_delts: 0.5, biceps: 0.5 }, url: '' },
+  { id: 'reverse_pec_deck', num: 3, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '2×6-10', rest: 120, work: { rear_delts: 1 }, url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
+  { id: 'incline_db_curl', num: 4, name: 'наклонный подъём гантелей', sub: 'Incline DB Curl', sets: '2×5-9', rest: 120, work: { biceps: 1 }, url: 'https://youtube.com/shorts/uCUaRFlA9vE?si=_q-PSgOpB3iQviPn' },
   // С 10.11.2026 пресс — скручивания на наклонной скамье; подъёмы ног — в архиве со своей историей
   { id: 'decline_crunch', num: 5, name: 'скручивания на наклонной скамье с весом', sub: 'Decline Weighted Crunch', sets: '3×6-12', rest: 60, tech: TECH_DECLINE_CRUNCH, work: { abs: 1 }, url: '' },
   // С 21.10.2026: бицепс — сначала наклонные, потом Скотт (сгибание рук в тренажёре → архив)
-  { id: 'preacher_curl', num: 6, name: 'подъём на скамье Скотта', sub: 'Preacher Curl · гантели или EZ-гриф', sets: '2×6-10', rest: 90, hint: 'Полная амплитуда, внизу не бросать руку, негатив под контролем', work: { biceps: 1 }, url: 'https://www.youtube.com/shorts/ExDxpOgCM-w?feature=share' },
-  { id: 'wrist_curl', num: 7, name: 'сгибание запястий', sub: 'Wrist Curl', sets: '2×8-12', rest: 90, work: { forearms: 1 }, url: 'https://youtu.be/qMtmHwaCmYI?t=16' },
-  { id: 'reverse_cable_curl', num: 8, name: 'обратный подъём на блоке', sub: 'Reverse Cable Curl', sets: '3×8-12', rest: 90, work: { forearms: 1, biceps: 0.5 }, url: 'https://www.youtube.com/shorts/KY_c3LkPZa8?feature=share' },
+  { id: 'preacher_curl', num: 6, name: 'подъём на скамье Скотта', sub: 'Preacher Curl · гантели или EZ-гриф', sets: '2×5-9', rest: 120, hint: 'Полная амплитуда, внизу не бросать руку, негатив под контролем', work: { biceps: 1 }, url: 'https://www.youtube.com/shorts/ExDxpOgCM-w?feature=share' },
+  { id: 'wrist_curl', num: 7, name: 'сгибание запястий', sub: 'Wrist Curl', sets: '2×6-10', rest: 120, work: { forearms: 1 }, url: 'https://youtu.be/qMtmHwaCmYI?t=16' },
+  { id: 'reverse_cable_curl', num: 8, name: 'обратный подъём на блоке', sub: 'Reverse Cable Curl', sets: '3×6-10', rest: 120, work: { forearms: 1, biceps: 0.5 }, url: 'https://www.youtube.com/shorts/KY_c3LkPZa8?feature=share' },
   // С 24.11.2026 (v8.1)
-  { id: 'shrugs', num: 9, name: 'шраги', sub: 'Shrugs · гантели или Смит', sets: '2×8-12', rest: 90, hint: 'Пауза 1 сек наверху, плечи к ушам, без вращения', work: { traps: 1 }, url: '' }
+  { id: 'shrugs', num: 9, name: 'шраги', sub: 'Shrugs · гантели или Смит', sets: '2×6-10', rest: 120, hint: 'Пауза 1 сек наверху, плечи к ушам, без вращения', work: { traps: 1 }, url: '' }
 ];
 const trainingC = [
   // С 24.11.2026 (v8.1): жим ногами — в архиве со всей историей
-  { id: 'seated_leg_curl', num: 1, name: 'сгибание ног сидя', sub: 'Seated Leg Curl', sets: '3×6-10', rest: 90, tech: TECH_SEATED_LEG_CURL, work: { hamstrings: 1 }, url: 'https://www.youtube.com/shorts/xdbEG3xGLI8?feature=share' },
-  { id: 'leg_extension', num: 2, name: 'разгибание ног', sub: 'Leg Extension', sets: '3+3×8-12', rest: 90, unilateral: true, work: { quads: 1 }, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
+  { id: 'seated_leg_curl', num: 1, name: 'сгибание ног сидя', sub: 'Seated Leg Curl', sets: '3×5-9', rest: 120, tech: TECH_SEATED_LEG_CURL, work: { hamstrings: 1 }, url: 'https://www.youtube.com/shorts/xdbEG3xGLI8?feature=share' },
+  { id: 'leg_extension', num: 2, name: 'разгибание ног', sub: 'Leg Extension', sets: '3+3×6-10', rest: 120, unilateral: true, work: { quads: 1 }, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
   // С 03.11.2026: ягодичный мост — после разгибания ног, перед аддуктором
-  { id: 'hip_thrust', num: 3, name: 'ягодичный мост в тренажёре', sub: 'Hip Thrust', sets: '3×6-10', rest: 120, hint: 'Выдох на подъёме, без задержки дыхания', work: { glutes: 1 }, url: '' },
-  { id: 'hip_adduction', num: 4, name: 'аддуктор (сведение ног)', sub: 'Hip Adduction', sets: '2×6-10', rest: 90, work: { adductors: 1 }, url: '' },
+  { id: 'hip_thrust', num: 3, name: 'ягодичный мост в тренажёре', sub: 'Hip Thrust', sets: '3×5-9', rest: 120, hint: 'Выдох на подъёме, без задержки дыхания', work: { glutes: 1 }, url: '' },
+  { id: 'hip_adduction', num: 4, name: 'аддуктор (сведение ног)', sub: 'Hip Adduction', sets: '2×6-10', rest: 120, work: { adductors: 1 }, url: '' },
   // Вернулось из архива 07.10.2026 (тот же id): прежний рекорд перенесён в history
   // этой же записи как «архив» (migrateProneCurlV61), текущий рекорд начинается с нуля.
-  { id: 'prone_leg_curl', num: 5, name: 'сгибание ног лёжа', sub: 'Prone Leg Curl', sets: '3×6-10', rest: 90, work: { hamstrings: 1 }, url: 'https://youtube.com/shorts/FMCq0hT3KRU?si=cbbo1yN9xsXNqdqe' },
+  { id: 'prone_leg_curl', num: 5, name: 'сгибание ног лёжа', sub: 'Prone Leg Curl', sets: '3×5-9', rest: 120, work: { hamstrings: 1 }, url: 'https://youtube.com/shorts/FMCq0hT3KRU?si=cbbo1yN9xsXNqdqe' },
   { id: 'calf_raise', num: 6, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×6-10', rest: 60, unilateral: true, hint: 'паузы 2 сек внизу, 1 сек вверху', work: { calves: 1 }, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
-  { id: 'hip_abduction', num: 7, name: 'абдуктор (разведение ног)', sub: 'Hip Abduction', sets: '2×8-12', rest: 90, work: { glute_med: 1 }, url: '' },
+  { id: 'hip_abduction', num: 7, name: 'абдуктор (разведение ног)', sub: 'Hip Abduction', sets: '2×6-10', rest: 120, work: { glute_med: 1 }, url: '' },
   // Разгибание ног в конце (финиш) — отдельная карточка: свои рекорды и «с прошлого раза», с leg_extension не смешиваются
-  { id: 'leg_extension_finisher', num: 8, name: 'разгибание ног · финиш', sub: 'Leg Extension · finisher', sets: '3+3×8-12', rest: 60, unilateral: true, hint: 'На одну ногу (потолок стека на двух). Отдельная карточка со своими рекордами — с первым разгибанием цифры не смешивать.', work: { quads: 1 }, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
+  { id: 'leg_extension_finisher', num: 8, name: 'разгибание ног · финиш', sub: 'Leg Extension · finisher', sets: '3+3×6-10', rest: 60, unilateral: true, hint: 'На одну ногу (потолок стека на двух). Отдельная карточка со своими рекордами — с первым разгибанием цифры не смешивать.', work: { quads: 1 }, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
   // Скручивания в Legs (без кофеина) — отдельная карточка со своей историей; в Pull — decline_crunch
   { id: 'decline_crunch_legs', num: 9, name: 'скручивания на наклонной скамье с весом · legs', sub: 'Decline Weighted Crunch', sets: '3×6-12', rest: 60, tech: TECH_DECLINE_CRUNCH, work: { abs: 1 }, url: '' }
 ];
@@ -2930,6 +2930,23 @@ function migrateV81() {
     localStorage.setItem('levshub_mig_v81', todayISO());
   } catch (e) {
     console.error('[levshub] v8.1 не записана', e);
+  }
+}
+
+// ----- v8.1 · 24.11.2026: отдых 2 мин на изоляции, новые диапазоны повторов -----
+// Данные не меняются (меняются только схема и отдых в программе). Перед обновлением — полная копия.
+const V81B_BACKUP_KEY = 'levshub_backup_v81b';
+function backupV81b() {
+  if (LS.getRaw('levshub_mig_v81b')) return;
+  try {
+    if (localStorage.getItem(V81B_BACKUP_KEY) === null) {
+      const json = JSON.stringify({ created: new Date().toISOString(), app: "lev'shub", keys: collectAllData(false) });
+      localStorage.setItem(V81B_BACKUP_KEY, json);
+      if (localStorage.getItem(V81B_BACKUP_KEY) !== json) return;
+    }
+    localStorage.setItem('levshub_mig_v81b', todayISO());
+  } catch (e) {
+    console.error('[levshub] резервная копия v8.1 (24.11) не записана', e);
   }
 }
 
@@ -5807,7 +5824,7 @@ function initCloud() {
 // данные придут из облака уже в новом виде. Ставим отметки, чтобы переносы не наплодили пустых записей.
 const FRESH_DEVICE = ['levshub_workout', 'levshub_workout_A', 'levshub_workout_B', LOG_KEY].every(k => localStorage.getItem(k) === null);
 if (FRESH_DEVICE) {
-  ['levshub_mig_v6_archive', 'levshub_mig_v61_prone', 'levshub_mig_v62', 'levshub_mig_v7', 'levshub_mig_v8', 'levshub_mig_v81'].forEach(k => {
+  ['levshub_mig_v6_archive', 'levshub_mig_v61_prone', 'levshub_mig_v62', 'levshub_mig_v7', 'levshub_mig_v8', 'levshub_mig_v81', 'levshub_mig_v81b'].forEach(k => {
     try { if (localStorage.getItem(k) === null) localStorage.setItem(k, todayISO()); } catch (e) {}
   });
 } else {
@@ -5820,6 +5837,7 @@ if (FRESH_DEVICE) {
   migrateLogV7(); // v7: копия всех данных, журнал по дням из нынешних цифр, «старые заметки» убраны
   backupV8(); // v8: копия всех данных перед сменой пресса (подъёмы ног — в архив)
   migrateV81(); // v8.1: копия данных, «другой зал» 18–20.11, заметка наклонного жима, архив «двумя руками»
+  backupV81b(); // v8.1 (24.11): копия данных перед сменой отдыха и диапазонов
 }
 runSplash();
 const initialPreset = loadTimerPreset();
