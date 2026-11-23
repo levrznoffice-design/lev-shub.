@@ -2025,8 +2025,10 @@ const trainingC = [
   { id: 'prone_leg_curl', num: 5, name: 'сгибание ног лёжа', sub: 'Prone Leg Curl', sets: '3×6-10', rest: 90, work: { hamstrings: 1 }, url: 'https://youtube.com/shorts/FMCq0hT3KRU?si=cbbo1yN9xsXNqdqe' },
   { id: 'calf_raise', num: 6, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×6-10', rest: 60, unilateral: true, hint: 'паузы 2 сек внизу, 1 сек вверху', work: { calves: 1 }, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
   { id: 'hip_abduction', num: 7, name: 'абдуктор (разведение ног)', sub: 'Hip Abduction', sets: '2×8-12', rest: 90, work: { glute_med: 1 }, url: '' },
+  // Разгибание ног в конце (финиш) — отдельная карточка: свои рекорды и «с прошлого раза», с leg_extension не смешиваются
+  { id: 'leg_extension_finisher', num: 8, name: 'разгибание ног · финиш', sub: 'Leg Extension · finisher', sets: '3+3×8-12', rest: 60, unilateral: true, hint: 'На одну ногу (потолок стека на двух). Отдельная карточка со своими рекордами — с первым разгибанием цифры не смешивать.', work: { quads: 1 }, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
   // Скручивания в Legs (без кофеина) — отдельная карточка со своей историей; в Pull — decline_crunch
-  { id: 'decline_crunch_legs', num: 8, name: 'скручивания на наклонной скамье с весом · legs', sub: 'Decline Weighted Crunch', sets: '3×6-12', rest: 60, tech: TECH_DECLINE_CRUNCH, work: { abs: 1 }, url: '' }
+  { id: 'decline_crunch_legs', num: 9, name: 'скручивания на наклонной скамье с весом · legs', sub: 'Decline Weighted Crunch', sets: '3×6-12', rest: 60, tech: TECH_DECLINE_CRUNCH, work: { abs: 1 }, url: '' }
 ];
 
 // ----- Дни программы v8.1 (с 24.11.2026 — первая тренировка после 23.11.2026) -----
@@ -2052,7 +2054,7 @@ const MUSCLE_ROWS = [
   { label: 'Бицепс · предплечья', muscles: ['biceps', 'forearms'], was: '21 · 12' },
   { label: 'Трапеции', muscles: ['traps'], was: '0' },
   { label: 'Пресс', muscles: ['abs'], was: '12' },
-  { label: 'Квадрицепс · бицепс бедра', muscles: ['quads', 'hamstrings'], was: '12 · 12' },
+  { label: 'Квадрицепс · бицепс бедра', muscles: ['quads', 'hamstrings'], was: '6 · 12' },
   { label: 'Ягодичные', muscles: ['glutes'], was: '9' },
   { label: 'Икры', muscles: ['calves'], was: '12' },
   { label: 'Приводящие · средняя ягодичная', muscles: ['adductors', 'glute_med'], was: '6 · 6' }
