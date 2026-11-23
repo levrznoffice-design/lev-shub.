@@ -627,6 +627,9 @@
   .caf-btn i { font-size: 14px; }
   .caf-btn.on { color: var(--accent-text); background: rgba(var(--accent-rgb),0.10); border-color: rgba(var(--accent-rgb),0.35); }
   .caf-btn:active { transform: scale(0.94); }
+  /* «другой зал» — третий цвет (electric purple) */
+  .gym-btn.on { color: var(--violet); background: rgba(var(--violet-rgb),0.12); border-color: rgba(var(--violet-rgb),0.45); }
+  .dn-tag.alt { color: var(--violet); }
   /* подсказка под названием упражнения */
   /* у упражнения ещё нет ссылки на видео */
   .yt-btn.no-url { color: var(--muted); opacity: 0.55; }
@@ -1717,6 +1720,7 @@
     <div class="session-bar" id="sessionBar" hidden>
       <span class="session-progress" id="sessionProgress">сегодня: 0 из 0</span>
       <button type="button" class="caf-btn" id="caffeineBtn" aria-pressed="false" title="кофеин сегодня">кофеин</button>
+      <button type="button" class="caf-btn gym-btn" id="gymBtn" aria-pressed="false" title="другой зал сегодня — подходы не идут в рекорд"><i class="ti ti-map-pin"></i></button>
       <button class="session-reset" id="sessionReset" title="сбросить подходы">↺</button>
     </div>
 
@@ -1982,11 +1986,12 @@ const TECH_SEATED_LEG_CURL = `
 // unilateral: true → упражнение делается по сторонам: отдельные счётчики
 // подходов (две колонки) и отдельные повторы слева/справа.
 const trainingA = [
-  { id: 'chest_press', num: 1, name: 'жим от груди', sub: 'Chest Press', sets: '3×6-10', rest: 180, work: { chest: 1, front_delts: 0.5, triceps: 0.5 }, url: 'https://youtube.com/shorts/EC1Yf3M0im8?is=bdAV9DSniv4fxSXm' },
+  // С 24.11.2026 (v8.1): наклонный жим — новая карточка; жим от груди — в архиве со всей историей
+  { id: 'incline_chest_press', num: 1, name: 'наклонный жим', sub: 'Incline Chest Press', sets: '3×6-10', rest: 180, work: { chest: 1, front_delts: 0.5, triceps: 0.5 }, url: '' },
   { id: 'shoulder_press', num: 2, name: 'жим плеч', sub: 'Shoulder Press', sets: '3×6-10', rest: 180, work: { front_delts: 1, mid_delts: 0.5, triceps: 0.5 }, url: 'https://youtube.com/shorts/lC9uiTqYH84?is=_g4ItfNvBMRiUnXt' },
   { id: 'pec_fly', num: 3, name: 'сведение рук', sub: 'Pectoral', sets: '3×6-10', rest: 90, hint: 'по одной руке заканчивать', work: { chest: 1 }, url: 'https://youtube.com/shorts/tByJiJj9n0U?is=U_ARILKFH2tixe2S' },
-  { id: 'delts_machine', num: 4, name: 'дельты в тренажёре', sub: 'Delts Machine', sets: '3×6-10', rest: 90, hint: 'считаю только чистые повторы — руки до уровня плеч, без рывка', work: { mid_delts: 1 }, url: 'https://youtube.com/shorts/78hk4Fy_kDA?is=unzsenWO7tAKGqns' },
-  { id: 'triceps_pushdown', num: 5, name: 'трицепс на блоке', sub: 'Triceps Pushdown', sets: '3×6-10', rest: 90, hint: 'локти неподвижно у корпуса, блок на уровне головы, V-образный гриф', work: { triceps: 1 }, url: 'https://youtube.com/shorts/NMY70SP-OHY?si=4jPio5STfDrrKV8_' },
+  { id: 'delts_machine', num: 4, name: 'дельты в тренажёре', sub: 'Delts Machine', sets: '2×6-10', rest: 90, hint: 'считаю только чистые повторы — руки до уровня плеч, без рывка', work: { mid_delts: 1 }, url: 'https://youtube.com/shorts/78hk4Fy_kDA?is=unzsenWO7tAKGqns' },
+  { id: 'triceps_pushdown', num: 5, name: 'трицепс на блоке', sub: 'Triceps Pushdown', sets: '2×6-10', rest: 90, hint: 'локти неподвижно у корпуса, блок на уровне головы, V-образный гриф', work: { triceps: 1 }, url: 'https://youtube.com/shorts/NMY70SP-OHY?si=4jPio5STfDrrKV8_' },
   { id: 'cable_lateral_raise', num: 6, name: 'махи в стороны на блоке одной рукой', sub: 'Single-Arm Cable Lateral Raise', sets: '3+3×6-10', rest: 60, unilateral: true, work: { mid_delts: 1 }, url: '' },
   { id: 'overhead_cable_extension', num: 7, name: 'разгибание из-за головы на блоке', sub: 'Overhead Cable Extension', sets: '3×6-10', rest: 90, tech: TECH_OVERHEAD_EXT, work: { triceps: 1 }, url: 'https://www.youtube.com/shorts/0IM1J_GmQ34?feature=share' },
   // Икры в Push (с кофеином) — отдельная карточка со своей историей; икры в Legs — calf_raise
@@ -1994,35 +1999,37 @@ const trainingA = [
 ];
 const trainingB = [
   { id: 'lat_pulldown', num: 1, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×10-12', rest: 180, hint: 'вес тот же, прогрессия в амплитуде', work: { back: 1, rear_delts: 0.5, biceps: 0.5 }, url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
-  { id: 'reverse_pec_deck', num: 2, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '3×8-12', rest: 90, work: { rear_delts: 1 }, url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
-  // С 14.09.2026 одной рукой (3+3): тот же тренажёр и тот же id. Подходы двумя руками
-  // не пересчитаны — перенесены как есть в history этой же записи (migrateLowRowSingleArm).
-  { id: 'low_row', num: 3, name: 'горизонтальная тяга одной рукой', sub: 'Single-Arm Low Row', sets: '3+3×10-15', rest: 120, unilateral: true, tech: TECH_LOW_ROW, work: { back: 1, rear_delts: 0.5, biceps: 0.5 }, url: 'https://www.youtube.com/shorts/bLVeOunB-c0?feature=share' },
-  { id: 'incline_db_curl', num: 4, name: 'наклонный подъём гантелей', sub: 'Incline DB Curl', sets: '3×6-10', rest: 90, work: { biceps: 1 }, url: 'https://youtube.com/shorts/uCUaRFlA9vE?si=_q-PSgOpB3iQviPn' },
+  // С 24.11.2026 (v8.1): горизонтальная тяга двумя руками — новая карточка; «одной рукой» — в архиве со всей историей.
+  // Прежние подходы двумя руками (архив до сентября 2026) скопированы сюда же (migrateV81).
+  { id: 'seated_cable_row', num: 2, name: 'горизонтальная тяга двумя руками', sub: 'Seated Cable Row', sets: '3×6-10', rest: 150, work: { back: 1, rear_delts: 0.5, biceps: 0.5 }, url: '' },
+  { id: 'reverse_pec_deck', num: 3, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '2×8-12', rest: 90, work: { rear_delts: 1 }, url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
+  { id: 'incline_db_curl', num: 4, name: 'наклонный подъём гантелей', sub: 'Incline DB Curl', sets: '2×6-10', rest: 90, work: { biceps: 1 }, url: 'https://youtube.com/shorts/uCUaRFlA9vE?si=_q-PSgOpB3iQviPn' },
   // С 10.11.2026 пресс — скручивания на наклонной скамье; подъёмы ног — в архиве со своей историей
   { id: 'decline_crunch', num: 5, name: 'скручивания на наклонной скамье с весом', sub: 'Decline Weighted Crunch', sets: '3×6-12', rest: 60, tech: TECH_DECLINE_CRUNCH, work: { abs: 1 }, url: '' },
   // С 21.10.2026: бицепс — сначала наклонные, потом Скотт (сгибание рук в тренажёре → архив)
-  { id: 'preacher_curl', num: 6, name: 'подъём на скамье Скотта', sub: 'Preacher Curl · гантели или EZ-гриф', sets: '3×6-10', rest: 90, hint: 'Полная амплитуда, внизу не бросать руку, негатив под контролем', work: { biceps: 1 }, url: 'https://www.youtube.com/shorts/ExDxpOgCM-w?feature=share' },
-  { id: 'wrist_curl', num: 7, name: 'сгибание запястий', sub: 'Wrist Curl', sets: '3×8-12', rest: 90, work: { forearms: 1 }, url: 'https://youtu.be/qMtmHwaCmYI?t=16' },
-  { id: 'reverse_cable_curl', num: 8, name: 'обратный подъём на блоке', sub: 'Reverse Cable Curl', sets: '3×8-12', rest: 90, work: { forearms: 1, biceps: 0.5 }, url: 'https://www.youtube.com/shorts/KY_c3LkPZa8?feature=share' }
+  { id: 'preacher_curl', num: 6, name: 'подъём на скамье Скотта', sub: 'Preacher Curl · гантели или EZ-гриф', sets: '2×6-10', rest: 90, hint: 'Полная амплитуда, внизу не бросать руку, негатив под контролем', work: { biceps: 1 }, url: 'https://www.youtube.com/shorts/ExDxpOgCM-w?feature=share' },
+  { id: 'wrist_curl', num: 7, name: 'сгибание запястий', sub: 'Wrist Curl', sets: '2×8-12', rest: 90, work: { forearms: 1 }, url: 'https://youtu.be/qMtmHwaCmYI?t=16' },
+  { id: 'reverse_cable_curl', num: 8, name: 'обратный подъём на блоке', sub: 'Reverse Cable Curl', sets: '3×8-12', rest: 90, work: { forearms: 1, biceps: 0.5 }, url: 'https://www.youtube.com/shorts/KY_c3LkPZa8?feature=share' },
+  // С 24.11.2026 (v8.1)
+  { id: 'shrugs', num: 9, name: 'шраги', sub: 'Shrugs · гантели или Смит', sets: '2×8-12', rest: 90, hint: 'Пауза 1 сек наверху, плечи к ушам, без вращения', work: { traps: 1 }, url: '' }
 ];
 const trainingC = [
-  { id: 'leg_press', num: 1, name: 'жим ногами', sub: 'Leg Press', sets: '3×8-12', rest: 180, hint: 'полная амплитуда ≠ до упора: стоп там, где таз начинает подворачиваться', work: { quads: 1, glutes: 0.5 }, url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' },
-  { id: 'seated_leg_curl', num: 2, name: 'сгибание ног сидя', sub: 'Seated Leg Curl', sets: '3×6-10', rest: 90, tech: TECH_SEATED_LEG_CURL, work: { hamstrings: 1 }, url: 'https://www.youtube.com/shorts/xdbEG3xGLI8?feature=share' },
-  { id: 'leg_extension', num: 3, name: 'разгибание ног', sub: 'Leg Extension', sets: '3+3×8-12', rest: 90, unilateral: true, work: { quads: 1 }, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
+  // С 24.11.2026 (v8.1): жим ногами — в архиве со всей историей
+  { id: 'seated_leg_curl', num: 1, name: 'сгибание ног сидя', sub: 'Seated Leg Curl', sets: '3×6-10', rest: 90, tech: TECH_SEATED_LEG_CURL, work: { hamstrings: 1 }, url: 'https://www.youtube.com/shorts/xdbEG3xGLI8?feature=share' },
+  { id: 'leg_extension', num: 2, name: 'разгибание ног', sub: 'Leg Extension', sets: '3+3×8-12', rest: 90, unilateral: true, work: { quads: 1 }, url: 'https://youtube.com/shorts/P7tyoHwFRR4?is=w8Hu9xkMlNYdCXkF' },
   // С 03.11.2026: ягодичный мост — после разгибания ног, перед аддуктором
-  { id: 'hip_thrust', num: 4, name: 'ягодичный мост в тренажёре', sub: 'Hip Thrust', sets: '3×6-10', rest: 120, hint: 'Выдох на подъёме, без задержки дыхания', work: { glutes: 1 }, url: '' },
-  { id: 'hip_adduction', num: 5, name: 'аддуктор (сведение ног)', sub: 'Hip Adduction', sets: '3×6-10', rest: 90, work: { adductors: 1 }, url: '' },
+  { id: 'hip_thrust', num: 3, name: 'ягодичный мост в тренажёре', sub: 'Hip Thrust', sets: '3×6-10', rest: 120, hint: 'Выдох на подъёме, без задержки дыхания', work: { glutes: 1 }, url: '' },
+  { id: 'hip_adduction', num: 4, name: 'аддуктор (сведение ног)', sub: 'Hip Adduction', sets: '2×6-10', rest: 90, work: { adductors: 1 }, url: '' },
   // Вернулось из архива 07.10.2026 (тот же id): прежний рекорд перенесён в history
   // этой же записи как «архив» (migrateProneCurlV61), текущий рекорд начинается с нуля.
-  { id: 'prone_leg_curl', num: 6, name: 'сгибание ног лёжа', sub: 'Prone Leg Curl', sets: '3×6-10', rest: 90, work: { hamstrings: 1 }, url: 'https://youtube.com/shorts/FMCq0hT3KRU?si=cbbo1yN9xsXNqdqe' },
-  { id: 'calf_raise', num: 7, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×6-10', rest: 60, unilateral: true, hint: 'паузы 2 сек внизу, 1 сек вверху', work: { calves: 1 }, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
-  { id: 'hip_abduction', num: 8, name: 'абдуктор (разведение ног)', sub: 'Hip Abduction', sets: '3×8-12', rest: 90, work: { glute_med: 1 }, url: '' },
+  { id: 'prone_leg_curl', num: 5, name: 'сгибание ног лёжа', sub: 'Prone Leg Curl', sets: '3×6-10', rest: 90, work: { hamstrings: 1 }, url: 'https://youtube.com/shorts/FMCq0hT3KRU?si=cbbo1yN9xsXNqdqe' },
+  { id: 'calf_raise', num: 6, name: 'подъёмы на икры', sub: 'Calf Raise', sets: '3+3×6-10', rest: 60, unilateral: true, hint: 'паузы 2 сек внизу, 1 сек вверху', work: { calves: 1 }, url: 'https://www.youtube.com/shorts/4rfJPBk2yuM?feature=share' },
+  { id: 'hip_abduction', num: 7, name: 'абдуктор (разведение ног)', sub: 'Hip Abduction', sets: '2×8-12', rest: 90, work: { glute_med: 1 }, url: '' },
   // Скручивания в Legs (без кофеина) — отдельная карточка со своей историей; в Pull — decline_crunch
-  { id: 'decline_crunch_legs', num: 9, name: 'скручивания на наклонной скамье с весом · legs', sub: 'Decline Weighted Crunch', sets: '3×6-12', rest: 60, tech: TECH_DECLINE_CRUNCH, work: { abs: 1 }, url: '' }
+  { id: 'decline_crunch_legs', num: 8, name: 'скручивания на наклонной скамье с весом · legs', sub: 'Decline Weighted Crunch', sets: '3×6-12', rest: 60, tech: TECH_DECLINE_CRUNCH, work: { abs: 1 }, url: '' }
 ];
 
-// ----- Дни программы v7 (с 03.11.2026) -----
+// ----- Дни программы v8.1 (с 24.11.2026 — первая тренировка после 23.11.2026) -----
 // caffeine — план по умолчанию: A и B с кофеином, C без. Отметку на сегодня
 // можно поменять в самой тренировке (хранится по дате).
 const DAYS = {
@@ -2037,17 +2044,18 @@ function getProgram(day) {
 
 // ----- Объём в неделю: строки таблицы -----
 // Числа считаются из программы (поле work у упражнений: 1 — основная мышца,
-// 0.5 — помогает), «было» — объём программы v6 (до 07.10.2026) для сравнения.
+// 0.5 — помогает), «было» — объём программы v8 (до 24.11.2026) для сравнения.
 const MUSCLE_ROWS = [
-  { label: 'Грудь · передние дельты · трицепс', muscles: ['chest', 'front_delts', 'triceps'], was: 'так же' },
-  { label: 'Средние дельты', muscles: ['mid_delts'], was: 'так же' },
-  { label: 'Спина · задние дельты', muscles: ['back', 'rear_delts'], was: 'так же' },
-  { label: 'Бицепс · предплечья', muscles: ['biceps', 'forearms'], was: 'так же' },
-  { label: 'Пресс', muscles: ['abs'], was: '8' },
-  { label: 'Квадрицепс · бицепс бедра', muscles: ['quads', 'hamstrings'], was: '12 · 6' },
-  { label: 'Ягодичные', muscles: ['glutes'], was: '' },
-  { label: 'Икры', muscles: ['calves'], was: '8' },
-  { label: 'Приводящие · средняя ягодичная', muscles: ['adductors', 'glute_med'], was: 'так же' }
+  { label: 'Грудь · передние дельты · трицепс', muscles: ['chest', 'front_delts', 'triceps'], was: '12 · 9 · 18' },
+  { label: 'Средние дельты', muscles: ['mid_delts'], was: '15' },
+  { label: 'Спина · задние дельты', muscles: ['back', 'rear_delts'], was: '12 · 12' },
+  { label: 'Бицепс · предплечья', muscles: ['biceps', 'forearms'], was: '21 · 12' },
+  { label: 'Трапеции', muscles: ['traps'], was: '0' },
+  { label: 'Пресс', muscles: ['abs'], was: '12' },
+  { label: 'Квадрицепс · бицепс бедра', muscles: ['quads', 'hamstrings'], was: '12 · 12' },
+  { label: 'Ягодичные', muscles: ['glutes'], was: '9' },
+  { label: 'Икры', muscles: ['calves'], was: '12' },
+  { label: 'Приводящие · средняя ягодичная', muscles: ['adductors', 'glute_med'], was: '6 · 6' }
 ];
 
 // ----- Архив -----
@@ -2060,7 +2068,11 @@ const ARCHIVE = [
   { id: 'arm_curl', name: 'сгибание рук в тренажёре', sub: 'Arm Curl Machine', sets: '3×10-12', url: 'https://youtube.com/shorts/IWDHXA1ZcT8?is=9QgKqBX6kU9lXxLr' },
   // 10.11.2026: пресс → скручивания на наклонной скамье
   { id: 'weighted_leg_raise', name: 'подъёмы ног с гантелей', sub: 'Weighted Leg Raise', sets: '3×6-12', tech: TECH_WEIGHTED_LEG_RAISE, url: 'https://youtube.com/shorts/RQDKs_EBNPY?si=BESSkagxInn_gHsV' },
-  { id: 'weighted_leg_raise_legs', name: 'подъёмы ног с гантелей · legs', sub: 'Weighted Leg Raise', sets: '3×6-12', tech: TECH_WEIGHTED_LEG_RAISE, url: 'https://youtube.com/shorts/RQDKs_EBNPY?si=BESSkagxInn_gHsV' }
+  { id: 'weighted_leg_raise_legs', name: 'подъёмы ног с гантелей · legs', sub: 'Weighted Leg Raise', sets: '3×6-12', tech: TECH_WEIGHTED_LEG_RAISE, url: 'https://youtube.com/shorts/RQDKs_EBNPY?si=BESSkagxInn_gHsV' },
+  // 24.11.2026 (v8.1): жим от груди → наклонный жим, тяга одной рукой → двумя руками, жим ногами убран
+  { id: 'chest_press', name: 'жим от груди', sub: 'Chest Press', sets: '3×6-10', url: 'https://youtube.com/shorts/EC1Yf3M0im8?is=bdAV9DSniv4fxSXm' },
+  { id: 'low_row', name: 'горизонтальная тяга одной рукой', sub: 'Single-Arm Low Row', sets: '3+3×10-15', unilateral: true, tech: TECH_LOW_ROW, url: 'https://www.youtube.com/shorts/bLVeOunB-c0?feature=share' },
+  { id: 'leg_press', name: 'жим ногами', sub: 'Leg Press', sets: '3×8-12', hint: 'полная амплитуда ≠ до упора: стоп там, где таз начинает подворачиваться', url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' }
 ];
 
 const DAYS_RU =['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
@@ -2548,13 +2560,30 @@ function saveEntrySets(id, date, sets) {
   LS.set(LOG_KEY, log);
   markLogDirty(id, date);
 }
+// Прошлая тренировка для сравнения и веса на сегодня — в том же зале:
+// в своём зале не подставляем цифры из другого и наоборот
 function prevEntryDate(id, date) {
-  const ds = exLogDates(id).filter(d => d < date);
+  const alt = isAltGym(date);
+  const ds = exLogDates(id).filter(d => d < date && isAltGym(d) === alt);
   return ds.length ? ds[ds.length - 1] : null;
 }
+// Последняя тренировка (архивные копии вроде «двумя руками» не в счёт — они идут строкой «Архив …»)
 function lastEntryDate(id) {
-  const ds = exLogDates(id);
+  const l = getExLog(id);
+  const ds = exLogDates(id).filter(d => !l[d].arch);
   return ds.length ? ds[ds.length - 1] : null;
+}
+
+// ----- «Другой зал» (v8.1): тренировки не в своём зале -----
+// levshub_altgym = { 'ГГГГ-ММ-ДД': true }. Подходы этих дней хранятся в истории как обычно,
+// но не считаются в «Рекорд» и не сравниваются с тренировками в своём зале.
+const ALTGYM_KEY = 'levshub_altgym';
+function getAltGym() { const m = LS.get(ALTGYM_KEY, {}); return (m && typeof m === 'object' && !Array.isArray(m)) ? m : {}; }
+function isAltGym(date) { return getAltGym()[date] === true; }
+function setAltGym(date, on) {
+  const m = getAltGym();
+  if (on) m[date] = true; else delete m[date];
+  LS.set(ALTGYM_KEY, m);
 }
 // Дни журнала (по возрастанию). Перенесённые записи без даты (nodate) — не дни, их не считаем
 function allLogDates() {
@@ -2594,7 +2623,8 @@ function exRecord(id, exclude) {
   const uni = isUnilateralId(id), l = getExLog(id);
   let best = null;
   exLogDates(id).forEach(d => {
-    if (d === exclude) return;
+    // другой зал и архивные копии в рекорд не идут
+    if (d === exclude || isAltGym(d) || l[d].arch) return;
     const st = (l[d].sets || [])[0];
     const sc = setScore(st, uni);
     if (sc !== null && (!best || sc > best.score + 1e-9)) best = { date: d, set: st, score: sc };
@@ -2603,6 +2633,7 @@ function exRecord(id, exclude) {
 }
 // Первый подход этой даты лучше всех остальных дней
 function isNewRecord(id, date) {
+  if (isAltGym(date)) return false;
   const sc = setScore(getEntrySets(id, date)[0], isUnilateralId(id));
   if (sc === null) return false;
   const other = exRecord(id, date);
@@ -2653,8 +2684,11 @@ function buildDayBlock(ex, date) {
   const i = ds.indexOf(date);
   const e = getExLog(ex.id)[date];
   const noDate = !!(e && e.nodate && entryHasData(e));
-  const label = noDate ? 'старая запись' : (date === t ? 'сегодня · ' : '') + fmtDayShort(date);
-  const tag = noDate ? '<span class="dn-tag">дата неизвестна</span>'
+  const arch = !!(e && e.arch && entryHasData(e));
+  const label = arch ? 'архив · ' + escHtml(e.arch) : noDate ? 'старая запись' : (date === t ? 'сегодня · ' : '') + fmtDayShort(date);
+  const tag = arch ? '<span class="dn-tag">до ' + fmtDayFull(date) + '</span>'
+    : noDate ? '<span class="dn-tag">дата неизвестна</span>'
+    : isAltGym(date) ? '<span class="dn-tag alt">другой зал</span>'
     : (e && e.src === 'import' && entryHasData(e)) ? '<span class="dn-tag">из старых записей</span>'
     : (date !== t ? '<span class="dn-tag">запись</span>' : '');
   return `<div class="day-block">
@@ -2821,6 +2855,79 @@ function backupV8() {
     localStorage.setItem('levshub_mig_v8', todayISO());
   } catch (e) {
     console.error('[levshub] резервная копия v8 не записана', e);
+  }
+}
+
+// ----- v8.1 (24.11.2026): новая программа -----
+// 1) Полная копия всех данных (levshub_backup_v81). Не записалась — ничего не меняем.
+// 2) «Другой зал»: 18–20.11.2026 (Кишинёв) — эти тренировки не идут в рекорд.
+// 3) Заметка новой карточки «наклонный жим» — запись из Кишинёва.
+// 4) «Горизонтальная тяга двумя руками»: прежние подходы двумя руками из архива «одной рукой» КОПИРУЮТСЯ
+//    в новую карточку (в её архив и в журнал с пометкой «архив двумя руками» — видно стрелками).
+//    У «одной рукой» всё остаётся как было.
+// Убранные упражнения (жим от груди, тяга одной рукой, жим ногами) не трогаются — они в архиве под своими id.
+const V81_BACKUP_KEY = 'levshub_backup_v81';
+const ALTGYM_V81_DATES = ['2026-11-18', '2026-11-19', '2026-11-20'];
+const INCLINE_NOTE_V81 = '18 ноября (Кишинёв): 80×4.5 · 80×5.5 · 80×3.5';
+const TWO_ARM_LABEL = 'двумя руками';
+function migrateV81() {
+  if (LS.getRaw('levshub_mig_v81')) return;
+  try {
+    if (localStorage.getItem(V81_BACKUP_KEY) === null) {
+      const json = JSON.stringify({ created: new Date().toISOString(), app: "lev'shub", keys: collectAllData(false) });
+      localStorage.setItem(V81_BACKUP_KEY, json);
+      if (localStorage.getItem(V81_BACKUP_KEY) !== json) return;
+    }
+  } catch (e) {
+    console.error('[levshub] резервная копия v8.1 не записана — перенос не выполнен', e);
+    return;
+  }
+  const raw = localStorage.getItem('levshub_workout');
+  let data, original;
+  try { data = JSON.parse(raw || '{}'); original = JSON.parse(raw || '{}'); } catch (e) { return; }
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return;
+  const log = getLog();
+  let logChanged = null;
+  // заметка наклонного жима
+  const inc = (data.incline_chest_press && typeof data.incline_chest_press === 'object') ? data.incline_chest_press : {};
+  const n0 = typeof inc.n === 'string' ? inc.n : '';
+  if (n0.indexOf(INCLINE_NOTE_V81) < 0) inc.n = n0.trim() ? n0.replace(/\s+$/, '') + '\n' + INCLINE_NOTE_V81 : INCLINE_NOTE_V81;
+  data.incline_chest_press = inc;
+  // архив «двумя руками» → в новую карточку
+  const lr = data.low_row;
+  const h2 = lr && Array.isArray(lr.history) ? lr.history.find(h => h && h.label === TWO_ARM_LABEL) : null;
+  if (h2) {
+    const sr = (data.seated_cable_row && typeof data.seated_cable_row === 'object') ? data.seated_cable_row : {};
+    const sh = Array.isArray(sr.history) ? sr.history : [];
+    if (!sh.some(h => h && h.label === TWO_ARM_LABEL)) sr.history = sh.concat([JSON.parse(JSON.stringify(h2))]);
+    data.seated_cable_row = sr;
+    const day = ISO_RE.test(h2.until || '') ? h2.until : '2026-09-14';
+    const sets = Array.isArray(h2.sets) ? h2.sets : [];
+    const l = log.seated_cable_row || {};
+    if (sets.some(Boolean) && !Object.keys(l).some(d => l[d] && l[d].arch === TWO_ARM_LABEL)) {
+      l[day] = { sets: JSON.parse(JSON.stringify(sets)), t: Date.now(), src: 'import', nodate: true, arch: TWO_ARM_LABEL };
+      log.seated_cable_row = l;
+      logChanged = day;
+    }
+  }
+  // сверка до записи: все прежние записи и история — на месте дословно
+  const ok = Object.keys(original).every(id => {
+    const o = original[id], r = data[id];
+    if (id === 'incline_chest_press' || id === 'seated_cable_row') {
+      return !o || !Array.isArray(o.history) || o.history.every((x, i) => JSON.stringify(r.history[i]) === JSON.stringify(x));
+    }
+    return JSON.stringify(o) === JSON.stringify(r);
+  });
+  if (!ok) { console.error('[levshub] v8.1 отменена: сверка не прошла, данные не тронуты'); return; }
+  try {
+    const alt = getAltGym();
+    ALTGYM_V81_DATES.forEach(d => { alt[d] = true; });
+    localStorage.setItem(ALTGYM_KEY, JSON.stringify(alt));
+    localStorage.setItem('levshub_workout', JSON.stringify(data));
+    if (logChanged) { localStorage.setItem(LOG_KEY, JSON.stringify(log)); markLogDirty('seated_cable_row', logChanged); }
+    localStorage.setItem('levshub_mig_v81', todayISO());
+  } catch (e) {
+    console.error('[levshub] v8.1 не записана', e);
   }
 }
 
@@ -3643,6 +3750,7 @@ function updateSessionBar() {
   document.getElementById('sessionProgress').textContent = `сегодня: ${doneCount} из ${program.length}`;
   bar.hidden = false;
   refreshCaffeineUi();
+  refreshGymUi();
 }
 
 document.getElementById('sessionReset').addEventListener('click', () => {
@@ -3842,7 +3950,7 @@ function exportExercise(ex) {
   const lastSets = ld ? getEntrySets(ex.id, ld) : [];
   if (ld) {
     const imp = getExLog(ex.id)[ld].src === 'import';
-    const when = isNoDate(ex.id, ld) ? 'старая запись, дата неизвестна' : fmtDayFull(ld) + (imp ? ', из старых записей' : '');
+    const when = isNoDate(ex.id, ld) ? 'старая запись, дата неизвестна' : fmtDayFull(ld) + (imp ? ', из старых записей' : '') + (isAltGym(ld) ? ', другой зал' : '');
     out.push(I + 'Последний раз (' + when + '): ' + entryText(lastSets, uni));
   }
   const curNote = typeof saved.n === 'string' ? saved.n.trim() : '';
@@ -3886,6 +3994,7 @@ function buildProgramExport() {
     '- Одно упражнение в разных днях (икры, скручивания) — отдельные карточки со своими рекордами: с кофеином и без цифры не смешиваются.',
     '- Кофеин — отметка на сегодня; если не отмечал, стоит план: A и B с кофеином, C без.',
     '- «Архив …» — прошлые записи этого же упражнения (v5 до 03.10.2026, тяга двумя руками, сгибание лёжа до 07.10.2026, рекорды до 21.10.2026 с частичными повторами); показаны, только если отличаются от текущих.',
+    '- «Другой зал» — тренировки не в своём зале (Кишинёв 18–20.11.2026): в истории есть, в «Рекорд» не идут.',
     '- Считаю только чистые повторы с полной амплитудой.',
     '- Просадки, изменения и детали — в заметках.'
   ];
@@ -3902,7 +4011,7 @@ function buildProgramExport() {
     'Основное упражнение = 1 подход, помогающее = ½; 3+3 = 3. Каждый день по расписанию стоит в неделе дважды.\n\n' +
     volumeRows().map(r => '- ' + r.label + ': ' + r.nums + ' (' + r.dayText +
       (r.rest ? ', отдых ' + r.rest : '') + (r.was ? '; было: ' + r.was : '') + ')').join('\n');
-  return "LEV'SHUB — программа v7: A · PUSH, B · PULL, C · LEGS\nВыгрузка: " + date +
+  return "LEV'SHUB — программа v8.1 (с 24.11.2026): A · PUSH, B · PULL, C · LEGS\nВыгрузка: " + date +
     '\nРасписание: ' + sched + '\n\n' + legend.join('\n') + '\n\n' + body + '\n\n' + vol + '\n';
 }
 
@@ -3924,6 +4033,15 @@ function setCaffeine(day, val) {
   LS.set(caffeineKey(), m);
 }
 function cafLabel(on) { return on ? 'caffeine' : 'no caffeine'; }
+// «другой зал» на сегодня: включено — подпись и фиолетовая подсветка, выключено — только значок
+function refreshGymUi() {
+  const btn = document.getElementById('gymBtn');
+  if (!btn) return;
+  const on = isAltGym(todayISO());
+  btn.classList.toggle('on', on);
+  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  btn.innerHTML = '<i class="ti ti-map-pin"></i>' + (on ? 'другой зал' : '');
+}
 function refreshCaffeineUi() {
   const view = getTrainingView();
   const btn = document.getElementById('caffeineBtn');
@@ -4257,7 +4375,7 @@ function dayExport(date) {
   });
   const imp = items.some(ex => getExLog(ex.id)[date].src === 'import');
   const head = '## ' + fmtDayFull(date) + ' · ' + isoWeekday(date) + (best ? ' · ' + DAYS[best].title : '') +
-    (imp ? ' (из старых записей — дата примерная)' : '');
+    (imp ? ' (из старых записей — дата примерная)' : '') + (isAltGym(date) ? ' · другой зал (в рекорд не идёт)' : '');
   return head + '\n' + items.map(ex =>
     '- ' + capFirst(ex.name) + ': ' + entryText(getEntrySets(ex.id, date), !!ex.unilateral) +
     (isNewRecord(ex.id, date) ? ' — новый рекорд' : '')
@@ -4273,7 +4391,7 @@ function noDateExport() {
   allExOrdered().forEach(ex => {
     const l = getExLog(ex.id);
     Object.keys(l).forEach(d => {
-      if (l[d] && l[d].nodate && entryHasData(l[d])) items.push('- ' + capFirst(ex.name) + ': ' + entryText(getEntrySets(ex.id, d), !!ex.unilateral));
+      if (l[d] && l[d].nodate && entryHasData(l[d])) items.push('- ' + capFirst(ex.name) + (l[d].arch ? ' (архив ' + l[d].arch + ')' : '') + ': ' + entryText(getEntrySets(ex.id, d), !!ex.unilateral));
     });
   });
   return items.length ? '## Старые записи — дата неизвестна (перенесены из прежних полей)\n' + items.join('\n') : '';
@@ -4329,6 +4447,10 @@ function copyProgram(kind) {
   });
 }
 document.getElementById('copyProgramBtn').addEventListener('click', openCopyMenu);
+document.getElementById('gymBtn').addEventListener('click', () => {
+  setAltGym(todayISO(), !isAltGym(todayISO()));
+  renderTraining(); // вес и подсказки с прошлого раза — из того же зала
+});
 document.getElementById('caffeineBtn').addEventListener('click', () => {
   const view = getTrainingView();
   if (!DAYS[view]) return;
@@ -5389,6 +5511,7 @@ async function pushLogDirty(uid) {
     const meta = {};
     if (e.src) meta.src = e.src;
     if (e.nodate) meta.nodate = true;
+    if (e.arch) meta.arch = e.arch;
     rows.push({ user_id: uid, exercise_id: id, day: day, sets: Array.isArray(e.sets) ? e.sets : [], meta: meta, t: e.t || 1 });
     sent[k] = e.t;
   });
@@ -5682,7 +5805,7 @@ function initCloud() {
 // данные придут из облака уже в новом виде. Ставим отметки, чтобы переносы не наплодили пустых записей.
 const FRESH_DEVICE = ['levshub_workout', 'levshub_workout_A', 'levshub_workout_B', LOG_KEY].every(k => localStorage.getItem(k) === null);
 if (FRESH_DEVICE) {
-  ['levshub_mig_v6_archive', 'levshub_mig_v61_prone', 'levshub_mig_v62', 'levshub_mig_v7', 'levshub_mig_v8'].forEach(k => {
+  ['levshub_mig_v6_archive', 'levshub_mig_v61_prone', 'levshub_mig_v62', 'levshub_mig_v7', 'levshub_mig_v8', 'levshub_mig_v81'].forEach(k => {
     try { if (localStorage.getItem(k) === null) localStorage.setItem(k, todayISO()); } catch (e) {}
   });
 } else {
@@ -5694,6 +5817,7 @@ if (FRESH_DEVICE) {
   migrateV62(); // v6.2: резервная копия всех данных, новая точка отсчёта, чистка заметок
   migrateLogV7(); // v7: копия всех данных, журнал по дням из нынешних цифр, «старые заметки» убраны
   backupV8(); // v8: копия всех данных перед сменой пресса (подъёмы ног — в архив)
+  migrateV81(); // v8.1: копия данных, «другой зал» 18–20.11, заметка наклонного жима, архив «двумя руками»
 }
 runSplash();
 const initialPreset = loadTimerPreset();
