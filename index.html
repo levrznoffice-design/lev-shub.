@@ -694,6 +694,14 @@
     display: inline-flex; align-items: center; justify-content: center;
   }
   .memo-title { font-family: var(--serif); font-style: italic; font-size: 26px; color: var(--cream); margin-bottom: 4px; padding-right: 40px; }
+  .memo-title.long { font-size: 21px; line-height: 1.2; margin-bottom: 12px; padding-right: 0; }
+  /* переключатель памяток */
+  .memo-tabs { display: inline-flex; gap: 4px; padding: 3px; margin: 0 44px 14px 0; border-radius: 11px; background: rgba(var(--ink-rgb),0.05); border: 1px solid var(--border); }
+  .memo-tabs button { padding: 7px 13px; border-radius: 8px; font-size: 12px; letter-spacing: 0.3px; color: var(--muted-2); transition: background 220ms ease, color 220ms ease, transform 100ms ease; }
+  .memo-tabs button:active { transform: scale(0.95); }
+  .memo-tabs button.active { background: var(--red); color: var(--on-red); }
+  .memo-content.fade { animation: memoFade 260ms ease; }
+  @keyframes memoFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   .memo-sub {
     display: inline-block;
     font-size: 11px; letter-spacing: 0.3px;
@@ -925,6 +933,14 @@
   }
   .sets-grid.uni .sg-head,
   .sets-grid.uni .sg-row { grid-template-columns: 16px 1fr 1fr 1fr 46px; }
+  /* сила подхода — маленькое серое число под строкой (только когда подход записан) */
+  .sg-force { grid-column: 2 / -1; justify-self: end; font-size: 10px; color: var(--muted); letter-spacing: 0.2px; margin: -4px 2px 0 0; }
+  .sg-force:empty { display: none; }
+  .force-line { font-size: 11px; color: var(--muted); letter-spacing: 0.2px; line-height: 1.45; margin-top: 6px; }
+  .force-line:empty { display: none; }
+  .force-line .fd { font-weight: 600; }
+  .force-line .fd.up { color: var(--green); }
+  .force-line .fd.down { color: var(--warn); }
   .sg-head span {
     font-size: 10px;
     color: var(--muted);
@@ -1838,9 +1854,15 @@
 <div class="memo-backdrop" id="memoBackdrop" aria-hidden="true">
   <div class="memo-card" role="dialog" aria-modal="true" aria-labelledby="memoTitle">
     <button type="button" class="memo-x" id="memoClose" aria-label="закрыть"><i class="ti ti-x"></i></button>
-    <div class="memo-title" id="memoTitle">Памятка</div>
-    <div class="memo-sub" id="memoSub"></div>
-    <div id="memoBody"></div>
+    <div class="memo-tabs" id="memoTabs" role="tablist">
+      <button type="button" data-memo="weight" role="tab">Вес первым</button>
+      <button type="button" data-memo="old" role="tab">Старая</button>
+    </div>
+    <div class="memo-content" id="memoContent">
+      <div class="memo-title" id="memoTitle">Памятка</div>
+      <div class="memo-sub" id="memoSub"></div>
+      <div id="memoBody"></div>
+    </div>
     <button type="button" class="btn btn-red btn-full" id="memoOk">Понял 💪</button>
   </div>
 </div>
@@ -1999,9 +2021,9 @@ const trainingA = [
 ];
 const trainingB = [
   { id: 'lat_pulldown', num: 1, name: 'тяга верхнего блока', sub: 'Lat Pulldown', sets: '3×5-9', rest: 180, work: { back: 1, rear_delts: 0.5, biceps: 0.5 }, url: 'https://m.youtube.com/shorts/ViA3Ws4Ezak?feature=share' },
-  // С 24.11.2026 (v8.1): горизонтальная тяга двумя руками — новая карточка; «одной рукой» — в архиве со всей историей.
-  // Прежние подходы двумя руками (архив до сентября 2026) скопированы сюда же (migrateV81).
-  { id: 'seated_cable_row', num: 2, name: 'горизонтальная тяга двумя руками', sub: 'Seated Cable Row', sets: '3×5-9', rest: 150, work: { back: 1, rear_delts: 0.5, biceps: 0.5 }, url: '' },
+  // С 25.11.2026 снова одной рукой (тот же id low_row — вся прежняя история и рекорды на месте);
+  // двумя руками стек тяжелее веса тела — карточка «двумя руками» в архиве со всей историей.
+  { id: 'low_row', num: 2, name: 'горизонтальная тяга одной рукой', sub: 'Single-Arm Low Row', sets: '3+3×5-9', rest: 120, unilateral: true, tech: TECH_LOW_ROW, work: { back: 1, rear_delts: 0.5, biceps: 0.5 }, url: 'https://www.youtube.com/shorts/bLVeOunB-c0?feature=share' },
   { id: 'reverse_pec_deck', num: 3, name: 'обратный пек дек', sub: 'Reverse Pec Deck', sets: '2×6-10', rest: 120, work: { rear_delts: 1 }, url: 'https://www.youtube.com/shorts/5JYeo9hgIC8?feature=share' },
   { id: 'incline_db_curl', num: 4, name: 'наклонный подъём гантелей', sub: 'Incline DB Curl', sets: '2×5-9', rest: 120, work: { biceps: 1 }, url: 'https://youtube.com/shorts/uCUaRFlA9vE?si=_q-PSgOpB3iQviPn' },
   // С 10.11.2026 пресс — скручивания на наклонной скамье; подъёмы ног — в архиве со своей историей
@@ -2073,7 +2095,8 @@ const ARCHIVE = [
   { id: 'weighted_leg_raise_legs', name: 'подъёмы ног с гантелей · legs', sub: 'Weighted Leg Raise', sets: '3×6-12', tech: TECH_WEIGHTED_LEG_RAISE, url: 'https://youtube.com/shorts/RQDKs_EBNPY?si=BESSkagxInn_gHsV' },
   // 24.11.2026 (v8.1): жим от груди → наклонный жим, тяга одной рукой → двумя руками, жим ногами убран
   { id: 'chest_press', name: 'жим от груди', sub: 'Chest Press', sets: '3×6-10', url: 'https://youtube.com/shorts/EC1Yf3M0im8?is=bdAV9DSniv4fxSXm' },
-  { id: 'low_row', name: 'горизонтальная тяга одной рукой', sub: 'Single-Arm Low Row', sets: '3+3×10-15', unilateral: true, tech: TECH_LOW_ROW, url: 'https://www.youtube.com/shorts/bLVeOunB-c0?feature=share' },
+  // 25.11.2026: тяга двумя руками → снова одной рукой (low_row вернулась в B)
+  { id: 'seated_cable_row', name: 'горизонтальная тяга двумя руками', sub: 'Seated Cable Row', sets: '3×5-9', url: '' },
   { id: 'leg_press', name: 'жим ногами', sub: 'Leg Press', sets: '3×8-12', hint: 'полная амплитуда ≠ до упора: стоп там, где таз начинает подворачиваться', url: 'https://youtube.com/shorts/NuCWXAZLLgw?is=3P9hO9n36mhOT1Wr' }
 ];
 
@@ -2373,7 +2396,10 @@ function migrateWorkoutToSets() {
       // старые записи стороны не различали → всё уходит в rl, rr остаётся null
       s1 = isUnilateralId(id) ? { w: w, rl: r, rr: null } : { w: w, r: r };
     }
-    out[id] = { sets: [s1, null, null], n: rec.n || '' };
+    // меняется только формат подходов; остальные поля записи (history, отметки) сохраняются
+    const next = Object.assign({}, rec, { sets: [s1, null, null], n: rec.n || '' });
+    delete next.w; delete next.r;
+    out[id] = next;
   });
   if (Object.keys(out).length !== ids.length) {
     console.error('[levshub] миграция подходов отменена: было', ids.length, 'стало', Object.keys(out).length);
@@ -2470,6 +2496,7 @@ function buildSetsBlock(ex, date) {
         ? cell(i, 'rl', s ? s.rl : '', false) + cell(i, 'rr', s ? s.rr : '', false)
         : cell(i, 'r', s ? s.r : '', false)) +
       `<button type="button" class="sg-rir${r === '' ? '' : r === 'F' ? ' set fail' : ' set'}" aria-label="RIR подхода ${i + 1}">${rirInner(r, pp)}</button>` +
+      `<span class="sg-force"></span>` +
       `</div>`;
   }
   const head = `<div class="sg-head"><span></span><span>кг</span>` +
@@ -2520,6 +2547,8 @@ function commitSets(card) {
   const e = getExLog(id)[date];
   const stored = (e && Array.isArray(e.sets)) ? e.sets : [];
   for (let i = sets.length; i < stored.length; i++) sets.push(stored[i] || null);
+  // пометка у подхода (например «быстрый негатив») остаётся при правке цифр
+  sets.forEach((st, i) => { if (st && stored[i] && stored[i].n) st.n = stored[i].n; });
   saveEntrySets(id, date, sets);
 }
 
@@ -2663,6 +2692,7 @@ function rirText(st) {
   if (st.rir === 'F') parts.push('отказ');
   else if (typeof st.rir === 'number') parts.push('RIR ' + (st.rir >= 3 ? '3+' : st.rir));
   if (st.p) parts.push('+ частичные');
+  if (typeof st.n === 'string' && st.n.trim()) parts.push(st.n.trim());
   return parts.join(', ');
 }
 
@@ -2699,7 +2729,41 @@ function buildDayBlock(ex, date) {
           <div class="dn-mid"><i class="ti ti-calendar"></i><span>${label}</span>${tag}<input type="date" class="dn-picker" value="${date}" max="${t}" aria-label="выбрать дату"></div>
           <button type="button" class="dn-arrow" data-dn="1" aria-label="следующая тренировка"${i >= ds.length - 1 ? ' disabled' : ''}><i class="ti ti-chevron-right"></i></button>
         </div>
+        <div class="force-line"></div>
       </div>`;
+}
+// ----- Сила: вес × (1 + повторы/30), для 3+3 — по слабой стороне (та же формула, что у рекорда) -----
+// Только показ на экране: как выбирается рекорд и подставляется вес — не меняется.
+function fmtForce(x) { return (Math.round(x * 10) / 10).toFixed(1); }
+function refreshForce(card) {
+  const id = card.dataset.id, date = card.dataset.date, uni = isUnilateralId(id);
+  let today = null;
+  card.querySelectorAll('.sg-row').forEach((row, i) => {
+    const v = (f) => { const el = row.querySelector(`[data-f="${f}"]`); return el ? numOrNull(normVal(el.value.trim())) : null; };
+    const sc = setScore(uni ? { w: v('w'), rl: v('rl'), rr: v('rr') } : { w: v('w'), r: v('r') }, uni);
+    const out = row.querySelector('.sg-force');
+    if (out) out.textContent = sc === null ? '' : '≈ ' + fmtForce(sc) + ' кг';
+    if (i === 0) today = sc;
+  });
+  const line = card.querySelector('.force-line');
+  if (!line) return;
+  // сравнение — только с тренировками в том же зале
+  const pd = prevEntryDate(id, date);
+  const prev = pd ? setScore(getEntrySets(id, pd)[0], uni) : null;
+  const rec = isAltGym(date) ? null : exRecord(id);
+  const parts = [];
+  if (prev !== null) parts.push('прошлый раз ≈ ' + fmtForce(prev));
+  if (today !== null) {
+    let t = 'сегодня ≈ ' + fmtForce(today) + ' кг';
+    if (prev !== null && prev > 0) {
+      const d = (today - prev) / prev * 100;
+      const txt = (d > 0 ? '+' : d < 0 ? '−' : '±') + Math.abs(Math.round(d * 10) / 10).toFixed(1) + '%';
+      t += ` <span class="fd${d > 0.05 ? ' up' : d < -0.05 ? ' down' : ''}">${txt}</span>`;
+    }
+    parts.push(t);
+  }
+  if (rec) parts.push('рекорд ≈ ' + fmtForce(rec.score) + ' кг');
+  line.innerHTML = parts.length ? 'сила 1-го подхода: ' + parts.join(' · ') : '';
 }
 // Больше, чем в прошлый раз в этом же подходе (вес или повторы, хоть на 0.5) — цифры вспыхивают зелёным
 function flashIfUp(inp) {
@@ -2947,6 +3011,58 @@ function backupV81b() {
     localStorage.setItem('levshub_mig_v81b', todayISO());
   } catch (e) {
     console.error('[levshub] резервная копия v8.1 (24.11) не записана', e);
+  }
+}
+
+// ----- v8.1 · 25.11.2026: тяга снова одной рукой -----
+// 1) Полная копия всех данных (levshub_backup_v81c). Не записалась — ничего не меняем.
+// 2) Копия архива «двумя руками» снова в карточке «двумя руками» (если её стёр старый перенос формата).
+// 3) Тренировка 25.11.2026 из заметки — в журнал «горизонтальная тяга одной рукой», если этого дня там ещё нет.
+//    Заметки не трогаются (текст от 25.11 остаётся где был).
+const V81C_BACKUP_KEY = 'levshub_backup_v81c';
+const LOW_ROW_2511 = [
+  { w: 59, rl: 6.5, rr: 7.5, rir: 'F' },
+  { w: 59, rl: 8.5, rr: 6.5, rir: 'F' },
+  { w: 59, rl: 14.5, rr: 12.5, rir: 'F', p: true, n: 'быстрый негатив' }
+];
+function migrateV81c() {
+  if (LS.getRaw('levshub_mig_v81c')) return;
+  try {
+    if (localStorage.getItem(V81C_BACKUP_KEY) === null) {
+      const json = JSON.stringify({ created: new Date().toISOString(), app: "lev'shub", keys: collectAllData(false) });
+      localStorage.setItem(V81C_BACKUP_KEY, json);
+      if (localStorage.getItem(V81C_BACKUP_KEY) !== json) return;
+    }
+    // копия архива «двумя руками» в карточке «двумя руками» (её мог стереть старый перенос формата) —
+    // вернуть из оригинала, который лежит в «одной рукой»
+    const wraw = localStorage.getItem('levshub_workout');
+    const wd = JSON.parse(wraw || '{}');
+    const h2 = wd.low_row && Array.isArray(wd.low_row.history) ? wd.low_row.history.find(h => h && h.label === TWO_ARM_LABEL) : null;
+    const sr = wd.seated_cable_row;
+    if (h2 && sr && typeof sr === 'object' && !(Array.isArray(sr.history) && sr.history.some(h => h && h.label === TWO_ARM_LABEL))) {
+      sr.history = (Array.isArray(sr.history) ? sr.history : []).concat([JSON.parse(JSON.stringify(h2))]);
+      const before = JSON.parse(wraw || '{}');
+      const same = Object.keys(before).every(id => id === 'seated_cable_row' || JSON.stringify(before[id]) === JSON.stringify(wd[id]));
+      if (!same || sr.n !== before.seated_cable_row.n) { console.error('[levshub] возврат архива «двумя руками» отменён: сверка не прошла'); return; }
+      localStorage.setItem('levshub_workout', JSON.stringify(wd));
+    }
+    const raw = localStorage.getItem(LOG_KEY);
+    const log = getLog();
+    const l = (log.low_row && typeof log.low_row === 'object') ? log.low_row : {};
+    if (!entryHasData(l['2026-11-25'])) {
+      l['2026-11-25'] = Object.assign({}, l['2026-11-25'] || {}, { sets: JSON.parse(JSON.stringify(LOW_ROW_2511)), t: Date.now() });
+      log.low_row = l;
+      // сверка до записи: все прежние записи журнала на месте дословно
+      const before = JSON.parse(raw || '{}');
+      const ok = Object.keys(before).every(id => Object.keys(before[id] || {}).every(d =>
+        (id === 'low_row' && d === '2026-11-25') || JSON.stringify(before[id][d]) === JSON.stringify(log[id][d])));
+      if (!ok) { console.error('[levshub] перенос 25.11 отменён: сверка не прошла'); return; }
+      localStorage.setItem(LOG_KEY, JSON.stringify(log));
+      markLogDirty('low_row', '2026-11-25');
+    }
+    localStorage.setItem('levshub_mig_v81c', todayISO());
+  } catch (e) {
+    console.error('[levshub] v8.1 (25.11) не записана', e);
   }
 }
 
@@ -3219,6 +3335,7 @@ function bindCardHandlers(card) {
 function bindSetsGrid(card) {
   const inputs = card.querySelectorAll('.sg-in');
   if (!inputs.length) return;
+  refreshForce(card);
 
   inputs.forEach(inp => {
     inp.addEventListener('input', () => {
@@ -3234,6 +3351,7 @@ function bindSetsGrid(card) {
       }
       commitSets(card);
       flashIfUp(inp);
+      refreshForce(card);
     });
   });
   // RIR: тап по ячейке открывает клавиатуру на повторах этого подхода — там кнопки RIR
@@ -3964,13 +4082,14 @@ function exportExercise(ex) {
   out.push(I + 'Схема: ' + ex.sets + (uni ? ' — по ' + count + ' подхода на каждую сторону' : '') + ', отдых ' + formatRest(ex.rest));
   if (ex.hint) out.push(I + (/^важно/i.test(ex.hint) ? ex.hint : 'Важно: ' + ex.hint));
   const rec = exRecord(ex.id);
-  out.push(I + 'Рекорд: ' + (rec ? exportSetText(rec.set, uni) + ' — ' + entryWhen(ex.id, rec.date, true) : 'не записан'));
+  out.push(I + 'Рекорд: ' + (rec ? exportSetText(rec.set, uni) + ' — ' + entryWhen(ex.id, rec.date, true) + ' · сила ≈ ' + fmtForce(rec.score) + ' кг' : 'не записан'));
   const ld = lastEntryDate(ex.id);
   const lastSets = ld ? getEntrySets(ex.id, ld) : [];
   if (ld) {
     const imp = getExLog(ex.id)[ld].src === 'import';
     const when = isNoDate(ex.id, ld) ? 'старая запись, дата неизвестна' : fmtDayFull(ld) + (imp ? ', из старых записей' : '') + (isAltGym(ld) ? ', другой зал' : '');
-    out.push(I + 'Последний раз (' + when + '): ' + entryText(lastSets, uni));
+    const ls = setScore(lastSets[0], uni);
+    out.push(I + 'Последний раз (' + when + '): ' + entryText(lastSets, uni) + (ls !== null ? ' · сила 1-го подхода ≈ ' + fmtForce(ls) + ' кг' : ''));
   }
   const curNote = typeof saved.n === 'string' ? saved.n.trim() : '';
   if (curNote) out.push(exportBlock('Заметка', saved.n, I));
@@ -5303,15 +5422,49 @@ const MEMO = {
   ]
 };
 
-function renderMemo() {
-  document.getElementById('memoSub').textContent = MEMO.sub;
-  document.getElementById('memoBody').innerHTML = MEMO.sections.map(sec =>
-    `<div class="memo-sec"><div class="memo-h">${escHtml(sec.title)}</div>` +
-    `<ul class="memo-list">${sec.items.map(t => `<li>${escHtml(t)}</li>`).join('')}</ul></div>`
-  ).join('');
+// Вторая памятка (25.11.2026) — показывается первой при каждом открытии
+const MEMO_WEIGHT = {
+  title: 'Памятка — прогрессия «вес первым»',
+  items: [
+    'В первом подходе пробуй следующий шаг веса, если в прошлый раз первый подход был не меньше нижней границы диапазона (диапазон 5–9 → 5 повторов; диапазоны 6–10 и 6–12 → 6). До верха диапазона доходить не нужно.',
+    'Вышло не меньше нижней границы чистых повторов — это твой новый рабочий вес. Второй и третий подходы делай с ним или на шаг легче, как обычно.',
+    'Вышло меньше нижней границы — это была проба, а не провал. Остальные подходы делаешь на прежнем весе, следующая проба — через тренировку.',
+    'Прогресс смотришь по силе, а не по повторам: вес × (1 + повторы/30). Для 3+3 — по слабой стороне. Пример: 24.8 × 7.5 ≈ 31, а 31.5 × 5.5 ≈ 37. Повторов меньше, но силы больше. Смотри на тренд за 3–4 тренировки, а не на один день.',
+    'Ниже нижней границы не опускайся. Ниже растёт нагрузка на суставы, особенно на локти в разгибании из-за головы.'
+  ]
+};
+
+// which: 'weight' — «Вес первым», 'old' — прежняя памятка (MEMO, без изменений)
+function renderMemo(which) {
+  const isW = which !== 'old';
+  document.querySelectorAll('#memoTabs [data-memo]').forEach(b => {
+    const on = b.dataset.memo === (isW ? 'weight' : 'old');
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  const title = document.getElementById('memoTitle');
+  const sub = document.getElementById('memoSub');
+  const body = document.getElementById('memoBody');
+  if (isW) {
+    title.textContent = MEMO_WEIGHT.title;
+    title.classList.add('long');
+    sub.hidden = true;
+    body.innerHTML = `<ol class="memo-list">${MEMO_WEIGHT.items.map(t => `<li>${escHtml(t)}</li>`).join('')}</ol>`;
+  } else {
+    title.textContent = 'Памятка';
+    title.classList.remove('long');
+    sub.hidden = false;
+    sub.textContent = MEMO.sub;
+    body.innerHTML = MEMO.sections.map(sec =>
+      `<div class="memo-sec"><div class="memo-h">${escHtml(sec.title)}</div>` +
+      `<ul class="memo-list">${sec.items.map(t => `<li>${escHtml(t)}</li>`).join('')}</ul></div>`
+    ).join('');
+  }
+  const c = document.getElementById('memoContent');
+  c.classList.remove('fade'); void c.offsetWidth; c.classList.add('fade');
 }
 function openMemo() {
-  renderMemo();
+  renderMemo('weight'); // при каждом открытии первой — «Вес первым» (выбор не запоминаем)
   const bd = document.getElementById('memoBackdrop');
   bd.setAttribute('aria-hidden', 'false');
   bd.querySelector('.memo-card').scrollTop = 0;
@@ -5326,6 +5479,12 @@ function closeMemo() {
 document.getElementById('memoClose').addEventListener('click', closeMemo);
 document.getElementById('memoOk').addEventListener('click', closeMemo);
 document.getElementById('memoOpenBtn').addEventListener('click', openMemo);
+document.getElementById('memoTabs').addEventListener('click', (e) => {
+  const b = e.target.closest && e.target.closest('[data-memo]');
+  if (!b) return;
+  renderMemo(b.dataset.memo);
+  document.querySelector('#memoBackdrop .memo-card').scrollTop = 0;
+});
 document.getElementById('memoBackdrop').addEventListener('click', (e) => { if (e.target.id === 'memoBackdrop') closeMemo(); });
 
 // ================= ОБЛАКО (Supabase) =================
@@ -5824,7 +5983,7 @@ function initCloud() {
 // данные придут из облака уже в новом виде. Ставим отметки, чтобы переносы не наплодили пустых записей.
 const FRESH_DEVICE = ['levshub_workout', 'levshub_workout_A', 'levshub_workout_B', LOG_KEY].every(k => localStorage.getItem(k) === null);
 if (FRESH_DEVICE) {
-  ['levshub_mig_v6_archive', 'levshub_mig_v61_prone', 'levshub_mig_v62', 'levshub_mig_v7', 'levshub_mig_v8', 'levshub_mig_v81', 'levshub_mig_v81b'].forEach(k => {
+  ['levshub_mig_v6_archive', 'levshub_mig_v61_prone', 'levshub_mig_v62', 'levshub_mig_v7', 'levshub_mig_v8', 'levshub_mig_v81', 'levshub_mig_v81b', 'levshub_mig_v81c'].forEach(k => {
     try { if (localStorage.getItem(k) === null) localStorage.setItem(k, todayISO()); } catch (e) {}
   });
 } else {
@@ -5838,6 +5997,7 @@ if (FRESH_DEVICE) {
   backupV8(); // v8: копия всех данных перед сменой пресса (подъёмы ног — в архив)
   migrateV81(); // v8.1: копия данных, «другой зал» 18–20.11, заметка наклонного жима, архив «двумя руками»
   backupV81b(); // v8.1 (24.11): копия данных перед сменой отдыха и диапазонов
+  migrateV81c(); // v8.1 (25.11): копия данных, тренировка 25.11 в журнал тяги одной рукой
 }
 runSplash();
 const initialPreset = loadTimerPreset();
